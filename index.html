@@ -62,12 +62,15 @@
           <label><input type="radio" name="orgtype" value="business"><span><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg>Business</span></label>
         </div>
       </fieldset>
-      <div class="grid2 tight">
-        <label>Your name <input id="lg-name" autocomplete="name" placeholder="e.g. Reyaansh" required></label>
-        <label><span class="label-text">Organisation <span class="opt">optional</span></span><input id="lg-org" autocomplete="organization" placeholder="e.g. Mayo College, Ajmer"></label>
-      </div>
-      <label class="email-field"><span class="label-text">Email <span class="opt">optional · to receive your results, no password</span></span>
-        <span class="input-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><input id="lg-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com"></span></label>
+      <fieldset class="about">
+        <legend>About you</legend>
+        <div class="about-grid">
+          <label>Your name <input id="lg-name" autocomplete="name" placeholder="e.g. Reyaansh" required></label>
+          <label>Organisation <input id="lg-org" autocomplete="organization" placeholder="e.g. Mayo College, Ajmer"></label>
+          <label>Email <span class="input-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><input id="lg-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com"></span></label>
+        </div>
+        <p class="about-hint">Organisation and email are optional. We only use your email to send you your results. No password needed.</p>
+      </fieldset>
       <fieldset class="roles">
         <legend>What do you want to understand?</legend>
         <div class="role-grid">
