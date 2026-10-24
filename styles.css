@@ -125,6 +125,30 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
 .sample-banner .sb-icon { font-size: 1.4rem; }
 .sample-banner button { flex: none; white-space: nowrap; }
 @media (max-width: 640px) { .sample-banner { flex-wrap: wrap; } .sample-banner button { width: 100%; } }
+.email-field { margin-top: 14px; }
+.input-icon { position: relative; display: block; }
+.input-icon svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; fill: none; stroke: #94a3b8;
+                  stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.input-icon input { padding-left: 38px; }
+.share-btn { display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 10px; border: 0; cursor: pointer; font: inherit;
+             font-size: .82rem; font-weight: 700; color: #fff; background: var(--grad); box-shadow: 0 8px 18px -10px rgba(79,70,229,.9); }
+.share-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.share-btn:hover { filter: brightness(1.08); }
+.share-dialog { width: min(640px, calc(100vw - 24px)); max-height: calc(100vh - 24px); padding: 0; border: 0; border-radius: 22px;
+                box-shadow: 0 40px 90px -30px rgba(15,23,42,.6); color: var(--text); }
+.share-dialog::backdrop { background: rgba(2, 6, 23, .55); backdrop-filter: blur(4px); }
+.share-dialog[open] { animation: rise .25s ease both; }
+.share-dialog form { display: grid; gap: 12px; padding: 24px; }
+.sd-head { display: flex; gap: 14px; align-items: flex-start; }
+.sd-head h2 { margin: 0; font-size: 1.3rem; font-weight: 800; }
+.sd-head p { margin: 2px 0 0; font-size: .88rem; }
+.sd-icon { flex: none; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--grad); color: #fff; }
+.sd-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.sd-close { margin-left: auto; }
+.share-dialog textarea { font: .82rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; resize: vertical; }
+.sd-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.fine.left { text-align: left; margin: 0; }
+@media (max-width: 980px) { .share-btn span { display: none; } }
 .form-error { color: var(--danger); font-size: .88rem; margin: 6px 0 0; }
 .primary.big { position: relative; overflow: hidden; width: 100%; padding: 14px 18px; font-size: 1.02rem; margin-top: 16px; border-radius: 12px;
                box-shadow: 0 14px 30px -14px rgba(79, 70, 229, .9); }

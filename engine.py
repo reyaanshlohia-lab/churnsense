@@ -3266,6 +3266,41 @@ def ai_context():
     return '\n'.join(lines)
 
 
+def email_summary(name='', org='', link=''):
+    """Plain-text results to share by email: key numbers, top reasons, the most at-risk people and suggested actions.
+    No spreadsheet rows are included apart from the IDs and scores of the top people. 'short' fits in a mailto link."""
+    trained, ctx = _need()
+    w = ctx['wording']
+    p = words(w)
+    k = (STATE.get('train_info') or {}).get('kpis') or {}
+    tops = top_drivers(trained, 5)
+    ranked, _ = rank_people(trained, ctx['df'].loc[trained['X_test'].index], w, DEFAULTS['level_cutoffs'],
+                            ctx['id_column'], max_explained=10)
+    id_col = ctx['id_column'] if ctx['id_column'] in ranked.columns else None
+    reason_col = 'Top reason' if p['leave'] else 'Main thing holding them back'
+    people = [f"{r['Rank']}. {r[id_col] if id_col else 'Row ' + str(r['Rank'])}: {r[p['Score']]:.0%} ({r['Level']})"
+              + (f" - {r[reason_col]}" if r[reason_col] else '') for _, r in ranked.head(10).iterrows()]
+    actions = suggestions_for(tops, None, SCENARIOS[ctx['scenario']]['rules'], w)
+    subject = f"ChurnSense results: {ctx['name']}" + (f' ({org})' if org else '')
+    head = [f"ChurnSense results for {ctx['name']}" + (' (SYNTHETIC test data)' if ctx['synthetic'] else '')]
+    if name or org:
+        head.append('Shared by ' + ', '.join(x for x in [name, org] if x))
+    key = [f"Key numbers",
+           f"- {k.get('rows', len(trained['prepared']['y'])):,} {w['people']} analysed; {k.get('rate', '')} {w['outcome_past']}",
+           f"- Best model: {trained['best_model']} (ROC-AUC {k.get('auc', '')})",
+           f"- {k.get('high', '')} of {k.get('test', '')} in the test set are {'high risk' if p['leave'] else 'highly likely'}"]
+    reasons = ['Top reasons'] + [f'{i}. {c}: {direction_phrase(trained, c, w)}' for i, c in enumerate(tops, 1)]
+    title = f"{'Most at risk' if p['leave'] else 'Most likely'} (test set, {p['score']})"
+    foot = ['These are patterns in past data, not certainties. Use them to start a conversation, never as the only '
+            'basis for a decision about a person.'] + ([f'Made with ChurnSense: {link}'] if link else [])
+    full = head + [''] + key + [''] + reasons + ['', title] + people
+    if actions:
+        full += ['', f"Suggested {p['actions']} actions to discuss"] + [f'- {a}' for a in actions[:6]]
+    full += [''] + foot
+    short = head + [''] + key + [''] + reasons[:4] + ['', title] + people[:5] + [''] + foot
+    return {'subject': subject, 'text': '\n'.join(full), 'short': '\n'.join(short)}
+
+
 # ---------- the prompt box ----------
 SCENARIO_WORDS = [
     ('Employees', r'\b(employees?|staff|workers?|attrition|workforce)\b'),
@@ -3634,7 +3669,7 @@ API = {f.__name__: f for f in [add_file, remove_file, select_data, target_change
                                model_view, compare_view, why_view, segments_view, cluster_axes, fairness_view,
                                explore, outcome_rate, explain, whatif, load_person, rank, results_csv, report,
                                chart_list, make_zip, regression, ai_context, run_prompt, defaults, md_html,
-                               setup_info, trained_info, all_graphs]}
+                               setup_info, trained_info, all_graphs, email_summary]}
 
 
 def api_call(name, args_json='{}'):

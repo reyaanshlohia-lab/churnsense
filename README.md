@@ -14,13 +14,14 @@ There are **no sub-folders**: all files sit side by side, so they upload anywher
 | Files | What they are |
 |---|---|
 | `index.html`, `styles.css`, `app.js` | The page: welcome (sign-in) screen, dashboard, files list, drag-and-drop box, prompt box, answer, and the sidebar pages. |
+| `email-config.js` | Optional settings for sending result emails directly (see **Email results** below). |
 | `worker.js` | Runs the Python analysis engine in the background, so the page never freezes. |
 | `engine.py` | The analysis code (the same as `people_prediction_app.ipynb`, adapted for the browser). |
 | `pyodide.*`, `python_stdlib.zip`, `pyodide-lock.json`, the `.whl` files, `plotly.min.js` | Python for the browser and the packages it needs (scikit-learn, pandas, Plotly, ...). |
 | the five `.csv` files | The sample datasets for the "Try a sample" buttons. |
 | `.nojekyll` | Tells GitHub Pages to publish the files as they are (a hidden file; optional). |
 
-The whole folder is about 55 MB in 33 files (none over 15 MB). Visitors download it once (about 30 seconds); after
+The whole folder is about 55 MB in 34 files (none over 15 MB). Visitors download it once (about 30 seconds); after
 that their browser keeps it, so later visits start quickly.
 
 ## Put it online for free (no card)
@@ -79,6 +80,25 @@ Tip: also add a button "Open the app in full screen" that links to the same addr
    Explore, Train (all settings, per-model results, decision threshold), Compare, Why They Leave / Join (reasons,
    SHAP, segments, report and chart downloads), Predict & Explain (one person, what-if, ranked lists), Fairness and
    Regression.
+
+**Email results:** visitors can type an email address at sign-in (optional, no password). After an analysis, the
+**Email results** button (top right, or **✉ Email these results** under an answer) opens a window with the address,
+a subject and an editable summary: the key numbers, top reasons, the 10 people most at risk (IDs and scores) and the
+suggested actions. The spreadsheet itself is never sent.
+
+- **Works straight away:** **Open in my email app** opens the visitor's own email program (Outlook, Gmail app, Mail…)
+  with everything filled in; they press Send there. **Copy text** and **Download full report** are there too.
+- **Optional, send directly from the page** (free, no card, about 5 minutes), with EmailJS:
+  1. Sign up at <https://www.emailjs.com> (the free plan sends 200 emails a month).
+  2. **Email Services > Add New Service > Gmail** (or another), connect your account, and copy the **Service ID**.
+  3. **Email Templates > Create New Template**. Set **To Email** to `{{to_email}}`, **Subject** to `{{subject}}`,
+     **From Name** to `{{from_name}}`, **Reply To** to `{{reply_to}}`, and the content to `{{message}}`. Save, and
+     copy the **Template ID**.
+  4. **Account > General**: copy the **Public Key**.
+  5. On GitHub, open `email-config.js`, click the pencil (Edit), paste the three values between the quotes, and click
+     **Commit changes**. The window's button then says **Send email**.
+
+  With this on, the summary goes through EmailJS to the address typed in, from your connected email account.
 
 **Optional AI answers:** under **AI answers**, a visitor can paste a free Gemini API key from
 <https://aistudio.google.com/apikey> (Google account needed, no card). Then any question also gets an answer from

@@ -731,16 +731,18 @@ function wireLogin() {
     e.preventDefault();
     const name = $('#lg-name').value.trim();
     const role = ($('input[name=role]:checked') || {}).value;
-    const error = !name ? 'Please enter your name.' : !role ? 'Please choose what you want to understand.' : '';
+    const email = $('#lg-email').value.trim();
+    const error = !name ? 'Please enter your name.' : email && !EMAIL_RE.test(email) ? 'Please check your email address (or leave it empty).'
+      : !role ? 'Please choose what you want to understand.' : '';
     $('#lg-error').textContent = error;
     $('#lg-error').hidden = !error;
     if (error) return;
-    const profile = { name, org: $('#lg-org').value.trim(), orgType: $('input[name=orgtype]:checked').value, role };
+    const profile = { name, org: $('#lg-org').value.trim(), orgType: $('input[name=orgtype]:checked').value, role, email };
     saveProfile(profile);
     enterApp(profile);
   });
-  for (const field of ['#lg-name', '#login-form']) {
-    $(field).addEventListener(field === '#lg-name' ? 'input' : 'change', () => { $('#lg-error').hidden = true; });
+  for (const field of ['#lg-name', '#lg-email', '#login-form']) {
+    $(field).addEventListener(field === '#login-form' ? 'change' : 'input', () => { $('#lg-error').hidden = true; });
   }
   const sampleNote = () => {
     const info = ROLES[($('input[name=role]:checked') || {}).value];
@@ -926,7 +928,8 @@ function showAnswer(r) {
     onclick: () => download(d.name, d.text, d.type || 'text/csv'),
   })));
   if (r.options) {
-    dl.append(el('button', { type: 'button', class: 'primary', text: '★ Show all graphs', onclick: () => selectTab('all') }));
+    dl.append(el('button', { type: 'button', class: 'primary', text: '★ Show all graphs', onclick: () => selectTab('all') }),
+              el('button', { type: 'button', class: 'secondary', text: '✉ Email these results', onclick: openShare }));
   }
   $('#answer').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -981,6 +984,107 @@ function saveAIKey() {
       localStorage.removeItem('churnsense-gemini-model');
     }
   } catch (e) { /* storage unavailable */ }
+}
+
+// ---------------- share by email (no password: the address is only used to send) ----------------
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function emailConfig() {
+  const c = window.CHURNSENSE_EMAIL || {};
+  return c.publicKey && c.serviceId && c.templateId ? c : null;
+}
+
+async function openShare() {
+  if (!S.trained) { toast('Run an analysis first (press Run), then you can email the results.', 'info'); return; }
+  const profile = S.profile || {};
+  const r = await busy('Preparing the email', () => py('email_summary', {
+    name: profile.guest ? '' : profile.name || '', org: profile.org || '', link: location.href.split('#')[0] }));
+  if (!r) return;
+  S.share = r;
+  if (!$('#share-to').value) $('#share-to').value = profile.email || '';
+  $('#share-subject').value = r.subject;
+  $('#share-text').value = r.text;
+  const direct = !!emailConfig();
+  $('#share-send').textContent = direct ? 'Send email' : 'Open in my email app';
+  $('#share-mailto').hidden = !direct;
+  $('#share-privacy').textContent = direct
+    ? '🔒 Only this message is sent (through the EmailJS email service), never your spreadsheet. It includes the IDs and scores of the top 10 people.'
+    : '🔒 This opens your own email app with the message filled in; nothing is sent until you press Send there. Only this summary is shared, never your spreadsheet. Tip: download the full report and attach it.';
+  $('#share-error').hidden = true;
+  $('#share-dialog').showModal();
+  $('#share-to').focus();
+}
+
+function shareRecipients() {
+  const list = $('#share-to').value.split(/[\s,;]+/).filter(Boolean);
+  const bad = list.filter((a) => !EMAIL_RE.test(a));
+  const error = !list.length ? 'Type the email address to send the results to.' : bad.length ? `Please check: ${bad.join(', ')}` : '';
+  $('#share-error').textContent = error;
+  $('#share-error').hidden = !error;
+  if (error) { $('#share-to').focus(); return null; }
+  const profile = S.profile;
+  if (profile && !profile.guest && !profile.email) { profile.email = list[0]; saveProfile(profile); }
+  return list;
+}
+
+function openMailto() {
+  const to = shareRecipients();
+  if (!to) return;
+  let body = $('#share-text').value;
+  // email apps cut very long links, so the unedited message falls back to the short version
+  if (body === S.share.text && encodeURIComponent(body).length > 1800) {
+    body = S.share.short + '\n\n(Shortened to fit your email app: download the full report from ChurnSense for every detail.)';
+  }
+  const a = el('a', { href: `mailto:${to.join(',')}?subject=${encodeURIComponent($('#share-subject').value)}&body=${encodeURIComponent(body)}` });
+  document.body.append(a);
+  a.click();
+  a.remove();
+  $('#share-dialog').close();
+  toast('Your email app should open with the results filled in. Press Send there.', 'info');
+}
+
+async function sendEmail() {
+  const cfg = emailConfig();
+  if (!cfg) { openMailto(); return; }
+  const to = shareRecipients();
+  if (!to) return;
+  const button = $('#share-send');
+  button.disabled = true;
+  button.textContent = 'Sending…';
+  try {
+    const profile = S.profile || {};
+    const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ service_id: cfg.serviceId, template_id: cfg.templateId, user_id: cfg.publicKey, template_params: {
+        to_email: to.join(','), subject: $('#share-subject').value, message: $('#share-text').value,
+        from_name: (!profile.guest && profile.name) || 'ChurnSense', reply_to: profile.email || '' } }),
+    });
+    if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`);
+    $('#share-dialog').close();
+    toast(`Sent to ${to.join(', ')}.`, 'info');
+  } catch (error) {
+    $('#share-error').textContent = `Could not send (${error.message}). Try "Open in my email app" instead.`;
+    $('#share-error').hidden = false;
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Send email';
+  }
+}
+
+function wireShare() {
+  $('#share-btn').addEventListener('click', openShare);
+  $('#share-close').addEventListener('click', () => $('#share-dialog').close());
+  $('#share-send').addEventListener('click', sendEmail);
+  $('#share-mailto').addEventListener('click', openMailto);
+  $('#share-to').addEventListener('input', () => { $('#share-error').hidden = true; });
+  $('#share-copy').addEventListener('click', async () => {
+    const text = `${$('#share-subject').value}\n\n${$('#share-text').value}`;
+    try { await navigator.clipboard.writeText(text); } catch (e) { $('#share-text').select(); document.execCommand('copy'); }
+    toast('Copied: paste it into any email or message.', 'info');
+  });
+  $('#share-report').addEventListener('click', () => { $('#share-dialog').close(); $('#report-btn').click(); });
+  $('#share-dialog').addEventListener('click', (e) => { if (e.target === $('#share-dialog')) $('#share-dialog').close(); });
 }
 
 // ---------------- downloads ----------------
@@ -1106,6 +1210,7 @@ function wire() {
 
 wire();
 wireLogin();
+wireShare();
 loadAIKey();
 startEngine();     // the engine warms up while the visitor signs in
 startPage();
