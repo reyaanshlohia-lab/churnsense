@@ -240,6 +240,9 @@ function renderBlocks(container, blocks, append = false) {
     if (b.title) box.append(el('h4', { text: b.title }, b.tag ? el('span', { class: 'tag', text: b.tag }) : null));
     if (b.figure) {
       const chart = el('div', { class: 'chart' });
+      box.prepend(el('button', { type: 'button', class: 'explain-btn', title: 'Explain this chart in the help chat',
+                                 'aria-label': `Explain the chart ${b.title || ''}`, text: '? Explain',
+                                 onclick: () => window.openHelp && window.openHelp({ chart }) }));
       box.append(chart);
       container.append(box);
       plot(chart, b.figure);
@@ -749,6 +752,7 @@ function enterApp(profile) {
   const role = ROLES[profile.role] || ROLES.own;
   $('#login').hidden = true;
   $('#app').hidden = false;
+  $('#help-fab').hidden = false;
   window.scrollTo(0, 0);   // the sign-in page may have been scrolled down to the Continue button
   const name = profile.name || 'Guest';
   $('#user-name').textContent = name;
