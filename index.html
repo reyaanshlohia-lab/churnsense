@@ -14,6 +14,7 @@
 <script src="plotly.min.js" defer></script>
 <script src="email-config.js" defer></script>
 <script src="app.js" defer></script>
+<script src="help.js" defer></script>
 </head>
 <body>
 
@@ -457,6 +458,21 @@
   <div class="busy-box"><div class="spinner" aria-hidden="true"></div><div><b id="busy-title">Working…</b><div id="busy-text"></div><div class="bar"><div id="busy-bar"></div></div></div></div>
 </div>
 <div id="toast" class="toast" role="alert" hidden></div>
+
+<button type="button" id="help-fab" class="help-fab" aria-label="Open the help chat" aria-expanded="false" aria-controls="help-panel" hidden><span aria-hidden="true">?</span> Help</button>
+<aside id="help-panel" class="help-panel" aria-label="Help chat" hidden>
+  <header class="hp-head">
+    <span class="hp-icon" aria-hidden="true">?</span>
+    <div><b>ChurnSense Help</b><small>Ask me anything about this page</small></div>
+    <button type="button" id="help-close" class="icon-btn" aria-label="Close help">✕</button>
+  </header>
+  <div id="help-log" class="help-log" aria-live="polite"></div>
+  <div id="help-chips" class="help-chips"></div>
+  <form id="help-form" class="help-form">
+    <input id="help-input" autocomplete="off" aria-label="Your question" placeholder="How can I help you?">
+    <button type="submit" class="primary">Ask</button>
+  </form>
+</aside>
 
 <dialog id="share-dialog" class="share-dialog" aria-labelledby="share-title">
   <form method="dialog" id="share-form">
