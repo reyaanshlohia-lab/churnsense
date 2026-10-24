@@ -4,310 +4,408 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ChurnSense</title>
-<meta name="description" content="Predict who is likely to leave or join, see why, and get every chart explained. Runs in your browser: your files never leave your computer.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%E2%98%85%3C/text%3E%3C/svg%3E">
+<meta name="description" content="ChurnSense predicts who is likely to leave or join, explains why, and suggests what to do. Free, private and fair: runs in your browser.">
+<meta name="theme-color" content="#0b1020">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%236366f1%22/%3E%3Cstop offset=%221%22 stop-color=%22%2306b6d4%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22100%22 height=%22100%22 rx=%2224%22 fill=%22url(%23g)%22/%3E%3Ctext x=%2250%22 y=%2270%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22white%22%3E%E2%98%85%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="styles.css">
 <script src="plotly.min.js" defer></script>
 <script src="app.js" defer></script>
 </head>
 <body>
-<header class="site-header">
-  <div class="wrap">
-    <h1>ChurnSense</h1>
-    <p class="tagline">Predict who is likely to <b>leave</b> or <b>join</b>, see <b>why</b>, and get every chart with its best value marked <span class="star">★</span> and explained.</p>
-    <p class="privacy"><span aria-hidden="true">🔒</span> Runs entirely in your browser: your spreadsheets never leave your computer.</p>
-  </div>
-</header>
 
-<div id="engine" class="engine" role="status" aria-live="polite">
-  <div class="wrap">
-    <div class="engine-text"><span id="engine-text">Starting the analysis engine… (the first visit downloads about 55 MB; later visits are faster)</span></div>
-    <div class="bar"><div id="engine-bar"></div></div>
-  </div>
-</div>
-
-<main class="wrap">
-  <!-- ============ 1. Files ============ -->
-  <section class="card" aria-labelledby="files-title">
-    <h2 id="files-title"><span class="step">1</span> Your spreadsheets</h2>
-    <ul id="file-list" class="file-list" aria-live="polite">
-      <li class="empty">No files yet. Add a spreadsheet below, or try a sample.</li>
-    </ul>
-    <div id="dropzone" class="dropzone" role="button" tabindex="0" aria-describedby="drop-help">
-      <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4m0 0-4 4m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-      <p class="drop-main"><b>Drag and drop spreadsheets here</b></p>
-      <p id="drop-help" class="drop-help">or <span class="link-like">click to choose files</span> (.csv or .xlsx, several at once)</p>
-      <input id="file-input" type="file" accept=".csv,.xlsx" multiple hidden>
+<!-- =================================== LOGIN =================================== -->
+<div id="login" class="login" hidden>
+  <section class="login-hero" aria-hidden="false">
+    <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="grid-bg"></div>
+    <div class="brand light"><span class="logo">★</span><span>ChurnSense</span></div>
+    <div class="hero-copy">
+      <p class="eyebrow">Explainable people analytics</p>
+      <h1>Know who will leave <span class="grad">and why.</span></h1>
+      <p class="lead">Upload a spreadsheet, ask in plain English, and get predictions, reasons and next steps you can act on.</p>
+      <ul class="hero-points">
+        <li><span class="pt-icon"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg></span>
+          <div><b>Explains every prediction</b><span>Top reasons, what-if tests and suggested actions for each person.</span></div></li>
+        <li><span class="pt-icon"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+          <div><b>Private by design</b><span>Runs entirely in your browser. Your data never leaves your computer.</span></div></li>
+        <li><span class="pt-icon"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 7h14M7 7l-3 7a4 4 0 0 0 6 0zM17 7l-3 7a4 4 0 0 0 6 0z"/></svg></span>
+          <div><b>Fair by default</b><span>Sensitive details left out of training, and a built-in fairness check.</span></div></li>
+      </ul>
+      <div class="hero-stats">
+        <div><b>5</b><span>ML models, auto-tuned</span></div>
+        <div><b>27</b><span>explained charts</span></div>
+        <div><b>100%</b><span>free &amp; in-browser</span></div>
+      </div>
     </div>
-    <div class="samples">
-      <span>Try a sample:</span>
-      <button type="button" class="chip" data-sample="employees.csv">Employees</button>
-      <button type="button" class="chip" data-sample="customers.csv">Customers</button>
-      <button type="button" class="chip" data-sample="students_SYNTHETIC.csv">Students</button>
-      <button type="button" class="chip" data-sample="teachers_SYNTHETIC.csv">Teachers</button>
-      <button type="button" class="chip" data-sample="custom_join_SYNTHETIC.csv">Applicants (join)</button>
-    </div>
+    <p class="hero-foot">Predictions show patterns, not certainties.</p>
   </section>
 
-  <!-- ============ 2. Ask ============ -->
-  <section class="card" aria-labelledby="ask-title">
-    <h2 id="ask-title"><span class="step">2</span> Ask</h2>
-    <label for="prompt" class="sr-only">Your request</label>
-    <textarea id="prompt" rows="3" placeholder="For example: Which employees are most likely to leave? Target is Attrition"></textarea>
-    <div class="ask-row">
-      <div class="examples" aria-label="Example requests">
-        <button type="button" class="chip ghost" data-example="Who is most likely to leave, and why?">Who is most likely to leave, and why?</button>
-        <button type="button" class="chip ghost" data-example="Compare the models">Compare the models</button>
-        <button type="button" class="chip ghost" data-example="Show the segments">Show the segments</button>
-        <button type="button" class="chip ghost" data-example="Is the model fair?">Is the model fair?</button>
-        <button type="button" class="chip ghost" data-example="help">What can I ask?</button>
+  <section class="login-panel">
+    <form id="login-form" class="login-card" novalidate>
+      <div class="brand mobile-only"><span class="logo">★</span><span>ChurnSense</span></div>
+      <h2>Welcome to ChurnSense</h2>
+      <p class="muted">Tell us who you are and what you want to understand. We'll take you straight there.</p>
+      <div class="grid2 tight">
+        <label>Your name <input id="lg-name" autocomplete="name" placeholder="e.g. Reyaansh" required></label>
+        <label><span class="label-text">Organisation <span class="opt">optional</span></span><input id="lg-org" autocomplete="organization" placeholder="e.g. Greenwood School"></label>
       </div>
-      <button id="run" type="button" class="primary">Run <kbd>Ctrl</kbd>+<kbd>Enter</kbd></button>
-    </div>
-    <details id="ai-panel" class="ai-panel">
-      <summary>AI answers (optional): add a free Gemini key</summary>
-      <p>Built-in commands always work without a key. With a free key from
-        <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> (no card needed),
-        any question is also answered by Gemini from a <b>summary of the results</b> (model scores, top reasons, segment and
-        fairness summaries, and the IDs and probabilities of the top 10 people). Your spreadsheet itself is never sent.
-        On Google's free tier, Google may use what you send to improve its products.</p>
-      <div class="grid2">
-        <label>Gemini API key <input id="ai-key" type="password" autocomplete="off" placeholder="Paste your key"></label>
-        <label>Model <input id="ai-model" type="text" value="gemini-flash-latest"></label>
-      </div>
-      <label class="check"><input id="ai-remember" type="checkbox"> Remember the key on this device</label>
-    </details>
-  </section>
-
-  <!-- ============ Answer ============ -->
-  <section id="answer" class="card answer" hidden aria-live="polite">
-    <h2>Answer</h2>
-    <div id="answer-body"></div>
-    <div id="ai-answer" class="ai-answer" hidden></div>
-    <div id="answer-blocks" class="blocks"></div>
-    <div id="answer-downloads" class="downloads"></div>
-  </section>
-
-  <!-- ============ Tabs ============ -->
-  <section class="card tabs-card" aria-label="Details">
-    <div class="tabs" role="tablist">
-      <button role="tab" data-tab="all">★ All graphs</button>
-      <button role="tab" data-tab="setup" aria-selected="true">1. Setup</button>
-      <button role="tab" data-tab="explore">2. Explore</button>
-      <button role="tab" data-tab="train">3. Train</button>
-      <button role="tab" data-tab="compare">4. Compare</button>
-      <button role="tab" data-tab="why" id="why-tab">5. Why They Leave</button>
-      <button role="tab" data-tab="predict">6. Predict &amp; Explain</button>
-      <button role="tab" data-tab="fairness">7. Fairness</button>
-      <button role="tab" data-tab="regression">8. Regression</button>
-    </div>
-
-    <!-- All graphs -->
-    <div class="panel" data-panel="all" role="tabpanel" hidden>
-      <p class="hint needs-model">Train the models first: ask a question above, or click "Apply and train" in the Setup tab.</p>
-      <div class="model-only" hidden>
-        <p class="hint">Every graph with its analysis, grouped by model. Graphs from the original notebook are tagged
-          <span class="tag">Graph from the original notebook</span>.</p>
-        <div id="all-groups"></div>
-      </div>
-    </div>
-
-    <!-- 1. Setup -->
-    <div class="panel" data-panel="setup" role="tabpanel">
-      <p class="hint" id="setup-empty">Add a spreadsheet (or a sample) and select it in the list above to set it up here.</p>
-      <div id="setup-body" hidden>
-        <div id="setup-status"></div>
-        <div class="grid3">
-          <label>Scenario <select id="o-scenario"></select></label>
-          <label id="mode-label">Outcome type <select id="o-mode"><option value="leave">Leave</option><option value="join">Join</option></select></label>
-          <label>Fill missing values with <select id="o-missing"></select></label>
-        </div>
-        <div id="setup-info"></div>
-        <fieldset id="wording" class="wording">
-          <legend>Custom wording (used in every chart, text and file name)</legend>
-          <div class="grid3">
-            <label>One person is a … <input id="w-person"></label>
-            <label>People are … <input id="w-people"></label>
-            <label>Organisation <input id="w-org"></label>
-            <label>Outcome (past tense) <input id="w-outcome_past"></label>
-            <label>Outcome (-ing form) <input id="w-outcome_ing"></label>
-            <label>When it did not happen <input id="w-stay_past"></label>
-          </div>
-        </fieldset>
-        <div class="grid2">
-          <label>Target column (the outcome) <select id="o-target"></select></label>
-          <label>Which value means the outcome happened? <select id="o-positive"></select></label>
-        </div>
-        <details open><summary>Columns</summary>
-          <div class="grid3 checklists">
-            <div><h4>Columns to drop (IDs, names)</h4><div id="o-drop" class="checklist"></div></div>
-            <div><h4>Feature columns</h4><div id="o-features" class="checklist"></div></div>
-            <div><h4>Sensitive columns (fairness check)</h4><div id="o-sensitive" class="checklist"></div>
-              <label class="check"><input id="o-exclude" type="checkbox"> Leave sensitive columns out of training</label></div>
-          </div>
-        </details>
-        <details><summary>Data preview and column types</summary>
-          <div id="preview" class="table-wrap"></div>
-          <div id="column-info" class="table-wrap"></div>
-        </details>
-        <details><summary>Action rules (edit freely)</summary>
-          <p class="hint">Condition: &lt;, &lt;=, &gt;, &gt;=, ==, != or any. Feature <code>*</code> matches any of a person's top reasons.</p>
-          <div id="rules" class="table-wrap"></div>
-          <button type="button" id="rule-add" class="secondary">Add a rule</button>
-        </details>
-        <div class="actions"><button type="button" id="apply" class="primary">Apply and train</button></div>
-      </div>
-    </div>
-
-    <!-- 2. Explore -->
-    <div class="panel" data-panel="explore" role="tabpanel" hidden>
-      <div class="grid4">
-        <label>Chart type <select id="x-kind">
-          <option>Histogram</option><option>Box</option><option>Scatter</option><option>Bar</option><option>Correlation heatmap</option></select></label>
-        <label>X axis <select id="x-x"></select></label>
-        <label>Y axis <select id="x-y"></select></label>
-        <label>Colour <select id="x-color"></select></label>
-      </div>
-      <div class="actions"><button type="button" id="explore-run" class="primary">Draw chart</button></div>
-      <div id="explore-out" class="blocks"></div>
-      <hr>
-      <h3>Outcome rate by any column</h3>
-      <div class="grid4"><label>Column <select id="rate-col"></select></label></div>
-      <div class="actions"><button type="button" id="rate-run" class="secondary">Show outcome rate</button></div>
-      <div id="rate-out" class="blocks"></div>
-    </div>
-
-    <!-- 3. Train -->
-    <div class="panel" data-panel="train" role="tabpanel" hidden>
-      <fieldset class="plain"><legend>General settings</legend>
-        <div class="grid4">
-          <label>Search size <select id="o-preset"></select></label>
-          <label>Test size <input id="o-test_size" type="number" min="0.1" max="0.5" step="0.05"></label>
-          <label>Random seed <input id="o-seed" type="number" step="1"></label>
-          <label>Tuning metric <select id="o-scoring"></select></label>
-        </div>
-        <p class="hint">In the browser, <b>Quick</b> takes under a minute; <b>Thorough</b> searches much wider and takes several minutes.</p>
-        <div class="grid4">
-          <div><h4>Models to run</h4><div id="o-models" class="checklist"></div></div>
-          <label class="check"><input id="o-balanced" type="checkbox"> class_weight = 'balanced'</label>
-          <label>Logistic Regression max_iter <input id="o-logistic_max_iter" type="number" min="1" step="1"></label>
-          <label>Neural Network max_iter <input id="o-mlp_max_iter" type="number" min="1" step="1"></label>
+      <fieldset class="roles">
+        <legend>What do you want to understand?</legend>
+        <div class="role-grid">
+          <label class="role"><input type="radio" name="role" value="employees">
+            <span class="role-card"><span class="role-icon c1"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg></span>
+              <b>Employees</b><small>Who might leave the company</small></span></label>
+          <label class="role"><input type="radio" name="role" value="customers">
+            <span class="role-card"><span class="role-icon c2"><svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg></span>
+              <b>Customers</b><small>Who might cancel or churn</small></span></label>
+          <label class="role"><input type="radio" name="role" value="students">
+            <span class="role-card"><span class="role-icon c3"><svg viewBox="0 0 24 24"><path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5M22 9v6"/></svg></span>
+              <b>Students</b><small>Who might drop out</small></span></label>
+          <label class="role"><input type="radio" name="role" value="teachers">
+            <span class="role-card"><span class="role-icon c4"><svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/><path d="M8 7h6M8 11h6"/></svg></span>
+              <b>Teachers</b><small>Who might leave the school</small></span></label>
+          <label class="role"><input type="radio" name="role" value="applicants">
+            <span class="role-card"><span class="role-icon c5"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M19 8v6M16 11h6"/></svg></span>
+              <b>Applicants</b><small>Who is likely to join or enrol</small></span></label>
+          <label class="role"><input type="radio" name="role" value="own">
+            <span class="role-card"><span class="role-icon c6"><svg viewBox="0 0 24 24"><path d="M12 15V3m0 0-4 4m4-4 4 4"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg></span>
+              <b>My own data</b><small>Any leave or join question</small></span></label>
         </div>
       </fieldset>
-      <details><summary>Search values for each model</summary><div id="search-boxes"></div></details>
-      <div class="actions"><button type="button" id="train-run" class="primary">Train models</button></div>
-      <div id="train-status"></div>
-      <div id="train-body" hidden>
-        <div class="grid2">
-          <label>Decision threshold <span id="thr-value"></span>
-            <input id="o-threshold" type="range" min="0.05" max="0.95" step="0.01"></label>
-          <label>Show results for <select id="model-choice"></select></label>
-        </div>
-        <div id="model-params"></div>
-        <div id="model-metrics" class="table-wrap"></div>
-        <div id="model-blocks" class="blocks two"></div>
-      </div>
-    </div>
-
-    <!-- 4. Compare -->
-    <div class="panel" data-panel="compare" role="tabpanel" hidden>
-      <p class="hint needs-model">Train the models first.</p>
-      <div class="model-only" hidden>
-        <div class="grid4"><label>Metric for the bar chart <select id="o-metric">
-          <option>ROC-AUC</option><option>Accuracy</option><option>Precision</option><option>Recall</option><option>F1-score</option></select></label></div>
-        <div id="compare-table" class="table-wrap"></div>
-        <div id="compare-blocks" class="blocks two"></div>
-        <div class="actions"><button type="button" id="results-csv" class="secondary">Download the results table (CSV)</button></div>
-      </div>
-    </div>
-
-    <!-- 5. Why -->
-    <div class="panel" data-panel="why" role="tabpanel" hidden>
-      <p class="hint needs-model">Train the models first.</p>
-      <div class="model-only" hidden>
-        <div id="why-title"></div>
-        <div id="why-note" class="note"></div>
-        <div id="why-blocks" class="blocks two"></div>
-        <h3>Segments (KMeans groups)</h3>
-        <div class="grid4">
-          <div><h4>Numeric columns to group on</h4><div id="seg-columns" class="checklist"></div></div>
-          <label>Number of groups k <input id="o-k" type="number" min="2" max="10" step="1"></label>
-          <label>Elbow plot: largest k <input id="o-kmax" type="number" min="3" max="15" step="1"></label>
-          <div class="grid2"><label>Scatter x <select id="seg-x"></select></label><label>Scatter y <select id="seg-y"></select></label></div>
-        </div>
-        <div class="actions"><button type="button" id="seg-run" class="secondary">Update segments</button></div>
-        <div id="seg-blocks" class="blocks two"></div>
-        <div id="seg-table" class="table-wrap"></div>
-        <div id="summary" class="summary"></div>
-        <div class="actions">
-          <button type="button" id="report-btn" class="secondary">Download the summary report (HTML, all graphs with analysis)</button>
-          <button type="button" id="charts-btn" class="secondary">Download all charts (PNG, zip)</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 6. Predict -->
-    <div class="panel" data-panel="predict" role="tabpanel" hidden>
-      <p class="hint needs-model">Train the models first.</p>
-      <div class="model-only" hidden>
-        <div id="predict-header"></div>
-        <div class="grid4">
-          <label>Medium starts at <input id="cut-low" type="number" min="0.05" max="0.9" step="0.05"></label>
-          <label>High starts at <input id="cut-high" type="number" min="0.1" max="0.95" step="0.05"></label>
-          <label>Load a person by ID (or row number) <input id="person-id"></label>
-          <div class="actions bottom"><button type="button" id="person-load" class="secondary">Load person</button></div>
-        </div>
-        <h3>One person</h3>
-        <p class="hint">Starts with the highest-scoring person in the test set. Edit any value.</p>
-        <div id="person-form" class="form-grid"></div>
-        <div class="actions"><button type="button" id="explain-run" class="primary">Predict and explain</button></div>
-        <div id="person-result" class="person-result" hidden>
-          <div id="person-header" class="level"></div>
-          <div id="person-text"></div>
-          <div id="person-blocks" class="blocks two"></div>
-          <h3>What-if: change values and see the new probability</h3>
-          <div id="whatif-form" class="form-grid"></div>
-          <div class="actions"><button type="button" id="whatif-run" class="secondary">Run what-if</button></div>
-          <div id="whatif-result"></div>
-        </div>
-        <h3>Many people at once</h3>
-        <div class="grid4">
-          <label>People to rank <select id="rank-source"></select></label>
-          <div class="actions bottom"><button type="button" id="rank-run" class="secondary">Rank them</button></div>
-        </div>
-        <div id="rank-notes"></div>
-        <div id="rank-table" class="table-wrap"></div>
-        <div class="actions"><button type="button" id="rank-csv" class="secondary" hidden>Download the ranked list (CSV)</button></div>
-      </div>
-    </div>
-
-    <!-- 7. Fairness -->
-    <div class="panel" data-panel="fairness" role="tabpanel" hidden>
-      <p class="hint needs-model">Train the models first.</p>
-      <div class="model-only" hidden>
-        <div id="fair-blocks" class="blocks"></div>
-        <div id="fair-table" class="table-wrap"></div>
-      </div>
-    </div>
-
-    <!-- 8. Regression -->
-    <div class="panel" data-panel="regression" role="tabpanel" hidden>
-      <p class="hint">Optional concept demo from the original notebook: Linear Regression of a numeric column.</p>
-      <div class="grid2">
-        <label>Numeric target <select id="reg-target"></select></label>
-        <div><h4>Numeric feature columns</h4><div id="reg-features" class="checklist"></div></div>
-      </div>
-      <div class="actions"><button type="button" id="reg-run" class="primary">Run Linear Regression</button></div>
-      <div id="reg-blocks" class="blocks two"></div>
-      <div id="reg-table" class="table-wrap"></div>
-    </div>
+      <p id="lg-error" class="form-error" role="alert" hidden></p>
+      <button type="submit" class="primary big">Continue <span aria-hidden="true">→</span></button>
+      <button type="button" id="lg-guest" class="link-btn">Continue as guest</button>
+      <p class="fine"><span aria-hidden="true">🔒</span> No password needed: your profile is saved only in this browser, and your spreadsheets never leave your computer.</p>
+      <div class="lg-engine"><span class="dot"></span><span id="lg-engine-text">Warming up the analysis engine…</span></div>
+    </form>
   </section>
-</main>
+</div>
 
-<footer class="wrap footer">
-  <p id="notice"><b>Predictions show patterns, not certainties.</b> They should never be the only basis for a decision about a person. Suggested actions are things to discuss, not automatic decisions.</p>
-  <p>Remove names, emails and other personal details before uploading, especially student data. The Students, Teachers and Applicants samples are synthetic demo data.</p>
-</footer>
+<!-- =================================== APP =================================== -->
+<div id="app" class="shell" hidden>
+  <aside id="sidebar" class="sidebar">
+    <div class="brand light"><span class="logo">★</span><span>ChurnSense</span></div>
+    <nav class="nav" aria-label="Main">
+      <button type="button" class="nav-item" data-tab="home"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></button>
+      <button type="button" class="nav-item" data-tab="all"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.2.9-4.5 4.4 1 6.1L12 17l-5.5 3 1-6.1L3 9.5l6.2-.9z"/></svg><span>All graphs</span></button>
+      <p class="nav-label">Analysis</p>
+      <button type="button" class="nav-item" data-tab="setup"><svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Setup</span></button>
+      <button type="button" class="nav-item" data-tab="explore"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg><span>Explore</span></button>
+      <button type="button" class="nav-item" data-tab="train"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 9h6v6H9zM9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg><span>Train</span></button>
+      <button type="button" class="nav-item" data-tab="compare"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Compare</span></button>
+      <button type="button" class="nav-item" data-tab="why" id="why-tab"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg><span>Why They Leave</span></button>
+      <button type="button" class="nav-item" data-tab="predict"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Predict &amp; Explain</span></button>
+      <button type="button" class="nav-item" data-tab="fairness"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 7h14M7 7l-3 7a4 4 0 0 0 6 0zM17 7l-3 7a4 4 0 0 0 6 0z"/></svg><span>Fairness</span></button>
+      <button type="button" class="nav-item" data-tab="regression"><svg viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8M15 7h6v6"/></svg><span>Regression</span></button>
+    </nav>
+    <div class="side-card">
+      <b>🔒 Private by design</b>
+      <span>Everything runs in your browser. Nothing is uploaded.</span>
+    </div>
+  </aside>
+  <div id="scrim" class="scrim" hidden></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button type="button" id="menu-btn" class="icon-btn menu" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <h1 id="page-title">Home</h1>
+      <div id="engine" class="engine-chip" role="status" aria-live="polite">
+        <span class="dot"></span><span id="engine-text">Starting the engine…</span>
+        <span class="bar"><span id="engine-bar"></span></span>
+      </div>
+      <div class="user">
+        <span id="role-chip" class="role-chip" hidden></span>
+        <span id="avatar" class="avatar" aria-hidden="true">G</span>
+        <span class="user-meta"><b id="user-name">Guest</b><small id="user-org"></small></span>
+        <button type="button" id="signout" class="ghost-btn">Sign out</button>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- ============ Home ============ -->
+      <div class="panel" data-panel="home">
+        <section class="welcome">
+          <div>
+            <p class="eyebrow dark" id="welcome-eyebrow">Your workspace</p>
+            <h2 id="greeting">Welcome</h2>
+            <p id="welcome-sub" class="muted">Add a spreadsheet, then ask a question in plain English.</p>
+          </div>
+        </section>
+
+        <section id="kpis" class="kpis" hidden aria-label="Key numbers"></section>
+
+        <div class="home-grid">
+          <section class="card" aria-labelledby="files-title">
+            <div class="card-head"><span class="step">1</span><h3 id="files-title">Your spreadsheets</h3></div>
+            <ul id="file-list" class="file-list" aria-live="polite">
+              <li class="empty">No files yet. Add a spreadsheet below, or try a sample.</li>
+            </ul>
+            <div id="dropzone" class="dropzone" role="button" tabindex="0" aria-describedby="drop-help">
+              <span class="drop-icon"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0-4 4m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></span>
+              <p class="drop-main"><b>Drag and drop spreadsheets here</b></p>
+              <p id="drop-help" class="drop-help">or <span class="link-like">click to choose files</span> · .csv or .xlsx · several at once</p>
+              <input id="file-input" type="file" accept=".csv,.xlsx" multiple hidden>
+            </div>
+            <div class="samples">
+              <span>Try a sample:</span>
+              <button type="button" class="chip" data-sample="employees.csv">Employees</button>
+              <button type="button" class="chip" data-sample="customers.csv">Customers</button>
+              <button type="button" class="chip" data-sample="students_SYNTHETIC.csv">Students</button>
+              <button type="button" class="chip" data-sample="teachers_SYNTHETIC.csv">Teachers</button>
+              <button type="button" class="chip" data-sample="custom_join_SYNTHETIC.csv">Applicants</button>
+            </div>
+          </section>
+
+          <section class="card ask-card" aria-labelledby="ask-title">
+            <div class="card-head"><span class="step">2</span><h3 id="ask-title">Ask ChurnSense</h3></div>
+            <div class="prompt-box">
+              <label for="prompt" class="sr-only">Your request</label>
+              <textarea id="prompt" rows="3" placeholder="For example: Which employees are most likely to leave, and why?"></textarea>
+              <button id="run" type="button" class="primary">Run <kbd>Ctrl</kbd>+<kbd>↵</kbd></button>
+            </div>
+            <p class="mini-label">Try asking</p>
+            <div id="examples" class="examples" aria-label="Example requests">
+              <button type="button" class="chip ghost" data-example="Who is most likely to leave, and why?">Who is most likely to leave, and why?</button>
+              <button type="button" class="chip ghost" data-example="Compare the models">Compare the models</button>
+              <button type="button" class="chip ghost" data-example="Show all graphs">Show all graphs</button>
+              <button type="button" class="chip ghost" data-example="Is the model fair?">Is the model fair?</button>
+              <button type="button" class="chip ghost" data-example="help">What can I ask?</button>
+            </div>
+            <details id="ai-panel" class="ai-panel">
+              <summary><span class="ai-badge">AI</span> Optional: add a free Gemini key for open questions</summary>
+              <p>Built-in commands always work without a key. With a free key from
+                <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> (no card needed),
+                any question is also answered by Gemini from a <b>summary of the results</b> (model scores, top reasons, segment
+                and fairness summaries, and the IDs and probabilities of the top 10 people). Your spreadsheet itself is never
+                sent. On Google's free tier, Google may use what you send to improve its products.</p>
+              <div class="grid2">
+                <label>Gemini API key <input id="ai-key" type="password" autocomplete="off" placeholder="Paste your key"></label>
+                <label>Model <input id="ai-model" type="text" value="gemini-flash-latest"></label>
+              </div>
+              <label class="check"><input id="ai-remember" type="checkbox"> Remember the key on this device</label>
+            </details>
+          </section>
+        </div>
+
+        <section id="answer" class="card answer" hidden aria-live="polite">
+          <div class="card-head"><span class="step spark">✦</span><h3>Answer</h3></div>
+          <div id="answer-body"></div>
+          <div id="ai-answer" class="ai-answer" hidden></div>
+          <div id="answer-blocks" class="blocks"></div>
+          <div id="answer-downloads" class="downloads"></div>
+        </section>
+      </div>
+
+      <!-- ============ All graphs ============ -->
+      <div class="panel card" data-panel="all" hidden>
+        <p class="hint needs-model">Train the models first: ask a question on the Home page, or click "Apply and train" in Setup.</p>
+        <div class="model-only" hidden>
+          <p class="hint">Every graph with its analysis, grouped by model. Graphs from the original notebook are tagged
+            <span class="tag">Graph from the original notebook</span>.</p>
+          <div id="all-groups"></div>
+        </div>
+      </div>
+
+      <!-- ============ Setup ============ -->
+      <div class="panel card" data-panel="setup" hidden>
+        <p class="hint" id="setup-empty">Add a spreadsheet (or a sample) on the Home page and select it to set it up here.</p>
+        <div id="setup-body" hidden>
+          <div id="setup-status"></div>
+          <div class="grid3">
+            <label>Scenario <select id="o-scenario"></select></label>
+            <label id="mode-label">Outcome type <select id="o-mode"><option value="leave">Leave</option><option value="join">Join</option></select></label>
+            <label>Fill missing values with <select id="o-missing"></select></label>
+          </div>
+          <div id="setup-info"></div>
+          <fieldset id="wording" class="wording">
+            <legend>Custom wording (used in every chart, text and file name)</legend>
+            <div class="grid3">
+              <label>One person is a … <input id="w-person"></label>
+              <label>People are … <input id="w-people"></label>
+              <label>Organisation <input id="w-org"></label>
+              <label>Outcome (past tense) <input id="w-outcome_past"></label>
+              <label>Outcome (-ing form) <input id="w-outcome_ing"></label>
+              <label>When it did not happen <input id="w-stay_past"></label>
+            </div>
+          </fieldset>
+          <div class="grid2">
+            <label>Target column (the outcome) <select id="o-target"></select></label>
+            <label>Which value means the outcome happened? <select id="o-positive"></select></label>
+          </div>
+          <details open><summary>Columns</summary>
+            <div class="grid3 checklists">
+              <div><h4>Columns to drop (IDs, names)</h4><div id="o-drop" class="checklist"></div></div>
+              <div><h4>Feature columns</h4><div id="o-features" class="checklist"></div></div>
+              <div><h4>Sensitive columns (fairness check)</h4><div id="o-sensitive" class="checklist"></div>
+                <label class="check"><input id="o-exclude" type="checkbox"> Leave sensitive columns out of training</label></div>
+            </div>
+          </details>
+          <details><summary>Data preview and column types</summary>
+            <div id="preview" class="table-wrap"></div>
+            <div id="column-info" class="table-wrap"></div>
+          </details>
+          <details><summary>Action rules (edit freely)</summary>
+            <p class="hint">Condition: &lt;, &lt;=, &gt;, &gt;=, ==, != or any. Feature <code>*</code> matches any of a person's top reasons.</p>
+            <div id="rules" class="table-wrap"></div>
+            <button type="button" id="rule-add" class="secondary">Add a rule</button>
+          </details>
+          <div class="actions"><button type="button" id="apply" class="primary">Apply and train</button></div>
+        </div>
+      </div>
+
+      <!-- ============ Explore ============ -->
+      <div class="panel card" data-panel="explore" hidden>
+        <div class="grid4">
+          <label>Chart type <select id="x-kind">
+            <option>Histogram</option><option>Box</option><option>Scatter</option><option>Bar</option><option>Correlation heatmap</option></select></label>
+          <label>X axis <select id="x-x"></select></label>
+          <label>Y axis <select id="x-y"></select></label>
+          <label>Colour <select id="x-color"></select></label>
+        </div>
+        <div class="actions"><button type="button" id="explore-run" class="primary">Draw chart</button></div>
+        <div id="explore-out" class="blocks"></div>
+        <hr>
+        <h3>Outcome rate by any column</h3>
+        <div class="grid4"><label>Column <select id="rate-col"></select></label></div>
+        <div class="actions"><button type="button" id="rate-run" class="secondary">Show outcome rate</button></div>
+        <div id="rate-out" class="blocks"></div>
+      </div>
+
+      <!-- ============ Train ============ -->
+      <div class="panel card" data-panel="train" hidden>
+        <fieldset class="plain"><legend>General settings</legend>
+          <div class="grid4">
+            <label>Search size <select id="o-preset"></select></label>
+            <label>Test size <input id="o-test_size" type="number" min="0.1" max="0.5" step="0.05"></label>
+            <label>Random seed <input id="o-seed" type="number" step="1"></label>
+            <label>Tuning metric <select id="o-scoring"></select></label>
+          </div>
+          <p class="hint">In the browser, <b>Quick</b> takes under a minute; <b>Thorough</b> searches much wider and takes several minutes.</p>
+          <div class="grid4">
+            <div><h4>Models to run</h4><div id="o-models" class="checklist"></div></div>
+            <label class="check"><input id="o-balanced" type="checkbox"> class_weight = 'balanced'</label>
+            <label>Logistic Regression max_iter <input id="o-logistic_max_iter" type="number" min="1" step="1"></label>
+            <label>Neural Network max_iter <input id="o-mlp_max_iter" type="number" min="1" step="1"></label>
+          </div>
+        </fieldset>
+        <details><summary>Search values for each model</summary><div id="search-boxes"></div></details>
+        <div class="actions"><button type="button" id="train-run" class="primary">Train models</button></div>
+        <div id="train-status"></div>
+        <div id="train-body" hidden>
+          <div class="grid2">
+            <label>Decision threshold <span id="thr-value"></span>
+              <input id="o-threshold" type="range" min="0.05" max="0.95" step="0.01"></label>
+            <label>Show results for <select id="model-choice"></select></label>
+          </div>
+          <div id="model-params"></div>
+          <div id="model-metrics" class="table-wrap"></div>
+          <div id="model-blocks" class="blocks two"></div>
+        </div>
+      </div>
+
+      <!-- ============ Compare ============ -->
+      <div class="panel card" data-panel="compare" hidden>
+        <p class="hint needs-model">Train the models first.</p>
+        <div class="model-only" hidden>
+          <div class="grid4"><label>Metric for the bar chart <select id="o-metric">
+            <option>ROC-AUC</option><option>Accuracy</option><option>Precision</option><option>Recall</option><option>F1-score</option></select></label></div>
+          <div id="compare-table" class="table-wrap"></div>
+          <div id="compare-blocks" class="blocks two"></div>
+          <div class="actions"><button type="button" id="results-csv" class="secondary">Download the results table (CSV)</button></div>
+        </div>
+      </div>
+
+      <!-- ============ Why ============ -->
+      <div class="panel card" data-panel="why" hidden>
+        <p class="hint needs-model">Train the models first.</p>
+        <div class="model-only" hidden>
+          <div id="why-title"></div>
+          <div id="why-note" class="note"></div>
+          <div id="why-blocks" class="blocks two"></div>
+          <h3>Segments (KMeans groups)</h3>
+          <div class="grid4">
+            <div><h4>Numeric columns to group on</h4><div id="seg-columns" class="checklist"></div></div>
+            <label>Number of groups k <input id="o-k" type="number" min="2" max="10" step="1"></label>
+            <label>Elbow plot: largest k <input id="o-kmax" type="number" min="3" max="15" step="1"></label>
+            <div class="grid2"><label>Scatter x <select id="seg-x"></select></label><label>Scatter y <select id="seg-y"></select></label></div>
+          </div>
+          <div class="actions"><button type="button" id="seg-run" class="secondary">Update segments</button></div>
+          <div id="seg-blocks" class="blocks two"></div>
+          <div id="seg-table" class="table-wrap"></div>
+          <div id="summary" class="summary"></div>
+          <div class="actions">
+            <button type="button" id="report-btn" class="secondary">Download the summary report (HTML)</button>
+            <button type="button" id="charts-btn" class="secondary">Download all charts (PNG, zip)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ Predict ============ -->
+      <div class="panel card" data-panel="predict" hidden>
+        <p class="hint needs-model">Train the models first.</p>
+        <div class="model-only" hidden>
+          <div id="predict-header"></div>
+          <div class="grid4">
+            <label>Medium starts at <input id="cut-low" type="number" min="0.05" max="0.9" step="0.05"></label>
+            <label>High starts at <input id="cut-high" type="number" min="0.1" max="0.95" step="0.05"></label>
+            <label>Load a person by ID (or row number) <input id="person-id"></label>
+            <div class="actions bottom"><button type="button" id="person-load" class="secondary">Load person</button></div>
+          </div>
+          <h3>One person</h3>
+          <p class="hint">Starts with the highest-scoring person in the test set. Edit any value.</p>
+          <div id="person-form" class="form-grid"></div>
+          <div class="actions"><button type="button" id="explain-run" class="primary">Predict and explain</button></div>
+          <div id="person-result" class="person-result" hidden>
+            <div id="person-header" class="level"></div>
+            <div id="person-text"></div>
+            <div id="person-blocks" class="blocks two"></div>
+            <h3>What-if: change values and see the new probability</h3>
+            <div id="whatif-form" class="form-grid"></div>
+            <div class="actions"><button type="button" id="whatif-run" class="secondary">Run what-if</button></div>
+            <div id="whatif-result"></div>
+          </div>
+          <h3>Many people at once</h3>
+          <div class="grid4">
+            <label>People to rank <select id="rank-source"></select></label>
+            <div class="actions bottom"><button type="button" id="rank-run" class="secondary">Rank them</button></div>
+          </div>
+          <div id="rank-notes"></div>
+          <div id="rank-table" class="table-wrap"></div>
+          <div class="actions"><button type="button" id="rank-csv" class="secondary" hidden>Download the ranked list (CSV)</button></div>
+        </div>
+      </div>
+
+      <!-- ============ Fairness ============ -->
+      <div class="panel card" data-panel="fairness" hidden>
+        <p class="hint needs-model">Train the models first.</p>
+        <div class="model-only" hidden>
+          <div id="fair-blocks" class="blocks"></div>
+          <div id="fair-table" class="table-wrap"></div>
+        </div>
+      </div>
+
+      <!-- ============ Regression ============ -->
+      <div class="panel card" data-panel="regression" hidden>
+        <p class="hint">Optional concept demo from the original notebook: Linear Regression of a numeric column.</p>
+        <div class="grid2">
+          <label>Numeric target <select id="reg-target"></select></label>
+          <div><h4>Numeric feature columns</h4><div id="reg-features" class="checklist"></div></div>
+        </div>
+        <div class="actions"><button type="button" id="reg-run" class="primary">Run Linear Regression</button></div>
+        <div id="reg-blocks" class="blocks two"></div>
+        <div id="reg-table" class="table-wrap"></div>
+      </div>
+
+      <footer class="footer">
+        <p id="notice"><b>Predictions show patterns, not certainties.</b> They should never be the only basis for a decision about a person. Suggested actions are things to discuss, not automatic decisions.</p>
+        <p>Remove names, emails and other personal details before uploading, especially student data. The Students, Teachers and Applicants samples are synthetic demo data.</p>
+      </footer>
+    </main>
+  </div>
+</div>
 
 <div id="busy" class="busy" role="status" aria-live="polite" hidden>
   <div class="busy-box"><div class="spinner" aria-hidden="true"></div><div><b id="busy-title">Working…</b><div id="busy-text"></div><div class="bar"><div id="busy-bar"></div></div></div></div>

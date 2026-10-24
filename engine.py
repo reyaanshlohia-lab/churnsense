@@ -1347,8 +1347,22 @@ def finish(fig, title, xaxis, yaxis, height=420):
         if not positions:
             continue
         for a in fig.layout.annotations:
-            if a[f'{letter}ref'] in (None, letter) and isinstance(a[letter], str) and a[letter] in positions:
-                a[letter] = positions[a[letter]]
+            if a[f'{letter}ref'] in (None, letter) and a[letter] is not None and str(a[letter]) in positions:
+                a[letter] = positions[str(a[letter])]
+    # Plotly widens an axis until every label fits, so on a category x axis each arrow label points inwards
+    # (labels on the left half extend right, labels on the right half extend left) and the axis keeps its categories.
+    positions = _category_positions(fig, 'x')
+    if positions:
+        middle = (len(positions) - 1) / 2
+        labelled = False
+        for a in fig.layout.annotations:
+            if a.showarrow and a.xref in (None, 'x') and isinstance(a.x, (int, float)):
+                right = a.x > middle
+                a.xanchor = 'right' if right else 'left'
+                a.ax = -abs(a.ax or 0) if right else abs(a.ax or 0)
+                labelled = True
+        if labelled and fig.layout.xaxis.range is None:
+            fig.update_xaxes(range=[-0.5, len(positions) - 0.5])
     return fig
 
 
@@ -2922,6 +2936,14 @@ def train(options):
               'All tabs use it.')
     p = words(w)
     columns = top_numeric(trained, 3) or prepared['numeric'][:3]
+    best = trained['results'][trained['best_model']]
+    metrics, _ = evaluate(trained['y_test'], best['y_prob'], DEFAULTS['threshold'])
+    top = top_drivers(trained, 1)
+    kpis = {'people': w['people'], 'rows': int(len(y)), 'rate': pct(y.mean(), 1), 'outcome': w['outcome_past'],
+            'best': trained['best_model'], 'auc': round(float(metrics['ROC-AUC']), 3),
+            'high': int((np.asarray(best['y_prob']) >= DEFAULTS['level_cutoffs'][1]).sum()), 'test': int(len(trained['y_test'])),
+            'top_reason': top[0] if top else '', 'top_phrase': direction_phrase(trained, top[0], w) if top else '',
+            'score': p['score'], 'leave': p['leave']}
     STATE['train_info'] = {
         'status_html': md(status + ('\n\n' + '\n'.join(f'- {n}' for n in notes) if notes else '')),
         'models': names, 'best': trained['best_model'], 'numeric': prepared['numeric'],
@@ -2930,7 +2952,7 @@ def train(options):
         'predict_header_html': md(f"### Predict & explain: {p['score']} (best model: {trained['best_model']})\n"
                                   f"Levels: Low < Medium < High, coloured "
                                   f"{'red for High (bad)' if p['leave'] else 'green for High (good)'}. {NOTICE}"),
-        'id_column': ctx['id_column'],
+        'id_column': ctx['id_column'], 'kpis': kpis,
     }
     return STATE['train_info']
 

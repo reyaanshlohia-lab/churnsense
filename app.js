@@ -24,6 +24,8 @@ const AI_SYSTEM = 'You are the assistant inside ChurnSense, a tool that predicts
 // ---------------- the Python engine (worker) ----------------
 let worker;
 let nextId = 1;
+let markReady;
+const engineReady = new Promise((resolve) => { markReady = resolve; });   // resolves once the defaults are loaded
 const pending = new Map();
 
 function startEngine() {
@@ -64,15 +66,21 @@ function pyFile(name, buffer) {
 }
 
 function engineStatus(text, fraction) {
-  $('#engine-text').textContent = text + '… (the first visit downloads about 55 MB; later visits are faster)';
+  $('#engine-text').textContent = text + '…';
+  $('#engine').title = 'The first visit downloads about 55 MB; later visits are faster.';
   $('#engine-bar').style.width = Math.round(100 * fraction) + '%';
+  $('#lg-engine-text').textContent = `Warming up the analysis engine: ${text.toLowerCase()}…`;
 }
 
 async function engineDone() {
   $('#engine-bar').style.width = '100%';
   S.defaults = await py('defaults');
   $('#engine').classList.add('done');
+  $('#engine-text').textContent = 'Engine ready';
+  $('.lg-engine').classList.add('done');
+  $('#lg-engine-text').textContent = 'Analysis engine ready';
   fillStaticOptions();
+  markReady();
 }
 
 function engineFailed(message) {
@@ -80,6 +88,7 @@ function engineFailed(message) {
   box.classList.remove('done');
   box.classList.add('failed');
   $('#engine-text').textContent = 'The analysis engine could not start: ' + message;
+  $('#lg-engine-text').textContent = 'The analysis engine could not start: ' + message;
 }
 
 // ---------------- small helpers ----------------
@@ -164,6 +173,24 @@ function plot(div, figure) {
       while (words.length && (first + ' ' + words[0]).length <= text.length / 2 + 4) first = (first + ' ' + words.shift()).trim();
       layout[key] = Object.assign({}, layout[key], { title: Object.assign({}, typeof title === 'string' ? {} : title,
         { text: first + '<br>' + words.join(' ') }) });
+    }
+  }
+  // long chart titles are cut off in narrow cards: wrap the main line to the card width and make room above
+  const title = layout.title && (typeof layout.title === 'string' ? { text: layout.title } : layout.title);
+  const fits = Math.max(24, Math.floor((div.clientWidth || 600) / 9.5));
+  if (title && title.text) {
+    const [main, ...rest] = title.text.split('<br>');
+    if (main.length > fits) {
+      const lines = [''];
+      for (const word of main.split(' ')) {
+        if (lines[lines.length - 1] && (lines[lines.length - 1] + ' ' + word).length > fits) lines.push(word);
+        else lines[lines.length - 1] = (lines[lines.length - 1] + ' ' + word).trim();
+      }
+      layout.title = Object.assign({}, title, { text: [...lines, ...rest].join('<br>') });
+      const margin = Object.assign({}, layout.margin);
+      margin.t = (margin.t || 80) + 20 * (lines.length - 1);
+      layout.margin = margin;
+      if (layout.height) layout.height += 20 * (lines.length - 1);
     }
   }
   window.Plotly.newPlot(div, figure.data || [], layout,
@@ -305,6 +332,7 @@ async function removeFile(name) {
 }
 
 async function selectFile(name, scenario, mode) {
+  await engineReady;
   await busy(`Reading ${name}`, async () => {
     const setup = await py('select_data', { name, scenario, mode });
     const keep = S.opts ? Object.fromEntries(KEEP.filter((k) => k in S.opts).map((k) => [k, S.opts[k]])) : {};
@@ -521,7 +549,8 @@ function clearTrained() {
   $('#train-status').replaceChildren();
   $$('.model-only').forEach((x) => { x.hidden = true; });
   $$('.needs-model').forEach((x) => { x.hidden = false; });
-  $('#why-tab').textContent = '5. Why They Leave';
+  $('#why-tab span').textContent = 'Why They Leave';
+  $('#kpis').hidden = true;
 }
 
 async function trainNow() {
@@ -537,7 +566,8 @@ function afterTrained(info) {
   setHTML('#train-status', info.status_html);
   $('#train-body').hidden = false;
   fillSelect($('#model-choice'), info.models, info.best);
-  $('#why-tab').textContent = '5. ' + info.why_label;
+  $('#why-tab span').textContent = info.why_label;
+  renderKpis(info.kpis);
   $$('.model-only').forEach((x) => { x.hidden = false; });
   $$('.needs-model').forEach((x) => { x.hidden = true; });
   setHTML('#predict-header', info.predict_header_html);
@@ -554,14 +584,152 @@ function afterTrained(info) {
 }
 
 function currentTab() {
-  return ($('.tabs [aria-selected=true]') || {}).dataset?.tab || 'setup';
+  return ($('.nav-item[aria-current=page]') || {}).dataset?.tab || 'home';
 }
 
-function selectTab(name) {
-  $$('.tabs [role=tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === name)));
+function selectTab(name, { scroll = true } = {}) {
+  if (!$(`.panel[data-panel="${name}"]`)) name = 'home';
+  $$('.nav-item').forEach((b) => {
+    if (b.dataset.tab === name) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+  });
   $$('.panel').forEach((p) => { p.hidden = p.dataset.panel !== name; });
+  $('#page-title').textContent = $(`.nav-item[data-tab="${name}"] span`).textContent;
+  try { history.replaceState(null, '', '#/' + name); } catch (e) { /* not allowed in some embeds */ }
+  closeMenu();
+  if (scroll) window.scrollTo({ top: 0, behavior: 'smooth' });
   showView(name);
   $$('.chart', $(`.panel[data-panel="${name}"]`)).forEach((c) => { if (c.data && window.Plotly) window.Plotly.Plots.resize(c); });
+}
+
+function openMenu() {
+  $('#sidebar').classList.add('open');
+  $('#scrim').hidden = false;
+  $('#menu-btn').setAttribute('aria-expanded', 'true');
+}
+
+function closeMenu() {
+  $('#sidebar').classList.remove('open');
+  $('#scrim').hidden = true;
+  $('#menu-btn').setAttribute('aria-expanded', 'false');
+}
+
+function renderKpis(k) {
+  const box = $('#kpis');
+  if (!k) { box.hidden = true; return; }
+  const icon = (d) => { const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('viewBox', '0 0 24 24'); s.innerHTML = d; return s; };
+  const cards = [
+    ['<circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M17 4a4 4 0 0 1 0 8M22 21a7 7 0 0 0-4-6.3"/>', k.rows.toLocaleString(), `${k.people} analysed`],
+    ['<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>', k.rate, `${k.outcome} in the data`],
+    ['<path d="m12 3 2.7 5.6 6.2.9-4.5 4.4 1 6.1L12 17l-5.5 3 1-6.1L3 9.5l6.2-.9z"/>', k.best, `best model · ROC-AUC ${k.auc}`, true],
+    ['<path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>', k.high.toLocaleString(),
+     `${k.leave ? 'high risk' : 'highly likely'} in the test set (of ${k.test.toLocaleString()})`],
+    ['<path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/>', k.top_reason, k.top_phrase || 'top reason', true],
+  ];
+  box.replaceChildren(...cards.map(([path, value, label, small]) => el('div', { class: 'kpi' },
+    el('div', { class: 'kpi-icon' }, icon(path)), el('div', { class: 'kpi-value' + (small ? ' small' : ''), text: value }),
+    el('div', { class: 'kpi-label', text: label }))));
+  box.hidden = false;
+}
+
+// ---------------- sign-in (a local profile: no password, kept only in this browser) ----------------
+const ROLES = {
+  employees: { label: 'Employees', sample: 'employees.csv', title: 'Employee retention workspace',
+    sub: 'Find which employees might leave, why, and what could help them stay.',
+    examples: ['Which employees are most likely to leave, and why?', 'Show all graphs', 'Attrition rate by OverTime',
+               'Explain employee 1043', 'What if OverTime = No for employee 1043', 'Is the model fair across gender?'] },
+  customers: { label: 'Customers', sample: 'customers.csv', title: 'Customer retention workspace',
+    sub: 'Find which customers might churn, why, and what could keep them.',
+    examples: ['Which customers are most likely to churn, and why?', 'Show all graphs', 'Churn rate by Contract',
+               'Explain customer 7590-VHVEG', 'Compare the models', 'Show the segments'] },
+  students: { label: 'Students', sample: 'students_SYNTHETIC.csv', title: 'Student success workspace',
+    sub: 'Find which students might drop out, why, and how to support them early.',
+    examples: ['Which students are most likely to drop out, and why?', 'Show all graphs', 'Dropout rate by GradeTrend',
+               'Top 20 students most likely to drop out', 'Show the segments', 'Is the model fair?'] },
+  teachers: { label: 'Teachers', sample: 'teachers_SYNTHETIC.csv', title: 'Teacher retention workspace',
+    sub: 'Find which teachers might leave, why, and what could help them stay.',
+    examples: ['Which teachers are most likely to leave, and why?', 'Show all graphs', 'Leaving rate by ContractType',
+               'Compare the models', 'Show the segments', 'Is the model fair?'] },
+  applicants: { label: 'Applicants', sample: 'custom_join_SYNTHETIC.csv', title: 'Admissions workspace',
+    sub: 'Find which applicants are most likely to enrol, why, and who to follow up with.',
+    examples: ['Which applicants are most likely to enrol, and why?', 'Show all graphs', 'Enrolment rate by CampusVisit',
+               'Compare the models', 'Show the segments', 'Is the model fair?'] },
+  own: { label: 'My data', sample: null, title: 'Your workspace',
+    sub: 'Drag in a spreadsheet with one row per person and a column saying whether they left (or joined). Then ask a question.',
+    examples: ['Who is most likely to leave, and why?', 'Show all graphs', 'Compare the models', 'Show the segments',
+               'Is the model fair?', 'help'] },
+};
+const PROFILE_KEY = 'churnsense-profile';
+
+function loadProfile() {
+  try { return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); } catch (e) { return null; }
+}
+
+function saveProfile(profile) {
+  try { localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); } catch (e) { /* kept for this visit only */ }
+}
+
+function greeting() {
+  const h = new Date().getHours();
+  return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+}
+
+function enterApp(profile) {
+  S.profile = profile;
+  const role = ROLES[profile.role] || ROLES.own;
+  $('#login').hidden = true;
+  $('#app').hidden = false;
+  const name = profile.name || 'Guest';
+  $('#user-name').textContent = name;
+  $('#user-org').textContent = profile.org || (profile.guest ? 'Guest session' : '');
+  $('#avatar').textContent = name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+  $('#role-chip').textContent = role.label;
+  $('#role-chip').hidden = false;
+  $('#greeting').textContent = `${greeting()}, ${name.split(/\s+/)[0]}`;
+  $('#welcome-eyebrow').textContent = role.title;
+  $('#welcome-sub').textContent = role.sub;
+  $('#examples').replaceChildren(...role.examples.map((x) => el('button', {
+    type: 'button', class: 'chip ghost', 'data-example': x, text: x === 'help' ? 'What can I ask?' : x })));
+  if (!$('#prompt').value && profile.role !== 'own') $('#prompt').value = role.examples[0];
+  const route = (location.hash.match(/^#\/(\w+)/) || [])[1];
+  selectTab(route || 'home', { scroll: false });
+  if (role.sample && !S.files.length) addSample(role.sample);
+}
+
+function wireLogin() {
+  $('#login-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = $('#lg-name').value.trim();
+    const role = ($('input[name=role]:checked') || {}).value;
+    const error = !name ? 'Please enter your name.' : !role ? 'Please choose what you want to understand.' : '';
+    $('#lg-error').textContent = error;
+    $('#lg-error').hidden = !error;
+    if (error) return;
+    const profile = { name, org: $('#lg-org').value.trim(), role };
+    saveProfile(profile);
+    enterApp(profile);
+  });
+  for (const field of ['#lg-name', '#login-form']) {
+    $(field).addEventListener(field === '#lg-name' ? 'input' : 'change', () => { $('#lg-error').hidden = true; });
+  }
+  $('#lg-guest').addEventListener('click', () => enterApp({ name: 'Guest', org: '', role: ($('input[name=role]:checked') || {}).value || 'own', guest: true }));
+  $('#signout').addEventListener('click', () => {
+    try { localStorage.removeItem(PROFILE_KEY); } catch (e) { /* nothing stored */ }
+    location.hash = '';
+    location.reload();
+  });
+  $('#menu-btn').addEventListener('click', () => ($('#sidebar').classList.contains('open') ? closeMenu() : openMenu()));
+  $('#scrim').addEventListener('click', closeMenu);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+  window.addEventListener('hashchange', () => {
+    const route = (location.hash.match(/^#\/(\w+)/) || [])[1];
+    if (route && route !== currentTab() && !$('#app').hidden) selectTab(route, { scroll: false });
+  });
+}
+
+function startPage() {
+  const profile = loadProfile();
+  if (profile && profile.name) enterApp(profile);
+  else { $('#login').hidden = false; $('#lg-name').focus(); }
 }
 
 async function showView(name) {
@@ -689,10 +857,7 @@ async function runPrompt() {
   }
   if (result.retrained) afterTrained(await py('trained_info'));
   else { S.views = {}; showView(currentTab()); }
-  if (result.open_tab) {
-    selectTab(result.open_tab);
-    $('.tabs-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
+  if (result.open_tab) selectTab(result.open_tab);
   const key = $('#ai-key').value.trim();
   if (key && !/^\s*(help|\?)\s*$/i.test(text)) askAI(text, key);
 }
@@ -708,10 +873,7 @@ function showAnswer(r) {
     onclick: () => download(d.name, d.text, d.type || 'text/csv'),
   })));
   if (r.options) {
-    dl.append(el('button', { type: 'button', class: 'secondary', text: '★ Show all graphs', onclick: () => {
-      selectTab('all');
-      $('.tabs-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } }));
+    dl.append(el('button', { type: 'button', class: 'primary', text: '★ Show all graphs', onclick: () => selectTab('all') }));
   }
   $('#answer').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -818,21 +980,16 @@ function wire() {
   window.addEventListener('dragover', (e) => e.preventDefault());
   window.addEventListener('drop', (e) => { e.preventDefault(); if (e.target.closest && !e.target.closest('#dropzone') && e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
   $$('[data-sample]').forEach((b) => b.addEventListener('click', () => addSample(b.dataset.sample)));
-  $$('[data-example]').forEach((b) => b.addEventListener('click', () => { $('#prompt').value = b.dataset.example; $('#prompt').focus(); }));
+  $('#examples').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-example]');
+    if (b) { $('#prompt').value = b.dataset.example; $('#prompt').focus(); }
+  });
   $('#run').addEventListener('click', runPrompt);
   $('#prompt').addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); runPrompt(); } });
   $('#ai-key').addEventListener('change', saveAIKey);
   $('#ai-model').addEventListener('change', saveAIKey);
   $('#ai-remember').addEventListener('change', saveAIKey);
-  $$('.tabs [role=tab]').forEach((b) => b.addEventListener('click', () => selectTab(b.dataset.tab)));
-  $('.tabs').addEventListener('keydown', (e) => {
-    const tabs = $$('.tabs [role=tab]');
-    const i = tabs.indexOf(document.activeElement);
-    if (i < 0 || !['ArrowRight', 'ArrowLeft'].includes(e.key)) return;
-    const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
-    next.focus();
-    selectTab(next.dataset.tab);
-  });
+  $$('.nav-item').forEach((b) => b.addEventListener('click', () => selectTab(b.dataset.tab)));
   $('#apply').addEventListener('click', trainNow);
   $('#train-run').addEventListener('click', trainNow);
   $('#rule-add').addEventListener('click', () => { S.opts.rules.rows.push(['', '==', '', '']); renderRules(); });
@@ -895,5 +1052,7 @@ function wire() {
 }
 
 wire();
+wireLogin();
 loadAIKey();
-startEngine();
+startEngine();     // the engine warms up while the visitor signs in
+startPage();
