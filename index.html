@@ -11,6 +11,30 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="styles.css">
+<script>
+  // If ChurnSense cannot start (for example, files from two different versions were uploaded), say so instead of
+  // leaving a white page.
+  window.addEventListener('error', function (e) { window.csStartError = (e && e.message) || 'unknown error'; });
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      var login = document.getElementById('login'), app = document.getElementById('app');
+      if ((login && !login.hidden) || (app && !app.hidden)) return;
+      var box = document.createElement('div');
+      box.setAttribute('role', 'alert');
+      box.style.cssText = 'max-width:620px;margin:60px auto;padding:24px;border-radius:16px;border:1px solid #fecaca;background:#fef2f2;color:#7f1d1d;font:15px/1.6 system-ui,sans-serif';
+      box.innerHTML = '<b style="font-size:18px">ChurnSense could not start.</b><br>Some of the website files are probably out of date or missing. '
+        + 'Upload <b>index.html</b>, <b>app.js</b>, <b>help.js</b>, <b>styles.css</b> and <b>email-config.js</b> to GitHub again (all from the same download), '
+        + 'check there are no copies named like "app (1).js", then press Ctrl + F5.';
+      if (window.csStartError) {
+        var detail = document.createElement('p');
+        detail.style.cssText = 'margin:12px 0 0;font-size:13px;color:#991b1b';
+        detail.textContent = 'Error: ' + window.csStartError;
+        box.appendChild(detail);
+      }
+      document.body.appendChild(box);
+    }, 4000);
+  });
+</script>
 <script src="plotly.min.js" defer></script>
 <script src="email-config.js" defer></script>
 <script src="app.js" defer></script>

@@ -752,7 +752,7 @@ function enterApp(profile) {
   const role = ROLES[profile.role] || ROLES.own;
   $('#login').hidden = true;
   $('#app').hidden = false;
-  $('#help-fab').hidden = false;
+  if ($('#help-fab')) $('#help-fab').hidden = false;
   window.scrollTo(0, 0);   // the sign-in page may have been scrolled down to the Continue button
   const name = profile.name || 'Guest';
   $('#user-name').textContent = name;
@@ -1431,9 +1431,9 @@ function wire() {
   bindOptionInputs();
 }
 
-wire();
-wireLogin();
-wireShare();
-loadAIKey();
+// Each part is wired on its own, so one missing piece (for example a file from an older version) cannot leave a blank page.
+for (const step of [wire, wireLogin, wireShare, loadAIKey]) {
+  try { step(); } catch (error) { console.error(`ChurnSense: ${step.name} failed:`, error); }
+}
 startEngine();     // the engine warms up while the visitor signs in
 startPage();
