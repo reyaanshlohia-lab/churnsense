@@ -1,0 +1,1501 @@
+ApplicantID,Gender,EntranceScore,DistanceKm,ScholarshipOffered,FeeLevel,CampusVisit,SiblingsEnrolled,FollowUpContacts,ApplicationSource,Enrolled
+A00001,Male,85.0,8.7,No,Medium,No,1,5,Website,Yes
+A00002,Male,69.0,31.4,Yes,Medium,No,0,3,Agent,No
+A00003,Male,72.0,58.9,No,Medium,Yes,0,0,Referral,No
+A00004,Female,82.0,19.3,Yes,Medium,No,1,4,Website,Yes
+A00005,Female,78.0,3.3,Yes,High,No,0,1,Website,Yes
+A00006,Female,75.0,4.5,Yes,Medium,Yes,0,5,Website,No
+A00007,Male,63.0,22.7,No,Low,Yes,0,2,Website,Yes
+A00008,Male,56.0,35.0,No,Medium,Yes,0,5,Website,No
+A00009,Male,73.0,9.2,No,Medium,No,0,6,Website,No
+A00010,Female,62.0,20.6,No,High,Yes,0,2,Referral,No
+A00011,Male,78.0,47.1,No,High,No,0,5,Website,No
+A00012,Female,71.0,81.4,Yes,Medium,Yes,0,0,Social media,No
+A00013,Female,59.0,11.3,No,Medium,No,0,4,Social media,No
+A00014,Female,71.0,46.0,No,Medium,Yes,0,5,School fair,No
+A00015,Female,77.0,13.2,No,High,No,0,4,Website,No
+A00016,Female,70.0,18.2,No,Medium,No,0,0,Social media,No
+A00017,Male,59.0,19.0,No,High,Yes,0,5,Website,Yes
+A00018,Male,71.0,9.2,No,High,No,1,5,School fair,No
+A00019,Female,72.0,45.1,No,High,No,2,3,Social media,No
+A00020,Female,78.0,21.3,No,Medium,No,0,5,Social media,Yes
+A00021,Female,77.0,40.3,No,Low,No,0,2,Referral,No
+A00022,Male,57.0,9.5,No,Low,Yes,0,0,Website,Yes
+A00023,Female,62.0,22.8,No,Medium,Yes,2,1,School fair,No
+A00024,Male,75.0,60.0,No,High,No,1,2,School fair,No
+A00025,Female,48.0,57.3,No,High,Yes,0,6,School fair,No
+A00026,Male,77.0,15.5,No,High,No,0,2,Social media,No
+A00027,Female,58.0,24.1,No,High,Yes,1,2,School fair,Yes
+A00028,Female,63.0,37.9,No,Medium,Yes,0,5,Website,No
+A00029,Male,85.0,24.5,Yes,High,No,1,0,Social media,No
+A00030,Male,67.0,38.7,No,Medium,No,0,2,School fair,Yes
+A00031,Male,64.0,47.1,No,Medium,Yes,0,1,Website,No
+A00032,Female,71.0,18.5,No,High,Yes,0,0,Social media,No
+A00033,Male,67.0,16.1,No,Medium,No,0,6,Social media,No
+A00034,Female,60.0,15.3,No,Medium,Yes,1,2,Agent,Yes
+A00035,Male,71.0,6.2,No,Low,No,0,5,Referral,No
+A00036,Female,94.0,8.0,Yes,High,No,0,6,Referral,No
+A00037,Male,79.0,4.7,No,High,Yes,0,6,Social media,No
+A00038,Male,73.0,24.8,No,Medium,No,0,0,School fair,No
+A00039,Male,71.0,47.7,No,Low,No,0,5,Website,No
+A00040,Male,78.0,20.0,No,Medium,Yes,0,6,Agent,No
+A00041,Male,75.0,28.4,No,High,No,1,0,School fair,No
+A00042,Male,58.0,18.7,No,Low,No,0,2,School fair,No
+A00043,Female,74.0,98.9,Yes,Low,Yes,0,0,Referral,No
+A00044,Female,69.0,35.4,No,Low,No,0,3,Referral,Yes
+A00045,Male,89.0,13.2,No,Medium,Yes,0,2,Referral,Yes
+A00046,Female,65.0,23.8,No,Medium,Yes,0,5,Website,Yes
+A00047,Male,83.0,10.3,No,Medium,Yes,1,1,Website,Yes
+A00048,Male,54.0,14.9,No,Medium,No,0,2,Referral,No
+A00049,Male,72.0,7.5,No,High,No,0,3,Social media,Yes
+A00050,Male,59.0,18.1,No,Low,Yes,1,2,Agent,Yes
+A00051,Male,57.0,3.8,No,Low,Yes,0,4,Website,No
+A00052,Male,77.0,11.9,No,Medium,No,1,1,Referral,No
+A00053,Male,56.0,27.2,No,Low,Yes,0,3,School fair,Yes
+A00054,Male,66.0,12.0,No,Medium,Yes,0,1,Website,No
+A00055,Female,60.0,39.5,No,Low,No,0,4,Referral,No
+A00056,Male,73.0,60.7,No,Medium,Yes,0,0,Website,Yes
+A00057,Male,71.0,70.9,No,Medium,No,0,2,Social media,No
+A00058,Male,42.0,18.2,No,Medium,No,0,5,Website,No
+A00059,Female,76.0,12.4,No,Medium,No,0,2,School fair,No
+A00060,Male,61.0,26.8,No,Low,Yes,0,6,Website,No
+A00061,Female,92.0,55.2,No,Medium,No,0,0,School fair,No
+A00062,Female,79.0,11.6,Yes,Medium,No,0,6,Referral,Yes
+A00063,Male,79.0,9.6,No,Medium,No,1,0,Agent,No
+A00064,Female,40.0,15.7,No,Low,No,1,0,Website,No
+A00065,Female,89.0,10.2,Yes,High,Yes,1,3,Website,Yes
+A00066,Male,69.0,17.8,No,Medium,No,0,0,Referral,No
+A00067,Male,52.0,12.0,No,Medium,No,0,1,Website,No
+A00068,Male,72.0,1.6,No,Low,Yes,0,3,Agent,Yes
+A00069,Female,84.0,21.5,No,Low,Yes,0,2,Social media,Yes
+A00070,Male,49.0,12.2,No,Low,No,0,5,Social media,No
+A00071,Female,81.0,21.3,Yes,Medium,No,1,2,Website,No
+A00072,Female,64.0,17.9,No,High,Yes,0,3,School fair,No
+A00073,Female,62.0,26.3,No,High,No,1,2,Website,No
+A00074,Female,63.0,8.7,No,Low,No,0,1,Referral,Yes
+A00075,Female,59.0,9.7,No,Low,No,1,1,Website,Yes
+A00076,Male,71.0,9.9,No,Medium,Yes,0,6,School fair,Yes
+A00077,Male,71.0,24.1,No,Medium,No,0,1,Social media,No
+A00078,Female,80.0,12.7,Yes,Medium,Yes,1,1,Website,No
+A00079,Male,85.0,30.2,Yes,Medium,No,1,0,Website,Yes
+A00080,Female,64.0,20.2,No,High,Yes,0,5,Referral,Yes
+A00081,Male,81.0,2.4,No,Medium,No,1,4,Referral,No
+A00082,Female,55.0,11.5,No,High,Yes,0,2,Social media,No
+A00083,Female,76.0,19.7,Yes,Medium,Yes,1,3,School fair,Yes
+A00084,Male,55.0,11.7,No,Low,No,0,1,Social media,No
+A00085,Male,62.0,10.0,No,Medium,Yes,0,2,Referral,Yes
+A00086,Female,75.0,22.4,No,Medium,No,0,2,Social media,No
+A00087,Female,60.0,20.6,No,High,Yes,0,5,Website,No
+A00088,Male,74.0,16.4,No,Medium,Yes,1,5,Social media,Yes
+A00089,Female,51.0,83.1,No,Medium,No,1,3,School fair,No
+A00090,Female,60.0,18.7,No,Low,No,0,6,Website,No
+A00091,Female,74.0,29.9,No,High,Yes,0,5,Social media,Yes
+A00092,Male,86.0,16.5,No,High,Yes,1,6,Social media,No
+A00093,Female,55.0,31.4,No,High,No,1,4,Website,Yes
+A00094,Female,87.0,3.5,No,Medium,No,0,4,Social media,Yes
+A00095,Male,71.0,16.7,No,Medium,No,0,0,Website,No
+A00096,Male,95.0,19.1,Yes,Medium,Yes,0,4,School fair,Yes
+A00097,Female,65.0,14.5,No,Medium,No,0,2,Social media,No
+A00098,Male,62.0,30.9,No,High,No,0,4,Referral,No
+A00099,Female,72.0,51.0,No,Medium,No,0,6,School fair,No
+A00100,Male,56.0,40.3,No,Medium,Yes,1,0,Referral,No
+A00101,Female,70.0,36.0,No,Medium,No,0,4,Agent,No
+A00102,Female,67.0,24.4,Yes,Medium,No,1,5,Website,Yes
+A00103,Female,84.0,15.7,Yes,High,No,0,0,Social media,No
+A00104,Female,72.0,12.9,No,Medium,No,0,6,Website,No
+A00105,Male,53.0,17.5,No,High,Yes,0,2,Website,No
+A00106,Female,53.0,32.5,No,Low,No,0,4,School fair,Yes
+A00107,Male,57.0,118.0,No,Medium,Yes,0,2,Website,No
+A00108,Male,44.0,17.5,No,High,No,0,5,Referral,No
+A00109,Female,43.0,13.0,No,High,No,0,3,School fair,No
+A00110,Female,93.0,8.0,Yes,High,Yes,0,5,Social media,Yes
+A00111,Female,58.0,6.3,No,Medium,Yes,1,1,Social media,Yes
+A00112,Male,83.0,17.3,No,Medium,Yes,0,4,School fair,Yes
+A00113,Male,59.0,15.0,No,High,No,0,0,Referral,No
+A00114,Male,63.0,8.1,No,High,No,0,5,Referral,Yes
+A00115,Female,48.0,29.3,No,High,Yes,0,0,School fair,No
+A00116,Female,83.0,6.9,No,Low,No,0,5,Website,No
+A00117,Male,64.0,28.6,No,Low,Yes,0,1,Referral,No
+A00118,Male,88.0,19.5,No,High,Yes,2,1,Referral,No
+A00119,Female,60.0,37.1,No,High,No,0,5,Website,No
+A00120,Female,83.0,8.7,No,Medium,No,0,3,School fair,No
+A00121,Female,86.0,17.7,Yes,Medium,Yes,2,6,Social media,No
+A00122,Female,50.0,33.7,No,High,No,0,0,Agent,Yes
+A00123,Female,73.0,34.5,No,Medium,Yes,0,6,Website,Yes
+A00124,Female,56.0,12.9,No,Low,Yes,0,4,Referral,Yes
+A00125,Male,55.0,24.9,No,Medium,No,0,1,Agent,Yes
+A00126,Male,69.0,18.2,Yes,Medium,No,0,1,Social media,No
+A00127,Female,78.0,34.3,No,Low,No,0,4,School fair,No
+A00128,Female,84.0,9.7,No,Low,No,0,3,Website,Yes
+A00129,Male,64.0,4.9,No,High,No,0,4,Website,No
+A00130,Female,80.0,37.7,Yes,Medium,Yes,1,5,Social media,No
+A00131,Male,75.0,65.2,No,Medium,No,0,4,Website,No
+A00132,Female,68.0,30.4,No,Low,Yes,0,5,Website,Yes
+A00133,Female,57.0,12.9,No,High,No,0,5,Website,No
+A00134,Female,68.0,29.5,No,Low,No,0,1,Social media,No
+A00135,Male,100.0,23.8,No,Medium,No,0,1,Referral,No
+A00136,Female,57.0,50.1,No,Medium,No,0,6,School fair,No
+A00137,Male,66.0,15.2,No,Low,Yes,0,0,Agent,Yes
+A00138,Female,57.0,17.2,No,Medium,Yes,0,0,Website,No
+A00139,Female,84.0,49.0,Yes,High,No,0,1,Referral,Yes
+A00140,Female,89.0,12.9,No,Medium,No,0,6,School fair,No
+A00141,Male,84.0,15.9,No,Medium,Yes,0,0,School fair,Yes
+A00142,Male,91.0,22.9,No,Low,No,2,0,Website,Yes
+A00143,Male,67.0,30.5,No,Medium,Yes,0,4,Website,No
+A00144,Male,88.0,3.0,Yes,High,No,0,2,Website,No
+A00145,Male,58.0,19.4,No,Medium,Yes,1,6,Referral,Yes
+A00146,Male,86.0,13.7,Yes,High,Yes,0,5,Agent,Yes
+A00147,Male,86.0,10.8,No,Medium,No,0,3,Social media,No
+A00148,Female,61.0,11.6,No,Medium,No,0,2,Social media,No
+A00149,Male,79.0,59.5,No,Low,No,0,3,Social media,No
+A00150,Female,55.0,2.7,No,Medium,No,0,2,Website,Yes
+A00151,Female,51.0,29.3,No,Medium,No,0,0,School fair,No
+A00152,Female,51.0,12.5,No,High,Yes,0,3,Website,No
+A00153,Female,55.0,36.2,No,Medium,No,0,0,Agent,No
+A00154,Female,54.0,65.2,No,Medium,Yes,0,4,School fair,No
+A00155,Male,67.0,69.9,No,Low,No,0,6,Website,No
+A00156,Female,89.0,68.4,Yes,Low,No,1,3,Social media,No
+A00157,Male,65.0,40.3,No,High,Yes,0,4,Agent,Yes
+A00158,Male,58.0,44.1,No,Medium,No,0,6,Referral,No
+A00159,Female,76.0,38.3,No,Medium,Yes,0,5,Website,No
+A00160,Female,65.0,20.2,No,High,No,0,6,School fair,No
+A00161,Female,69.0,20.6,No,High,No,1,4,School fair,No
+A00162,Female,73.0,20.1,No,Low,Yes,0,4,Agent,Yes
+A00163,Female,73.0,38.6,No,Low,No,0,6,Website,No
+A00164,Male,60.0,41.7,No,Medium,No,0,3,Website,No
+A00165,Male,65.0,11.3,No,Medium,Yes,1,4,Agent,Yes
+A00166,Female,79.0,22.7,No,Medium,Yes,1,4,Referral,Yes
+A00167,Female,63.0,14.4,No,Medium,Yes,0,2,Referral,Yes
+A00168,Male,65.0,7.2,No,Medium,Yes,0,2,Social media,Yes
+A00169,Female,71.0,17.3,No,Medium,Yes,0,4,Social media,Yes
+A00170,Male,73.0,25.1,Yes,Low,Yes,0,4,School fair,Yes
+A00171,Male,64.0,2.7,Yes,Medium,No,0,4,Website,No
+A00172,Female,74.0,16.2,No,High,Yes,1,3,Referral,No
+A00173,Male,68.0,12.3,No,Low,No,1,1,Website,Yes
+A00174,Male,52.0,16.9,No,Medium,No,1,0,Social media,Yes
+A00175,Female,76.0,39.9,Yes,High,No,0,6,Website,No
+A00176,Female,57.0,48.8,No,High,Yes,0,2,School fair,No
+A00177,Male,100.0,48.4,Yes,Low,Yes,0,2,Referral,No
+A00178,Female,71.0,63.0,No,High,No,0,5,Social media,No
+A00179,Male,64.0,8.3,No,Low,No,1,3,Website,No
+A00180,Female,78.0,14.3,No,Medium,No,0,0,Website,No
+A00181,Female,85.0,39.2,No,Medium,Yes,0,4,Agent,No
+A00182,Male,86.0,10.4,Yes,Medium,Yes,0,0,Social media,No
+A00183,Male,71.0,30.5,No,High,No,0,0,Website,No
+A00184,Female,81.0,16.3,No,Medium,No,0,6,Referral,No
+A00185,Male,76.0,61.9,No,Medium,Yes,0,3,Social media,No
+A00186,Female,69.0,39.1,No,Medium,No,0,5,Referral,No
+A00187,Male,50.0,13.6,No,Medium,No,1,0,Social media,No
+A00188,Male,68.0,18.9,No,Medium,No,0,5,Agent,No
+A00189,Male,37.0,10.9,No,Medium,Yes,0,2,Website,Yes
+A00190,Female,57.0,14.6,No,Medium,No,0,6,Social media,Yes
+A00191,Female,84.0,26.5,No,Low,No,0,1,Agent,No
+A00192,Male,70.0,44.2,No,High,No,0,1,Website,No
+A00193,Female,67.0,11.8,No,High,Yes,1,6,Social media,No
+A00194,Male,57.0,58.0,No,Medium,Yes,0,4,Referral,No
+A00195,Male,58.0,19.1,No,Low,No,1,3,School fair,No
+A00196,Male,60.0,54.9,No,Medium,No,1,1,Referral,No
+A00197,Male,51.0,18.4,No,Medium,Yes,0,5,Website,Yes
+A00198,Female,41.0,22.7,No,Medium,No,0,1,Social media,No
+A00199,Female,80.0,31.1,No,Low,No,0,0,Referral,No
+A00200,Female,88.0,22.8,No,Medium,No,0,2,School fair,No
+A00201,Female,60.0,25.3,No,High,No,1,5,Referral,No
+A00202,Female,77.0,49.8,No,Medium,Yes,0,6,Social media,No
+A00203,Female,53.0,16.9,No,Low,Yes,0,5,Social media,Yes
+A00204,Female,72.0,28.1,No,Medium,Yes,1,6,School fair,Yes
+A00205,Female,51.0,21.9,No,Low,No,0,3,Referral,Yes
+A00206,Male,79.0,11.7,No,Medium,No,1,3,Website,No
+A00207,Female,68.0,42.6,No,Medium,Yes,0,1,Website,No
+A00208,Male,53.0,16.3,No,High,Yes,1,3,Website,Yes
+A00209,Male,74.0,14.5,No,High,No,0,0,Website,No
+A00210,Female,88.0,44.4,No,Medium,No,0,4,Referral,Yes
+A00211,Male,68.0,19.9,No,Low,Yes,1,0,Website,Yes
+A00212,Male,67.0,8.9,No,Medium,No,1,1,Referral,Yes
+A00213,Male,68.0,31.1,No,Medium,No,2,2,Website,Yes
+A00214,Male,69.0,24.7,No,Low,No,0,6,School fair,Yes
+A00215,Male,83.0,32.7,Yes,High,Yes,0,5,Website,Yes
+A00216,Female,83.0,10.9,Yes,Medium,Yes,1,5,Website,Yes
+A00217,Female,43.0,26.7,No,Medium,Yes,0,5,Website,Yes
+A00218,Female,82.0,15.3,No,High,Yes,0,5,Social media,No
+A00219,Male,65.0,35.8,No,Low,No,0,6,School fair,No
+A00220,Female,88.0,13.9,No,Low,Yes,0,0,Referral,Yes
+A00221,Female,73.0,16.7,No,Low,Yes,0,3,School fair,Yes
+A00222,Female,79.0,9.7,No,Medium,No,0,4,Website,Yes
+A00223,Male,62.0,17.3,No,Low,No,0,1,Website,Yes
+A00224,Male,52.0,31.2,No,Low,No,0,5,Website,No
+A00225,Male,71.0,2.9,No,Medium,Yes,0,6,Website,Yes
+A00226,Male,79.0,25.9,No,Low,Yes,0,1,Website,Yes
+A00227,Male,77.0,35.1,No,Medium,Yes,1,0,Social media,No
+A00228,Female,77.0,2.7,No,Medium,No,0,2,Agent,No
+A00229,Female,71.0,5.5,No,Medium,No,1,5,School fair,No
+A00230,Male,76.0,7.0,No,Medium,No,0,4,Agent,No
+A00231,Female,58.0,7.5,No,Low,No,0,4,School fair,No
+A00232,Female,66.0,2.0,No,High,No,0,2,Website,No
+A00233,Male,49.0,7.5,No,High,No,0,0,Website,No
+A00234,Female,67.0,33.9,No,Low,No,2,3,Social media,No
+A00235,Male,64.0,17.3,No,Medium,Yes,0,2,Website,Yes
+A00236,Female,68.0,20.3,No,Low,No,2,1,Social media,No
+A00237,Female,80.0,39.9,No,Medium,Yes,0,6,Website,No
+A00238,Female,69.0,2.7,No,Medium,No,1,3,Social media,No
+A00239,Male,33.0,14.7,No,Medium,No,2,2,Referral,No
+A00240,Male,84.0,13.5,Yes,Medium,No,1,2,Referral,Yes
+A00241,Female,70.0,10.4,No,Low,No,0,2,Agent,No
+A00242,Male,77.0,31.0,No,Medium,No,0,6,School fair,Yes
+A00243,Female,58.0,4.1,No,Medium,Yes,0,1,Social media,Yes
+A00244,Female,78.0,20.8,No,High,No,1,6,Website,Yes
+A00245,Male,86.0,19.0,Yes,Medium,No,0,1,Social media,No
+A00246,Female,48.0,25.8,No,Medium,No,0,1,Website,No
+A00247,Male,83.0,11.2,No,Medium,Yes,0,3,Website,Yes
+A00248,Male,57.0,32.0,No,High,Yes,0,1,School fair,No
+A00249,Female,59.0,2.4,No,Low,No,0,3,Website,No
+A00250,Female,68.0,35.7,No,High,No,0,5,Social media,No
+A00251,Female,93.0,13.4,No,Medium,Yes,0,3,Website,Yes
+A00252,Female,46.0,27.1,No,Medium,Yes,0,0,Website,Yes
+A00253,Female,60.0,10.3,No,Low,No,1,1,Social media,No
+A00254,Male,68.0,22.4,No,High,No,0,5,Website,Yes
+A00255,Female,76.0,8.4,Yes,Medium,No,0,4,School fair,Yes
+A00256,Female,66.0,16.6,No,Medium,No,1,4,Website,No
+A00257,Male,73.0,22.4,No,High,Yes,0,3,Referral,Yes
+A00258,Female,55.0,9.5,No,Low,No,1,3,Social media,Yes
+A00259,Female,77.0,8.6,No,Medium,Yes,0,0,School fair,No
+A00260,Male,80.0,5.6,No,Low,Yes,0,5,Website,Yes
+A00261,Female,55.0,5.5,No,Low,No,0,3,Social media,No
+A00262,Female,58.0,34.4,No,High,No,0,0,Agent,No
+A00263,Male,73.0,51.6,No,Low,No,0,1,School fair,Yes
+A00264,Male,72.0,20.5,No,Low,No,0,0,School fair,No
+A00265,Female,74.0,60.2,No,High,No,0,2,Referral,No
+A00266,Female,53.0,42.3,No,Low,No,0,0,School fair,No
+A00267,Female,63.0,16.3,No,Low,Yes,0,1,Referral,Yes
+A00268,Male,62.0,27.8,No,Medium,No,0,1,Agent,No
+A00269,Male,84.0,11.3,No,Medium,Yes,0,6,Agent,No
+A00270,Female,67.0,61.7,No,Medium,Yes,0,6,Social media,No
+A00271,Female,62.0,13.8,No,High,No,0,5,School fair,No
+A00272,Male,57.0,32.7,No,Medium,Yes,0,5,Social media,No
+A00273,Female,68.0,14.5,No,Medium,No,0,5,Referral,No
+A00274,Male,82.0,11.9,Yes,Low,No,0,1,School fair,No
+A00275,Male,49.0,29.1,No,High,Yes,0,5,Website,Yes
+A00276,Female,69.0,5.5,No,High,Yes,1,2,Referral,Yes
+A00277,Female,74.0,28.4,No,Low,Yes,0,3,Social media,No
+A00278,Female,92.0,13.7,Yes,High,Yes,0,0,School fair,No
+A00279,Male,76.0,9.3,No,High,Yes,0,3,Website,Yes
+A00280,Male,84.0,16.4,No,Medium,Yes,1,0,Referral,No
+A00281,Female,68.0,15.2,No,Medium,No,1,4,Agent,Yes
+A00282,Male,51.0,9.1,No,Medium,No,1,1,Website,Yes
+A00283,Female,51.0,11.4,No,Low,No,0,4,Website,Yes
+A00284,Female,59.0,18.6,No,High,No,1,4,Social media,No
+A00285,Female,69.0,21.9,No,Medium,No,0,3,Website,No
+A00286,Male,64.0,9.7,Yes,High,No,0,3,Referral,No
+A00287,Female,62.0,26.6,No,High,Yes,0,2,School fair,No
+A00288,Female,90.0,4.3,Yes,Low,No,0,0,Website,Yes
+A00289,Male,39.0,46.7,No,High,No,1,2,Website,No
+A00290,Female,55.0,26.2,No,Medium,No,0,1,Referral,Yes
+A00291,Female,97.0,22.6,Yes,Medium,No,1,1,School fair,No
+A00292,Female,72.0,42.4,No,Medium,No,1,3,School fair,No
+A00293,Male,60.0,15.5,No,Medium,Yes,1,4,School fair,Yes
+A00294,Female,54.0,8.9,No,High,No,0,4,School fair,No
+A00295,Male,78.0,20.2,No,Low,No,1,3,Social media,Yes
+A00296,Male,76.0,24.2,No,Medium,No,0,4,Website,No
+A00297,Female,78.0,11.6,No,Low,No,0,4,Website,No
+A00298,Female,52.0,4.7,No,Low,No,2,4,School fair,Yes
+A00299,Female,69.0,11.2,No,Medium,No,1,0,Social media,Yes
+A00300,Female,65.0,31.6,No,Low,Yes,0,0,Website,No
+A00301,Male,73.0,44.4,Yes,Low,No,0,3,Social media,No
+A00302,Female,48.0,22.9,No,Low,No,0,6,Agent,Yes
+A00303,Female,75.0,18.8,No,High,No,0,0,School fair,No
+A00304,Male,86.0,9.3,Yes,Low,No,0,4,Agent,No
+A00305,Male,51.0,22.2,No,Medium,No,1,3,Website,Yes
+A00306,Female,78.0,29.2,No,Medium,No,0,0,School fair,No
+A00307,Female,88.0,16.8,No,Medium,No,0,4,School fair,No
+A00308,Male,79.0,59.3,Yes,High,No,0,1,Website,No
+A00309,Female,67.0,5.8,No,High,Yes,1,0,Website,Yes
+A00310,Female,69.0,53.1,Yes,Low,Yes,0,0,Website,No
+A00311,Female,61.0,14.0,No,High,Yes,0,5,Website,No
+A00312,Male,71.0,15.2,No,High,No,0,0,Website,No
+A00313,Female,55.0,11.7,No,High,No,0,2,Website,No
+A00314,Female,69.0,17.3,No,Medium,No,0,4,Website,No
+A00315,Female,58.0,25.4,No,Low,No,0,4,Website,No
+A00316,Male,50.0,45.9,No,High,No,0,0,Website,Yes
+A00317,Male,86.0,13.7,No,Medium,No,0,5,Agent,No
+A00318,Female,45.0,38.7,No,Medium,No,1,3,Website,No
+A00319,Male,90.0,7.7,Yes,Medium,No,0,4,Website,Yes
+A00320,Male,41.0,16.7,No,High,Yes,0,3,Website,Yes
+A00321,Male,79.0,9.5,No,Medium,No,1,0,Social media,No
+A00322,Female,70.0,53.8,No,Low,No,0,2,School fair,No
+A00323,Female,48.0,20.7,No,Medium,No,0,4,Website,No
+A00324,Female,62.0,29.5,No,High,No,0,4,Social media,No
+A00325,Female,56.0,11.4,No,Medium,No,0,1,Website,Yes
+A00326,Male,56.0,10.9,No,Medium,Yes,0,3,School fair,Yes
+A00327,Male,79.0,38.7,No,Medium,No,0,1,School fair,No
+A00328,Male,54.0,7.5,No,Medium,No,0,5,Website,No
+A00329,Male,45.0,8.2,No,Medium,Yes,0,4,Website,Yes
+A00330,Male,82.0,13.7,No,Low,Yes,0,5,Website,Yes
+A00331,Female,73.0,27.7,No,Low,No,0,2,Social media,Yes
+A00332,Female,68.0,16.0,No,Low,Yes,0,5,Website,Yes
+A00333,Male,65.0,16.9,No,Medium,Yes,0,6,Website,Yes
+A00334,Male,76.0,10.9,No,Medium,Yes,0,5,Website,Yes
+A00335,Male,72.0,10.6,No,High,No,0,4,Agent,No
+A00336,Male,67.0,15.0,No,Low,Yes,0,2,Social media,No
+A00337,Male,61.0,33.9,No,High,No,1,4,Agent,No
+A00338,Male,81.0,29.6,No,High,No,0,4,School fair,No
+A00339,Male,86.0,6.7,Yes,Medium,No,0,1,Social media,No
+A00340,Male,74.0,7.4,No,Low,Yes,0,0,Agent,Yes
+A00341,Female,100.0,11.5,Yes,Medium,No,0,0,Referral,No
+A00342,Male,71.0,9.7,No,Low,No,1,1,Social media,No
+A00343,Female,70.0,1.5,No,Medium,Yes,1,4,Agent,Yes
+A00344,Male,86.0,19.8,Yes,Low,No,1,4,Website,Yes
+A00345,Female,72.0,8.2,No,Low,Yes,0,0,Website,No
+A00346,Female,71.0,23.1,No,High,No,0,3,Agent,Yes
+A00347,Male,64.0,9.6,Yes,Low,No,1,3,School fair,No
+A00348,Male,74.0,28.1,Yes,Medium,Yes,0,0,Website,Yes
+A00349,Female,48.0,1.4,No,Medium,Yes,2,3,Social media,Yes
+A00350,Female,59.0,24.0,No,Medium,No,0,3,School fair,Yes
+A00351,Male,55.0,38.7,No,Medium,No,1,3,Social media,Yes
+A00352,Female,41.0,32.3,No,Medium,No,0,4,Social media,No
+A00353,Male,81.0,25.2,No,Low,No,1,5,Social media,Yes
+A00354,Male,64.0,5.8,No,Medium,No,0,4,Website,Yes
+A00355,Female,57.0,65.1,No,Medium,Yes,0,6,Website,No
+A00356,Female,73.0,6.8,No,Medium,No,0,0,Referral,No
+A00357,Male,53.0,29.7,No,Low,Yes,0,4,School fair,Yes
+A00358,Female,79.0,19.4,Yes,Medium,No,0,3,School fair,Yes
+A00359,Male,85.0,29.4,No,Low,Yes,0,6,Website,No
+A00360,Female,51.0,19.4,No,High,No,0,5,Website,No
+A00361,Female,82.0,24.5,Yes,Medium,No,1,0,Social media,Yes
+A00362,Male,71.0,55.0,No,Medium,No,0,3,Website,No
+A00363,Male,82.0,34.7,No,Medium,Yes,1,4,School fair,No
+A00364,Female,70.0,59.2,No,Low,No,0,5,Social media,No
+A00365,Female,58.0,32.5,No,Medium,Yes,0,2,Website,Yes
+A00366,Female,49.0,23.3,No,Low,Yes,0,3,Social media,Yes
+A00367,Male,54.0,52.8,No,Low,Yes,1,1,Website,Yes
+A00368,Female,62.0,43.2,No,High,No,0,1,Website,No
+A00369,Female,81.0,19.6,No,Low,Yes,0,1,Social media,No
+A00370,Male,76.0,14.5,No,Medium,No,0,2,Agent,No
+A00371,Male,72.0,13.4,No,High,Yes,1,3,School fair,No
+A00372,Male,86.0,15.2,No,Low,No,2,1,Referral,No
+A00373,Female,46.0,16.7,No,Low,Yes,0,4,Website,Yes
+A00374,Female,54.0,51.7,No,Low,No,0,1,Website,No
+A00375,Female,54.0,58.0,No,High,No,0,0,Agent,No
+A00376,Male,69.0,5.8,No,Low,Yes,0,3,Website,Yes
+A00377,Female,48.0,12.3,No,High,Yes,1,2,Referral,Yes
+A00378,Male,61.0,25.1,No,High,No,0,2,Referral,No
+A00379,Female,85.0,5.5,No,High,No,1,1,Website,No
+A00380,Male,80.0,33.9,Yes,Medium,Yes,0,5,School fair,No
+A00381,Female,87.0,27.7,No,Medium,Yes,0,6,Social media,Yes
+A00382,Female,61.0,44.3,No,High,No,0,5,Social media,No
+A00383,Female,56.0,50.8,No,High,No,1,5,Agent,No
+A00384,Female,71.0,17.2,No,Medium,No,0,0,Social media,No
+A00385,Male,57.0,35.0,No,Medium,No,1,2,Website,No
+A00386,Female,67.0,29.9,No,Medium,No,0,5,Website,No
+A00387,Female,66.0,18.4,No,Low,Yes,0,1,Website,Yes
+A00388,Female,75.0,25.9,Yes,High,No,2,1,Social media,No
+A00389,Female,86.0,19.9,No,Low,Yes,0,3,School fair,Yes
+A00390,Female,85.0,21.4,No,Low,No,0,3,Referral,No
+A00391,Female,80.0,11.9,No,Low,Yes,0,3,Website,No
+A00392,Male,66.0,43.1,No,Medium,No,1,3,Website,No
+A00393,Male,76.0,23.6,No,Low,Yes,0,0,Website,Yes
+A00394,Male,64.0,6.5,No,Low,No,0,2,Website,No
+A00395,Male,57.0,16.1,No,High,No,1,5,Website,No
+A00396,Female,50.0,52.1,No,Low,Yes,0,1,Referral,No
+A00397,Male,61.0,22.2,Yes,Low,No,0,0,Agent,No
+A00398,Male,74.0,41.5,No,Low,No,0,6,Website,Yes
+A00399,Male,77.0,23.3,Yes,High,No,0,4,School fair,Yes
+A00400,Male,69.0,25.3,No,Low,No,0,0,Social media,Yes
+A00401,Male,75.0,19.0,No,Medium,No,0,4,Social media,No
+A00402,Female,61.0,42.5,No,Medium,Yes,1,4,Website,No
+A00403,Female,89.0,10.9,No,Low,No,0,1,Referral,Yes
+A00404,Female,70.0,23.8,No,Medium,Yes,0,3,Referral,Yes
+A00405,Male,64.0,41.9,No,Medium,Yes,0,0,School fair,No
+A00406,Male,76.0,26.9,No,Medium,No,0,2,Website,No
+A00407,Male,66.0,31.9,No,Low,Yes,0,3,Website,Yes
+A00408,Female,72.0,86.6,No,High,Yes,0,3,Website,No
+A00409,Female,86.0,6.9,No,Low,Yes,0,3,Referral,Yes
+A00410,Female,59.0,27.8,No,Medium,No,0,5,Agent,No
+A00411,Male,65.0,42.6,No,Medium,Yes,0,3,School fair,No
+A00412,Male,66.0,47.2,No,Medium,No,0,0,Referral,Yes
+A00413,Female,69.0,15.7,No,Medium,No,1,3,Social media,No
+A00414,Male,92.0,51.3,Yes,Low,Yes,0,1,Social media,No
+A00415,Female,80.0,25.3,No,Medium,No,0,0,Website,No
+A00416,Male,84.0,8.6,No,Low,Yes,1,2,Website,Yes
+A00417,Male,38.0,44.4,No,High,No,0,3,Agent,No
+A00418,Female,75.0,8.4,Yes,Low,No,0,6,Social media,No
+A00419,Female,72.0,19.9,No,High,No,2,5,Social media,No
+A00420,Female,75.0,17.0,No,Low,Yes,1,3,Social media,Yes
+A00421,Male,69.0,9.0,No,High,No,0,5,Website,Yes
+A00422,Female,61.0,24.2,No,Medium,Yes,1,2,Website,Yes
+A00423,Female,77.0,5.0,Yes,Medium,No,1,0,Website,Yes
+A00424,Male,66.0,24.1,No,Low,No,0,4,Website,No
+A00425,Female,69.0,21.7,No,Medium,Yes,0,2,Social media,Yes
+A00426,Male,62.0,18.7,No,Medium,No,0,3,Website,Yes
+A00427,Male,66.0,5.4,No,Medium,No,0,2,School fair,No
+A00428,Female,75.0,123.0,No,High,Yes,0,2,School fair,No
+A00429,Male,79.0,13.7,No,Low,No,0,3,School fair,No
+A00430,Male,68.0,23.0,No,Low,No,1,0,Social media,No
+A00431,Male,70.0,14.2,No,Medium,No,0,0,Social media,No
+A00432,Male,66.0,21.1,No,Medium,Yes,0,5,Social media,Yes
+A00433,Male,80.0,8.1,Yes,High,Yes,0,5,Website,No
+A00434,Male,63.0,15.3,No,Low,No,0,5,Social media,No
+A00435,Male,65.0,27.0,No,High,Yes,0,4,Website,Yes
+A00436,Female,70.0,6.8,Yes,Medium,No,0,1,Website,No
+A00437,Female,63.0,2.7,No,Low,Yes,0,6,Social media,Yes
+A00438,Male,72.0,17.5,No,Low,Yes,0,2,Referral,Yes
+A00439,Female,89.0,11.8,No,High,Yes,2,4,Social media,No
+A00440,Female,69.0,13.0,No,Medium,No,0,1,Referral,No
+A00441,Male,87.0,6.4,No,High,No,0,6,Agent,No
+A00442,Female,80.0,13.7,No,Low,Yes,0,6,Website,No
+A00443,Female,71.0,8.7,No,Low,No,0,5,Website,No
+A00444,Male,77.0,41.0,Yes,Low,No,0,2,Social media,No
+A00445,Female,86.0,53.0,No,High,No,2,6,Agent,No
+A00446,Female,59.0,33.1,No,Medium,No,0,1,Website,No
+A00447,Male,77.0,9.9,No,Low,No,0,3,Website,No
+A00448,Male,84.0,49.9,No,Medium,No,0,0,Social media,No
+A00449,Male,60.0,12.7,No,Medium,Yes,0,0,Referral,Yes
+A00450,Female,85.0,15.4,No,High,Yes,0,0,Referral,No
+A00451,Male,77.0,18.4,No,Medium,Yes,0,6,Agent,Yes
+A00452,Female,59.0,14.9,No,Low,Yes,1,1,Website,Yes
+A00453,Female,75.0,28.1,No,Medium,No,1,4,Website,Yes
+A00454,Male,52.0,6.6,No,High,Yes,0,2,Agent,No
+A00455,Male,54.0,12.5,No,High,No,0,0,Website,No
+A00456,Male,51.0,8.6,Yes,Medium,No,0,5,School fair,Yes
+A00457,Male,72.0,4.6,No,Medium,Yes,0,5,Social media,No
+A00458,Female,64.0,8.6,No,Medium,No,0,5,Social media,Yes
+A00459,Female,59.0,26.7,No,High,No,1,6,Agent,No
+A00460,Female,62.0,59.5,No,Low,No,0,4,Social media,No
+A00461,Female,68.0,25.9,No,Low,No,0,3,Website,No
+A00462,Male,64.0,17.0,No,Medium,No,1,1,Website,No
+A00463,Female,62.0,13.7,No,Medium,Yes,0,5,Website,No
+A00464,Male,70.0,23.1,No,Low,No,0,3,Website,No
+A00465,Male,57.0,42.8,No,Medium,Yes,0,6,Social media,No
+A00466,Female,62.0,31.6,No,Low,Yes,0,1,Social media,No
+A00467,Male,82.0,20.7,No,High,No,0,4,Agent,No
+A00468,Male,73.0,6.4,Yes,Low,Yes,0,3,Agent,Yes
+A00469,Female,47.0,6.9,No,Medium,No,2,0,School fair,No
+A00470,Male,87.0,37.7,No,High,No,0,5,School fair,No
+A00471,Male,58.0,55.6,No,Medium,No,0,5,Referral,No
+A00472,Male,88.0,56.9,Yes,Low,No,0,2,Referral,Yes
+A00473,Female,70.0,17.0,No,Medium,Yes,0,6,Referral,Yes
+A00474,Male,80.0,56.0,No,Low,No,0,6,Social media,No
+A00475,Male,47.0,15.3,No,High,No,0,5,Referral,Yes
+A00476,Male,59.0,22.5,No,Medium,Yes,0,0,Social media,No
+A00477,Male,61.0,17.6,No,Medium,No,0,5,Website,No
+A00478,Male,61.0,8.5,Yes,Medium,No,0,1,School fair,Yes
+A00479,Female,59.0,17.6,No,High,No,1,1,Social media,No
+A00480,Male,61.0,12.4,No,Medium,No,0,6,Referral,No
+A00481,Female,67.0,12.9,No,Low,Yes,0,4,Social media,No
+A00482,Female,61.0,16.4,No,High,No,0,4,School fair,No
+A00483,Male,66.0,8.5,Yes,Low,No,0,6,Social media,Yes
+A00484,Male,72.0,23.3,No,Low,No,0,4,Website,No
+A00485,Female,47.0,27.1,No,Medium,Yes,0,0,Website,No
+A00486,Female,65.0,24.6,No,Medium,Yes,1,5,Website,No
+A00487,Male,56.0,78.0,No,Medium,Yes,0,6,Referral,Yes
+A00488,Female,67.0,26.8,No,High,Yes,1,1,Website,No
+A00489,Female,75.0,4.3,No,Medium,No,0,1,Website,Yes
+A00490,Male,51.0,8.0,No,Medium,No,2,0,Website,No
+A00491,Female,63.0,22.9,No,Medium,No,0,5,Agent,No
+A00492,Male,79.0,10.2,No,Low,No,0,5,Agent,No
+A00493,Female,81.0,21.6,No,High,No,0,6,School fair,No
+A00494,Male,62.0,10.9,No,Medium,Yes,1,6,Website,Yes
+A00495,Female,79.0,10.9,No,Low,No,0,1,Referral,No
+A00496,Male,72.0,21.8,No,High,No,0,1,School fair,No
+A00497,Male,69.0,10.5,No,High,Yes,0,5,Website,Yes
+A00498,Female,62.0,16.0,No,High,Yes,0,6,School fair,No
+A00499,Male,71.0,24.9,No,Medium,Yes,1,3,Agent,Yes
+A00500,Male,76.0,8.1,No,High,No,0,1,Website,No
+A00501,Male,60.0,17.5,No,High,No,0,0,Agent,No
+A00502,Male,74.0,24.5,No,Low,No,0,5,Website,No
+A00503,Female,54.0,25.5,No,High,Yes,0,3,Agent,Yes
+A00504,Male,54.0,8.3,No,Low,Yes,0,4,School fair,No
+A00505,Female,75.0,7.8,No,Low,No,1,5,School fair,Yes
+A00506,Male,65.0,5.2,No,Medium,No,0,5,Social media,No
+A00507,Female,58.0,23.7,No,High,No,0,5,Social media,No
+A00508,Male,72.0,14.7,Yes,High,No,1,3,Website,Yes
+A00509,Male,77.0,37.1,No,Low,No,0,2,Website,No
+A00510,Male,69.0,25.4,No,Low,No,0,1,Website,No
+A00511,Female,86.0,45.0,Yes,Medium,No,0,6,Website,No
+A00512,Female,60.0,36.1,No,Medium,No,0,4,School fair,No
+A00513,Male,60.0,48.0,No,Low,Yes,0,5,Website,No
+A00514,Male,79.0,7.5,No,Medium,Yes,0,3,Agent,No
+A00515,Female,56.0,18.0,No,Medium,No,0,1,Referral,Yes
+A00516,Male,77.0,21.3,No,Medium,No,0,6,Website,No
+A00517,Female,49.0,17.6,Yes,Medium,Yes,0,6,Website,Yes
+A00518,Female,56.0,4.9,No,Medium,No,0,0,Referral,No
+A00519,Male,66.0,7.8,No,High,No,0,2,Social media,No
+A00520,Female,63.0,23.1,No,High,Yes,0,6,Social media,No
+A00521,Female,86.0,7.5,No,High,No,1,5,Website,No
+A00522,Male,57.0,11.5,No,Low,No,0,2,Website,Yes
+A00523,Female,68.0,12.1,No,High,Yes,1,5,Agent,Yes
+A00524,Male,70.0,38.3,No,Low,No,0,3,Website,Yes
+A00525,Male,67.0,19.9,No,Low,No,0,5,Agent,No
+A00526,Male,82.0,11.8,Yes,High,Yes,0,5,Website,No
+A00527,Male,61.0,11.8,No,Medium,No,1,2,Website,Yes
+A00528,Male,62.0,15.9,No,Medium,Yes,1,1,Referral,Yes
+A00529,Female,56.0,54.2,No,Medium,No,1,1,Website,No
+A00530,Female,78.0,11.5,Yes,Low,Yes,0,2,Referral,Yes
+A00531,Female,71.0,21.3,Yes,Medium,No,0,2,Referral,No
+A00532,Male,71.0,11.3,No,High,Yes,0,2,Social media,No
+A00533,Male,71.0,9.1,No,High,Yes,0,3,Website,No
+A00534,Female,55.0,43.6,No,Medium,No,1,3,Referral,No
+A00535,Male,74.0,34.4,No,Low,Yes,2,1,Agent,No
+A00536,Female,72.0,6.7,No,High,Yes,2,4,Agent,Yes
+A00537,Female,85.0,32.5,No,High,No,0,4,Website,No
+A00538,Female,73.0,17.1,No,Low,Yes,0,1,Agent,No
+A00539,Female,59.0,33.6,No,Medium,No,1,1,School fair,Yes
+A00540,Male,64.0,3.6,No,Low,No,0,0,Referral,No
+A00541,Female,89.0,6.9,No,Low,No,0,4,Referral,Yes
+A00542,Female,54.0,51.9,No,Low,No,0,1,Website,No
+A00543,Female,52.0,10.3,No,Low,No,1,2,Social media,No
+A00544,Male,71.0,42.5,No,Low,No,0,5,Referral,No
+A00545,Female,85.0,3.4,No,Medium,No,0,5,School fair,No
+A00546,Female,69.0,19.3,No,Low,Yes,0,5,Website,Yes
+A00547,Female,54.0,36.7,No,Medium,Yes,0,4,Website,No
+A00548,Female,94.0,20.6,Yes,Low,Yes,0,2,Social media,Yes
+A00549,Female,59.0,10.2,No,Low,No,0,2,Referral,No
+A00550,Female,78.0,1.5,Yes,Medium,No,0,6,Website,No
+A00551,Male,85.0,10.2,No,High,Yes,0,5,School fair,Yes
+A00552,Female,69.0,1.8,No,Medium,No,0,3,Social media,No
+A00553,Male,75.0,33.6,No,Low,No,0,1,Website,No
+A00554,Female,86.0,9.3,No,Medium,No,0,3,Social media,No
+A00555,Female,53.0,37.8,No,Medium,No,1,4,Social media,No
+A00556,Male,77.0,17.7,Yes,Low,Yes,0,5,Referral,Yes
+A00557,Male,82.0,5.8,No,Low,No,0,1,Website,No
+A00558,Female,83.0,15.2,No,Medium,Yes,0,3,Website,No
+A00559,Male,63.0,41.4,No,Low,Yes,0,4,Social media,No
+A00560,Female,74.0,20.6,No,Medium,No,0,6,Website,No
+A00561,Male,61.0,8.6,No,Low,No,0,4,Website,No
+A00562,Female,61.0,26.8,No,Low,Yes,0,6,Agent,Yes
+A00563,Male,57.0,14.9,No,High,No,0,0,Agent,No
+A00564,Male,76.0,1.7,No,Low,No,0,6,Agent,No
+A00565,Female,70.0,17.6,No,Low,Yes,1,6,Agent,Yes
+A00566,Male,82.0,6.6,No,Medium,No,1,2,Referral,No
+A00567,Male,40.0,11.5,No,Medium,No,2,6,School fair,Yes
+A00568,Female,58.0,4.7,No,Low,Yes,0,5,Referral,Yes
+A00569,Male,72.0,44.9,No,High,Yes,0,3,Website,Yes
+A00570,Female,89.0,7.9,Yes,High,Yes,0,2,School fair,No
+A00571,Female,60.0,9.4,No,Medium,No,1,1,Agent,Yes
+A00572,Male,47.0,42.7,No,Medium,No,0,1,Website,No
+A00573,Female,61.0,4.0,No,Low,No,0,6,Website,Yes
+A00574,Male,67.0,6.2,No,Low,No,0,5,School fair,No
+A00575,Male,78.0,9.3,No,Low,Yes,0,3,Social media,Yes
+A00576,Male,82.0,16.9,No,High,No,0,6,Social media,No
+A00577,Male,77.0,22.5,No,Medium,No,0,5,Social media,No
+A00578,Female,67.0,21.0,Yes,Medium,Yes,1,5,Website,Yes
+A00579,Male,93.0,53.2,No,Low,Yes,0,0,Website,No
+A00580,Male,60.0,42.6,No,Medium,Yes,0,5,Social media,Yes
+A00581,Female,68.0,15.9,No,High,No,0,4,Website,No
+A00582,Female,76.0,20.0,No,Medium,No,0,2,Agent,No
+A00583,Female,62.0,3.8,No,High,Yes,0,6,Website,No
+A00584,Female,66.0,5.1,No,High,Yes,1,6,Website,No
+A00585,Female,76.0,23.6,Yes,High,No,1,2,Social media,No
+A00586,Male,58.0,39.0,Yes,Medium,No,0,1,Website,Yes
+A00587,Male,66.0,22.5,No,Low,No,0,3,Website,No
+A00588,Male,67.0,17.1,No,Low,Yes,1,6,Website,Yes
+A00589,Female,96.0,10.9,No,Low,No,0,4,Social media,No
+A00590,Male,78.0,3.6,No,Medium,No,0,1,Agent,No
+A00591,Male,61.0,34.1,No,Medium,No,0,5,Referral,No
+A00592,Male,78.0,11.8,No,Medium,No,1,6,Social media,No
+A00593,Female,56.0,27.7,No,Low,No,0,5,Social media,No
+A00594,Female,74.0,43.0,No,Medium,No,0,3,Referral,No
+A00595,Female,49.0,11.4,No,Low,No,0,1,School fair,Yes
+A00596,Male,78.0,15.5,Yes,Medium,No,1,4,Referral,No
+A00597,Male,67.0,17.5,No,High,Yes,1,4,Website,Yes
+A00598,Male,53.0,31.6,No,Medium,No,0,0,Social media,No
+A00599,Male,74.0,57.3,No,Medium,No,0,1,School fair,No
+A00600,Female,79.0,23.4,Yes,High,No,1,6,Social media,No
+A00601,Female,74.0,4.9,No,Medium,No,0,1,School fair,Yes
+A00602,Female,71.0,13.9,No,Medium,Yes,0,1,Referral,No
+A00603,Female,54.0,41.0,No,Low,Yes,0,2,Website,No
+A00604,Female,79.0,57.7,No,High,No,0,4,Website,No
+A00605,Female,43.0,44.9,No,Medium,No,0,1,Website,No
+A00606,Female,62.0,36.8,No,Medium,No,0,0,Agent,No
+A00607,Female,92.0,15.1,No,Medium,Yes,0,4,School fair,Yes
+A00608,Female,53.0,37.3,No,Medium,Yes,0,5,Social media,No
+A00609,Male,48.0,56.2,No,Low,Yes,0,1,School fair,Yes
+A00610,Male,58.0,16.0,No,Medium,Yes,0,4,Social media,Yes
+A00611,Male,73.0,23.2,No,Medium,Yes,1,3,Website,Yes
+A00612,Female,68.0,23.6,No,High,No,0,5,Referral,Yes
+A00613,Female,81.0,38.0,No,Medium,No,1,2,School fair,Yes
+A00614,Male,69.0,10.3,No,Medium,No,0,3,Social media,No
+A00615,Male,56.0,28.8,No,Low,Yes,0,1,School fair,No
+A00616,Female,80.0,12.1,No,Medium,No,0,5,Website,No
+A00617,Male,62.0,6.8,No,Medium,No,0,2,Website,No
+A00618,Female,77.0,46.9,Yes,Medium,No,1,0,Website,No
+A00619,Male,85.0,41.3,No,Medium,No,1,1,Referral,Yes
+A00620,Female,75.0,9.8,No,High,No,1,4,Website,No
+A00621,Male,84.0,11.1,Yes,Medium,Yes,0,4,School fair,Yes
+A00622,Male,55.0,12.7,No,High,Yes,0,6,Website,No
+A00623,Male,64.0,40.4,No,Medium,Yes,0,4,School fair,Yes
+A00624,Male,71.0,31.0,No,Medium,No,0,1,Referral,No
+A00625,Female,55.0,117.7,No,Medium,Yes,0,1,Website,No
+A00626,Male,85.0,30.3,No,High,No,0,1,School fair,No
+A00627,Female,83.0,11.8,No,Low,No,2,6,Referral,No
+A00628,Male,75.0,59.6,No,High,Yes,0,6,Referral,No
+A00629,Male,76.0,56.1,Yes,Medium,No,0,1,School fair,Yes
+A00630,Male,68.0,26.8,No,Low,No,0,0,Website,No
+A00631,Female,57.0,24.6,No,Medium,No,2,1,School fair,No
+A00632,Male,62.0,64.4,No,Medium,Yes,0,3,Website,No
+A00633,Male,66.0,78.0,No,Medium,No,0,1,School fair,No
+A00634,Female,72.0,9.7,Yes,Low,No,1,0,Referral,No
+A00635,Male,68.0,18.9,No,High,No,0,4,Social media,No
+A00636,Male,72.0,38.9,No,Low,No,1,2,School fair,Yes
+A00637,Female,54.0,9.4,No,Medium,No,0,4,Social media,No
+A00638,Male,60.0,6.3,No,Low,No,0,3,School fair,No
+A00639,Female,71.0,46.8,Yes,Low,No,0,5,Website,No
+A00640,Female,80.0,7.8,No,Medium,Yes,0,0,Social media,No
+A00641,Female,50.0,12.0,No,Low,Yes,0,3,Agent,Yes
+A00642,Female,73.0,6.9,No,Medium,No,1,4,Social media,Yes
+A00643,Female,78.0,16.3,No,Medium,No,0,5,Referral,No
+A00644,Male,68.0,6.0,No,High,No,0,6,Agent,No
+A00645,Female,70.0,14.3,No,Medium,No,0,5,Social media,Yes
+A00646,Female,64.0,3.7,No,Low,Yes,0,3,Website,Yes
+A00647,Male,69.0,21.6,No,Low,No,1,3,Social media,No
+A00648,Male,65.0,11.6,No,Medium,No,0,6,School fair,No
+A00649,Female,52.0,19.1,No,Medium,No,0,0,Social media,No
+A00650,Female,85.0,7.1,No,Low,No,0,2,Referral,Yes
+A00651,Female,73.0,4.1,No,High,No,0,0,School fair,No
+A00652,Male,63.0,2.7,No,Medium,No,0,4,Referral,No
+A00653,Female,85.0,28.2,Yes,High,No,0,3,Referral,No
+A00654,Male,66.0,29.2,No,Medium,No,0,2,Social media,No
+A00655,Female,77.0,7.4,No,Low,Yes,2,3,Social media,Yes
+A00656,Female,50.0,8.0,No,Medium,No,0,4,Agent,No
+A00657,Female,62.0,10.2,No,Medium,No,0,5,School fair,Yes
+A00658,Female,82.0,50.4,No,Medium,No,0,3,Website,No
+A00659,Male,86.0,15.9,No,Low,Yes,0,4,Website,Yes
+A00660,Male,91.0,32.0,Yes,Low,No,0,4,Website,No
+A00661,Male,86.0,23.7,Yes,Medium,No,1,5,Referral,No
+A00662,Female,90.0,24.3,No,Medium,Yes,2,6,Website,Yes
+A00663,Female,61.0,3.7,No,Medium,No,0,1,Website,Yes
+A00664,Male,53.0,17.6,No,High,Yes,0,6,Social media,No
+A00665,Female,41.0,29.0,No,Medium,Yes,1,5,Referral,Yes
+A00666,Female,71.0,50.0,No,Medium,No,0,3,Website,No
+A00667,Male,66.0,19.3,No,Low,Yes,2,4,Agent,Yes
+A00668,Male,87.0,5.1,No,Low,No,0,1,Website,No
+A00669,Male,67.0,7.1,No,Low,No,0,2,Website,No
+A00670,Female,89.0,38.6,No,High,No,0,0,Website,No
+A00671,Male,51.0,50.2,No,Medium,Yes,0,0,School fair,No
+A00672,Female,90.0,26.1,No,Medium,No,0,2,Social media,No
+A00673,Male,69.0,27.5,No,Low,No,0,3,School fair,No
+A00674,Female,86.0,16.2,No,High,Yes,0,2,School fair,No
+A00675,Female,81.0,27.5,No,Low,Yes,1,2,Website,No
+A00676,Male,59.0,11.2,No,High,No,0,6,Website,Yes
+A00677,Female,80.0,10.9,Yes,High,Yes,1,2,Website,Yes
+A00678,Male,62.0,2.9,No,High,No,0,4,School fair,No
+A00679,Male,80.0,13.4,No,High,No,1,6,Social media,No
+A00680,Female,77.0,7.3,No,Medium,No,0,6,Social media,No
+A00681,Male,75.0,7.5,No,Low,No,0,0,Website,No
+A00682,Female,68.0,18.3,No,Medium,No,0,5,School fair,No
+A00683,Female,67.0,24.9,No,Low,No,1,1,School fair,No
+A00684,Male,70.0,33.8,No,High,Yes,0,3,School fair,Yes
+A00685,Male,41.0,10.1,No,Medium,No,0,1,Agent,No
+A00686,Female,81.0,7.3,Yes,Medium,Yes,0,2,Referral,Yes
+A00687,Female,69.0,19.2,No,Low,No,0,6,School fair,No
+A00688,Male,72.0,6.8,No,Low,No,0,6,Website,No
+A00689,Female,59.0,17.0,No,Medium,No,1,3,Agent,No
+A00690,Female,73.0,20.6,No,Low,No,0,0,Social media,No
+A00691,Male,64.0,29.5,No,Medium,No,0,2,Website,No
+A00692,Female,88.0,23.0,Yes,Medium,No,0,5,Social media,Yes
+A00693,Male,53.0,13.0,No,Low,No,1,3,Website,Yes
+A00694,Female,84.0,14.6,No,Low,Yes,0,3,Social media,No
+A00695,Male,60.0,65.5,No,Medium,No,2,3,Website,No
+A00696,Male,74.0,18.0,No,High,Yes,0,2,Website,No
+A00697,Female,67.0,45.9,No,Low,No,1,5,School fair,No
+A00698,Male,58.0,9.6,No,High,Yes,0,6,Referral,No
+A00699,Male,45.0,11.1,No,Low,No,0,0,Website,No
+A00700,Male,78.0,33.4,No,Medium,Yes,0,6,Website,No
+A00701,Male,49.0,62.3,No,High,No,0,6,Social media,No
+A00702,Male,64.0,40.8,No,Low,Yes,0,5,Website,Yes
+A00703,Female,85.0,2.1,No,High,Yes,2,0,Website,No
+A00704,Female,85.0,8.9,No,Medium,No,0,1,Referral,No
+A00705,Male,73.0,29.2,Yes,High,Yes,0,6,School fair,Yes
+A00706,Female,50.0,17.2,No,Medium,Yes,0,6,Social media,No
+A00707,Female,68.0,7.6,No,High,Yes,1,2,Referral,No
+A00708,Male,70.0,6.0,No,High,No,0,3,School fair,No
+A00709,Female,60.0,23.4,No,Medium,No,1,0,School fair,No
+A00710,Male,85.0,67.7,No,Medium,No,1,4,School fair,No
+A00711,Female,72.0,35.0,No,Low,Yes,0,2,Website,No
+A00712,Male,73.0,18.1,No,Low,No,0,4,Referral,No
+A00713,Female,68.0,27.1,No,Low,Yes,0,3,Agent,No
+A00714,Female,53.0,20.4,No,Medium,No,0,6,School fair,No
+A00715,Female,58.0,12.7,No,Medium,No,0,5,Website,No
+A00716,Female,58.0,101.2,No,Low,No,0,2,School fair,No
+A00717,Female,84.0,12.3,Yes,High,Yes,1,5,Website,Yes
+A00718,Female,70.0,23.2,No,Medium,Yes,0,6,Social media,Yes
+A00719,Female,75.0,44.3,Yes,Low,No,0,4,School fair,Yes
+A00720,Male,74.0,42.4,No,Medium,Yes,1,5,School fair,Yes
+A00721,Female,74.0,15.5,No,Medium,Yes,0,6,Social media,Yes
+A00722,Female,89.0,85.9,No,High,Yes,0,4,Referral,No
+A00723,Male,79.0,11.1,Yes,High,No,1,4,Website,Yes
+A00724,Male,73.0,17.9,No,Low,Yes,0,5,Website,Yes
+A00725,Male,71.0,2.3,No,Medium,No,0,1,Website,No
+A00726,Male,87.0,24.6,No,Medium,No,0,0,Agent,No
+A00727,Male,48.0,23.8,No,Low,No,0,1,Website,No
+A00728,Female,85.0,31.8,No,Medium,No,0,5,Website,No
+A00729,Female,63.0,22.4,No,Medium,No,0,5,Website,No
+A00730,Male,75.0,39.5,No,Medium,No,0,6,Website,Yes
+A00731,Female,66.0,17.3,Yes,Low,Yes,0,4,School fair,Yes
+A00732,Female,70.0,22.6,No,Low,Yes,0,4,Social media,No
+A00733,Female,66.0,16.4,No,Low,No,0,4,Website,No
+A00734,Female,30.0,43.1,No,Low,No,0,3,Website,No
+A00735,Female,56.0,25.1,No,High,Yes,0,4,School fair,No
+A00736,Female,59.0,23.9,No,Medium,No,1,3,Referral,No
+A00737,Male,53.0,9.9,No,Low,No,1,6,Website,Yes
+A00738,Female,46.0,40.0,No,Low,Yes,1,3,Website,Yes
+A00739,Male,75.0,41.2,No,High,Yes,0,4,Website,No
+A00740,Female,56.0,1.6,No,High,Yes,0,4,School fair,No
+A00741,Female,70.0,15.4,Yes,Low,No,0,1,Website,Yes
+A00742,Male,83.0,7.7,No,Medium,Yes,0,1,School fair,Yes
+A00743,Female,56.0,64.2,No,High,No,0,0,School fair,No
+A00744,Female,66.0,16.9,No,Low,Yes,1,1,Social media,Yes
+A00745,Male,82.0,35.7,No,Medium,No,0,3,School fair,No
+A00746,Female,65.0,10.7,No,Medium,Yes,0,4,School fair,Yes
+A00747,Female,64.0,36.9,No,High,No,0,3,Referral,No
+A00748,Male,43.0,21.1,No,High,No,0,5,Referral,Yes
+A00749,Male,84.0,20.0,No,Medium,No,2,3,Social media,No
+A00750,Female,65.0,32.3,No,High,Yes,0,4,Website,No
+A00751,Male,52.0,34.9,No,Medium,No,0,6,Referral,Yes
+A00752,Female,78.0,35.7,No,High,No,0,5,Social media,No
+A00753,Female,63.0,37.0,No,Medium,No,0,6,School fair,Yes
+A00754,Female,67.0,14.6,No,Low,No,0,3,School fair,Yes
+A00755,Male,60.0,25.2,No,High,No,0,4,School fair,Yes
+A00756,Female,77.0,19.8,No,Medium,Yes,1,3,Website,No
+A00757,Male,76.0,35.1,Yes,Low,Yes,0,3,Referral,Yes
+A00758,Male,62.0,15.9,No,Low,Yes,0,6,Agent,No
+A00759,Male,68.0,17.8,No,Medium,No,0,2,Website,Yes
+A00760,Male,87.0,2.0,No,Low,No,1,3,School fair,Yes
+A00761,Male,70.0,76.6,No,Medium,Yes,0,1,Website,No
+A00762,Male,63.0,13.1,No,Low,No,0,2,School fair,No
+A00763,Male,85.0,3.9,Yes,High,No,0,6,Referral,No
+A00764,Female,60.0,6.9,No,Low,Yes,0,4,Referral,Yes
+A00765,Female,69.0,13.5,No,Low,Yes,0,0,School fair,No
+A00766,Female,53.0,42.9,No,High,No,0,2,School fair,No
+A00767,Male,57.0,42.0,No,High,No,0,4,Website,No
+A00768,Male,61.0,29.8,No,Low,No,0,5,School fair,No
+A00769,Female,75.0,54.2,No,High,No,0,2,School fair,No
+A00770,Female,80.0,13.2,Yes,High,Yes,0,3,Social media,Yes
+A00771,Male,63.0,29.6,No,Medium,No,0,5,Social media,No
+A00772,Female,77.0,14.5,No,Medium,Yes,0,2,Website,No
+A00773,Male,67.0,13.3,No,Low,No,1,1,Website,No
+A00774,Female,76.0,18.8,No,High,Yes,0,5,Social media,No
+A00775,Male,59.0,12.8,No,Low,Yes,1,2,Social media,Yes
+A00776,Female,71.0,43.9,No,Medium,No,1,1,Social media,No
+A00777,Male,66.0,17.1,No,Medium,No,1,5,School fair,No
+A00778,Female,70.0,10.9,No,Low,No,1,0,Website,No
+A00779,Male,98.0,32.7,No,High,No,0,3,Website,No
+A00780,Female,72.0,20.2,No,High,Yes,0,3,Social media,No
+A00781,Female,85.0,52.4,No,High,Yes,0,3,Website,No
+A00782,Female,81.0,46.5,No,Low,Yes,0,1,School fair,No
+A00783,Female,50.0,15.2,No,Low,No,0,4,Website,Yes
+A00784,Male,73.0,21.6,No,Medium,No,0,3,Website,No
+A00785,Male,81.0,27.8,Yes,High,No,0,6,Referral,No
+A00786,Female,50.0,9.4,No,Medium,No,0,1,Agent,No
+A00787,Female,59.0,5.7,No,Low,No,0,5,Referral,Yes
+A00788,Male,100.0,63.3,No,High,No,0,5,Agent,No
+A00789,Male,69.0,34.6,No,Medium,No,0,4,School fair,No
+A00790,Male,63.0,102.9,No,Low,No,0,3,Website,No
+A00791,Female,69.0,5.9,No,High,No,0,6,Website,No
+A00792,Male,58.0,16.6,No,High,Yes,0,5,Website,Yes
+A00793,Male,70.0,9.3,No,Medium,No,0,6,School fair,No
+A00794,Male,71.0,36.5,No,Medium,Yes,0,3,Agent,No
+A00795,Female,65.0,24.3,No,Medium,No,0,6,Agent,Yes
+A00796,Female,85.0,27.9,No,Medium,No,0,2,Website,No
+A00797,Female,89.0,59.9,No,Medium,No,0,3,Social media,No
+A00798,Female,81.0,18.8,No,High,No,0,3,Social media,No
+A00799,Female,59.0,18.3,No,Medium,No,0,2,School fair,Yes
+A00800,Male,62.0,28.3,Yes,High,Yes,0,6,Website,Yes
+A00801,Female,52.0,78.1,No,Low,Yes,1,2,School fair,Yes
+A00802,Female,73.0,30.1,No,Medium,No,0,6,School fair,No
+A00803,Female,63.0,19.7,No,Medium,No,0,6,Website,No
+A00804,Female,62.0,9.2,No,Low,Yes,0,6,Website,Yes
+A00805,Female,60.0,31.1,No,Medium,Yes,1,1,Website,No
+A00806,Female,71.0,17.3,No,Low,No,0,6,Agent,Yes
+A00807,Male,70.0,8.2,No,High,Yes,0,3,School fair,Yes
+A00808,Male,55.0,13.0,No,Medium,No,1,4,Website,Yes
+A00809,Male,87.0,36.9,No,Medium,Yes,0,4,Social media,No
+A00810,Male,70.0,34.3,No,Low,Yes,1,0,Social media,No
+A00811,Female,52.0,40.1,No,High,Yes,0,3,Website,No
+A00812,Male,79.0,29.1,No,Low,No,0,3,Website,No
+A00813,Male,58.0,25.4,No,Low,No,0,6,Website,No
+A00814,Male,90.0,4.5,No,High,No,0,1,Website,No
+A00815,Female,85.0,20.1,Yes,High,Yes,0,3,School fair,Yes
+A00816,Male,75.0,8.3,No,Low,No,0,6,Social media,Yes
+A00817,Male,96.0,10.0,No,High,No,1,0,Social media,No
+A00818,Male,58.0,13.4,No,Low,Yes,0,1,Social media,No
+A00819,Female,72.0,8.1,No,Medium,No,0,5,Website,No
+A00820,Female,65.0,19.9,No,Medium,No,0,3,Website,No
+A00821,Female,58.0,8.0,No,Medium,Yes,0,1,Referral,Yes
+A00822,Female,53.0,30.2,No,Low,Yes,2,0,School fair,Yes
+A00823,Female,82.0,22.8,Yes,Medium,No,0,2,Social media,No
+A00824,Female,66.0,31.7,No,Medium,Yes,1,0,School fair,Yes
+A00825,Female,57.0,10.6,No,Low,No,0,1,Agent,No
+A00826,Male,62.0,20.5,No,Medium,No,1,3,School fair,No
+A00827,Female,100.0,5.5,Yes,Low,Yes,2,2,Website,Yes
+A00828,Male,69.0,18.1,No,High,No,0,3,School fair,No
+A00829,Female,60.0,14.0,No,Medium,No,0,6,Referral,Yes
+A00830,Male,66.0,4.2,No,Medium,Yes,0,2,Website,Yes
+A00831,Male,83.0,9.4,No,Low,Yes,0,3,Agent,No
+A00832,Male,67.0,57.9,No,Low,No,0,1,School fair,No
+A00833,Male,66.0,6.1,No,High,Yes,0,1,School fair,No
+A00834,Female,67.0,18.3,No,Low,Yes,0,6,School fair,No
+A00835,Female,62.0,6.6,No,Medium,No,0,2,Website,No
+A00836,Female,65.0,11.4,No,Medium,No,0,0,School fair,Yes
+A00837,Female,85.0,11.9,Yes,Medium,Yes,0,4,Referral,Yes
+A00838,Male,66.0,27.5,No,Medium,No,0,5,Website,No
+A00839,Male,67.0,16.1,No,High,Yes,0,2,Referral,No
+A00840,Male,33.0,7.9,No,Low,No,0,6,Website,Yes
+A00841,Female,77.0,24.1,No,Low,No,1,0,School fair,No
+A00842,Male,83.0,40.5,No,Medium,No,0,0,Social media,No
+A00843,Female,60.0,98.8,No,Low,No,0,0,Website,No
+A00844,Female,74.0,34.3,No,High,Yes,0,5,Social media,Yes
+A00845,Female,55.0,35.9,No,Medium,No,1,1,Social media,No
+A00846,Female,72.0,25.5,No,Medium,No,0,5,School fair,No
+A00847,Male,72.0,18.2,No,Medium,No,0,3,Referral,No
+A00848,Female,41.0,25.7,No,Medium,No,1,2,Website,Yes
+A00849,Female,81.0,9.2,Yes,Low,No,0,0,Website,No
+A00850,Female,84.0,40.6,No,Low,No,0,3,Website,No
+A00851,Female,66.0,9.1,No,Medium,No,0,3,Website,No
+A00852,Male,55.0,25.0,No,Medium,No,0,5,Website,No
+A00853,Male,68.0,22.5,Yes,Medium,Yes,2,5,Agent,Yes
+A00854,Male,66.0,10.3,No,Low,No,0,2,Referral,Yes
+A00855,Female,79.0,8.3,No,Medium,No,0,2,Agent,No
+A00856,Male,67.0,22.0,No,Low,No,1,4,Social media,No
+A00857,Female,67.0,47.7,No,Low,Yes,1,6,Referral,No
+A00858,Male,80.0,6.8,Yes,Medium,No,1,6,Social media,No
+A00859,Male,76.0,20.6,Yes,Medium,Yes,0,4,Website,No
+A00860,Female,69.0,11.7,No,Low,No,0,6,Website,No
+A00861,Female,60.0,121.1,No,Medium,No,1,0,School fair,No
+A00862,Female,59.0,18.5,No,Low,No,0,4,Agent,No
+A00863,Male,60.0,11.6,No,Medium,Yes,0,6,School fair,Yes
+A00864,Male,59.0,44.0,No,Low,Yes,0,6,Social media,No
+A00865,Female,64.0,22.6,No,Low,No,1,5,Website,Yes
+A00866,Female,83.0,5.1,No,Medium,Yes,0,4,Website,No
+A00867,Male,64.0,1.2,No,Medium,No,0,5,Website,Yes
+A00868,Female,65.0,26.0,No,Medium,No,1,4,Website,No
+A00869,Female,44.0,46.9,No,Low,No,1,0,Website,No
+A00870,Female,81.0,22.5,Yes,High,No,1,2,Social media,No
+A00871,Female,64.0,38.9,No,Low,Yes,1,5,Social media,Yes
+A00872,Female,76.0,24.5,No,Medium,Yes,0,0,Website,Yes
+A00873,Male,75.0,12.3,No,Medium,No,1,0,Website,No
+A00874,Male,61.0,37.7,No,High,Yes,1,3,Referral,No
+A00875,Male,74.0,48.7,No,High,Yes,0,4,School fair,Yes
+A00876,Female,51.0,6.5,No,Medium,No,2,4,Website,Yes
+A00877,Male,60.0,7.5,No,Low,Yes,0,4,Referral,Yes
+A00878,Male,87.0,8.6,No,Low,No,0,2,Referral,No
+A00879,Male,57.0,25.8,No,Low,No,1,2,Website,Yes
+A00880,Male,74.0,21.2,Yes,High,Yes,0,1,Referral,No
+A00881,Female,69.0,3.8,No,Medium,No,0,4,Website,No
+A00882,Female,59.0,9.1,No,Medium,No,0,4,Referral,Yes
+A00883,Female,86.0,39.2,No,High,Yes,0,1,Website,No
+A00884,Female,67.0,43.7,No,Medium,Yes,0,1,Social media,No
+A00885,Female,78.0,1.8,No,Medium,No,0,0,School fair,Yes
+A00886,Male,93.0,14.7,Yes,Low,Yes,0,5,Social media,Yes
+A00887,Female,50.0,27.4,No,Medium,No,1,2,Website,Yes
+A00888,Female,67.0,19.0,No,Low,Yes,0,1,School fair,No
+A00889,Male,79.0,2.8,No,Medium,Yes,0,0,Social media,No
+A00890,Female,67.0,30.1,No,High,No,0,5,Referral,No
+A00891,Male,83.0,13.6,No,Medium,No,0,6,Social media,No
+A00892,Female,76.0,38.5,No,Medium,No,0,3,Referral,No
+A00893,Male,71.0,42.6,No,Low,Yes,2,6,Website,Yes
+A00894,Female,74.0,7.5,No,Medium,No,0,5,School fair,No
+A00895,Male,59.0,10.9,No,Medium,No,0,3,School fair,No
+A00896,Male,49.0,6.2,No,High,No,0,4,Agent,No
+A00897,Male,46.0,24.0,No,Medium,Yes,1,4,Website,No
+A00898,Male,72.0,21.0,No,Low,Yes,0,6,Website,Yes
+A00899,Male,56.0,22.6,No,Low,Yes,0,1,Website,No
+A00900,Male,85.0,25.0,No,Medium,Yes,1,2,Website,Yes
+A00901,Male,54.0,23.0,No,Medium,No,0,6,Social media,No
+A00902,Male,47.0,32.5,No,Medium,No,1,2,Agent,No
+A00903,Male,44.0,12.2,No,High,No,0,5,Agent,No
+A00904,Male,85.0,17.6,Yes,Medium,No,0,3,Website,No
+A00905,Male,69.0,6.1,No,Medium,No,1,6,Agent,Yes
+A00906,Male,75.0,97.3,No,Medium,No,0,3,School fair,No
+A00907,Male,53.0,12.8,No,Low,No,0,0,Agent,No
+A00908,Male,87.0,8.4,No,Medium,No,0,2,Agent,No
+A00909,Female,50.0,21.5,No,Medium,No,1,0,Website,No
+A00910,Male,68.0,56.5,No,Low,No,0,5,Website,No
+A00911,Female,63.0,1.9,No,High,Yes,0,0,Website,No
+A00912,Male,81.0,2.6,No,High,Yes,0,6,School fair,No
+A00913,Male,54.0,23.3,No,Medium,No,1,2,Agent,No
+A00914,Male,63.0,1.6,No,Medium,No,0,6,Referral,No
+A00915,Male,64.0,31.0,No,Medium,Yes,0,2,School fair,Yes
+A00916,Male,67.0,37.5,No,Low,Yes,0,5,Referral,Yes
+A00917,Male,68.0,12.4,No,Medium,No,0,6,School fair,No
+A00918,Male,77.0,17.6,Yes,Medium,No,0,6,Agent,Yes
+A00919,Male,79.0,30.1,Yes,Medium,Yes,0,1,Website,Yes
+A00920,Female,64.0,21.5,No,Low,No,0,4,Social media,No
+A00921,Male,66.0,16.1,No,Medium,Yes,1,1,Social media,Yes
+A00922,Male,70.0,19.3,No,High,No,0,6,Website,No
+A00923,Female,73.0,16.0,No,Medium,No,2,2,Referral,Yes
+A00924,Female,67.0,0.8,No,Low,Yes,1,1,Referral,Yes
+A00925,Male,75.0,60.6,No,Low,Yes,0,6,School fair,No
+A00926,Female,72.0,49.5,Yes,Low,No,0,5,Website,No
+A00927,Male,78.0,31.0,No,Low,Yes,1,0,Referral,Yes
+A00928,Male,61.0,3.9,No,Medium,No,0,5,School fair,No
+A00929,Male,71.0,20.0,No,Low,Yes,0,2,Website,Yes
+A00930,Female,61.0,52.4,No,High,No,0,3,School fair,No
+A00931,Female,47.0,2.7,No,Medium,Yes,0,4,Agent,Yes
+A00932,Female,60.0,2.6,No,High,Yes,0,5,Agent,Yes
+A00933,Female,70.0,15.3,No,Medium,No,0,5,Website,No
+A00934,Male,62.0,14.0,No,High,No,1,3,Social media,No
+A00935,Female,56.0,10.9,No,Medium,Yes,0,5,School fair,Yes
+A00936,Female,76.0,62.4,Yes,Medium,No,0,1,Social media,No
+A00937,Female,83.0,21.3,No,High,Yes,0,5,Referral,Yes
+A00938,Male,76.0,40.9,No,Medium,No,1,1,Social media,No
+A00939,Female,77.0,12.0,No,Medium,No,0,2,Social media,No
+A00940,Male,52.0,28.4,No,Medium,Yes,1,2,Website,Yes
+A00941,Female,75.0,0.7,No,Medium,Yes,0,1,Referral,Yes
+A00942,Male,88.0,26.0,No,Medium,No,2,3,School fair,No
+A00943,Female,84.0,16.6,Yes,High,No,0,3,School fair,Yes
+A00944,Male,69.0,38.5,No,Medium,Yes,0,4,Website,No
+A00945,Female,82.0,10.5,No,Low,No,0,4,Agent,No
+A00946,Male,65.0,16.0,No,Medium,No,1,4,Social media,Yes
+A00947,Female,64.0,51.9,No,Medium,Yes,2,0,School fair,Yes
+A00948,Male,74.0,22.8,No,Medium,No,1,5,Website,No
+A00949,Male,74.0,10.9,No,Low,Yes,0,0,Referral,Yes
+A00950,Female,61.0,8.3,No,High,No,0,1,Social media,No
+A00951,Male,66.0,45.8,No,Medium,Yes,1,4,Referral,No
+A00952,Male,81.0,13.7,No,High,No,0,6,Website,No
+A00953,Female,63.0,3.3,No,Low,No,0,0,Website,No
+A00954,Female,70.0,10.4,No,Low,Yes,2,4,School fair,Yes
+A00955,Male,72.0,15.4,No,High,Yes,0,2,Website,Yes
+A00956,Female,80.0,45.7,No,Medium,Yes,0,3,School fair,No
+A00957,Male,68.0,29.5,No,Low,Yes,0,1,Referral,No
+A00958,Male,72.0,17.5,No,High,No,0,5,Social media,No
+A00959,Male,83.0,43.6,Yes,Low,Yes,0,2,School fair,Yes
+A00960,Female,63.0,21.3,No,High,Yes,0,4,Social media,No
+A00961,Female,61.0,14.1,No,High,No,0,0,School fair,Yes
+A00962,Male,52.0,54.0,No,Low,Yes,0,1,Website,Yes
+A00963,Male,77.0,25.9,No,Low,No,1,1,Referral,No
+A00964,Male,63.0,36.9,No,Low,Yes,0,0,Website,No
+A00965,Female,62.0,10.1,No,Low,No,2,5,Social media,Yes
+A00966,Male,47.0,10.9,No,Medium,Yes,0,1,School fair,Yes
+A00967,Female,63.0,61.2,No,Low,No,0,3,Website,No
+A00968,Female,57.0,28.1,No,High,No,0,0,Referral,No
+A00969,Male,65.0,40.3,No,High,No,1,6,Referral,Yes
+A00970,Male,64.0,22.4,No,Low,No,0,1,Social media,No
+A00971,Male,69.0,8.0,Yes,Low,Yes,1,1,Social media,Yes
+A00972,Female,88.0,19.4,No,Medium,Yes,0,6,Website,No
+A00973,Female,55.0,20.4,No,Medium,Yes,0,1,Social media,No
+A00974,Female,67.0,38.1,No,High,No,1,6,Website,No
+A00975,Female,62.0,12.8,No,High,Yes,0,6,Website,No
+A00976,Female,65.0,28.0,No,Medium,No,0,6,Website,No
+A00977,Female,70.0,6.0,No,Low,No,0,3,Website,No
+A00978,Female,79.0,14.9,Yes,High,No,0,4,School fair,No
+A00979,Male,70.0,7.9,No,Low,No,1,0,Agent,No
+A00980,Female,71.0,26.8,Yes,Medium,Yes,0,5,School fair,Yes
+A00981,Female,77.0,59.9,No,High,No,0,6,Social media,No
+A00982,Male,70.0,18.9,No,High,Yes,1,0,Referral,No
+A00983,Female,64.0,28.2,No,Low,No,0,2,Social media,No
+A00984,Female,69.0,21.9,No,Medium,Yes,0,6,School fair,Yes
+A00985,Male,70.0,16.8,No,High,Yes,0,0,Website,No
+A00986,Female,50.0,65.9,No,High,No,0,6,Website,No
+A00987,Female,78.0,26.4,Yes,Low,No,1,4,Website,Yes
+A00988,Male,71.0,11.2,No,Medium,No,0,0,School fair,No
+A00989,Female,78.0,15.4,Yes,Medium,Yes,0,6,Website,Yes
+A00990,Female,72.0,46.8,No,Low,No,1,4,Social media,No
+A00991,Male,55.0,1.9,No,High,No,0,2,Social media,Yes
+A00992,Male,61.0,4.2,No,Low,No,1,3,Social media,Yes
+A00993,Female,69.0,41.9,No,Medium,Yes,0,1,School fair,No
+A00994,Male,55.0,56.5,No,Medium,No,2,6,Social media,Yes
+A00995,Female,83.0,5.5,No,Low,Yes,0,4,Website,Yes
+A00996,Female,55.0,20.7,No,Medium,No,1,0,School fair,No
+A00997,Male,89.0,43.6,Yes,Medium,Yes,2,2,Referral,No
+A00998,Male,73.0,25.0,No,Medium,No,0,0,Social media,No
+A00999,Female,76.0,43.0,No,High,No,0,0,Website,No
+A01000,Male,55.0,48.5,No,Low,Yes,0,3,Social media,No
+A01001,Female,66.0,38.8,No,Medium,No,2,1,Website,No
+A01002,Male,65.0,0.8,No,Medium,Yes,0,2,Social media,No
+A01003,Female,86.0,18.5,No,Medium,Yes,0,5,Website,Yes
+A01004,Female,93.0,5.1,No,Medium,Yes,0,4,Website,No
+A01005,Female,91.0,6.2,No,Low,No,1,3,Referral,Yes
+A01006,Female,41.0,22.1,No,High,No,0,4,Referral,Yes
+A01007,Male,70.0,24.0,No,Medium,No,1,4,Agent,No
+A01008,Male,55.0,25.2,No,Medium,No,0,3,Website,No
+A01009,Female,69.0,48.9,No,High,Yes,1,0,Social media,No
+A01010,Female,65.0,30.4,No,High,No,0,2,Website,No
+A01011,Male,51.0,0.5,No,Medium,No,0,3,School fair,No
+A01012,Female,56.0,55.7,No,High,No,0,4,School fair,No
+A01013,Female,77.0,33.3,Yes,High,No,0,4,School fair,No
+A01014,Female,68.0,20.8,No,High,No,1,0,Website,No
+A01015,Female,63.0,7.3,No,Low,Yes,0,5,Social media,Yes
+A01016,Female,71.0,23.0,No,High,No,0,0,Referral,No
+A01017,Female,57.0,3.1,Yes,Medium,No,0,3,School fair,Yes
+A01018,Female,77.0,31.9,Yes,Low,No,2,2,School fair,Yes
+A01019,Female,66.0,54.5,No,Low,No,0,6,Social media,No
+A01020,Male,82.0,33.8,No,Low,No,2,4,Website,No
+A01021,Female,47.0,20.3,Yes,Medium,No,0,0,Social media,Yes
+A01022,Male,74.0,31.4,No,Medium,Yes,2,0,Social media,No
+A01023,Male,65.0,66.8,Yes,Low,No,0,3,School fair,No
+A01024,Male,54.0,31.1,No,Medium,Yes,0,1,Referral,Yes
+A01025,Male,58.0,25.2,No,Low,No,0,4,School fair,Yes
+A01026,Male,71.0,18.1,No,Medium,No,0,1,School fair,No
+A01027,Female,77.0,13.4,No,Medium,Yes,0,2,Agent,Yes
+A01028,Male,65.0,41.5,No,Low,Yes,2,6,Website,Yes
+A01029,Male,68.0,9.1,No,Medium,Yes,1,3,Social media,Yes
+A01030,Male,64.0,4.4,No,Medium,No,1,4,Website,Yes
+A01031,Female,64.0,29.2,No,Low,No,0,5,Referral,No
+A01032,Male,92.0,45.4,No,High,No,0,5,Social media,No
+A01033,Male,78.0,21.3,Yes,Low,No,0,1,Agent,No
+A01034,Female,88.0,43.1,No,Medium,Yes,0,2,Website,No
+A01035,Male,65.0,12.0,No,Medium,No,1,5,Referral,Yes
+A01036,Male,74.0,5.2,No,Medium,No,0,5,Social media,No
+A01037,Male,68.0,21.2,No,Low,No,0,4,Website,No
+A01038,Male,82.0,38.8,No,Low,No,0,4,Agent,No
+A01039,Male,73.0,72.4,No,Low,No,0,6,Website,No
+A01040,Male,89.0,25.0,No,Low,Yes,0,3,Website,No
+A01041,Female,72.0,19.0,No,Low,Yes,1,0,Social media,Yes
+A01042,Female,65.0,15.1,No,Low,Yes,0,2,Website,Yes
+A01043,Male,58.0,41.4,No,High,No,0,0,School fair,No
+A01044,Male,63.0,40.5,No,High,No,0,2,School fair,No
+A01045,Female,79.0,23.3,No,Low,Yes,0,5,Referral,No
+A01046,Female,64.0,2.9,No,Medium,Yes,0,2,Website,Yes
+A01047,Female,71.0,57.4,No,Medium,No,0,0,School fair,No
+A01048,Female,79.0,7.4,No,Medium,No,1,0,Website,No
+A01049,Male,84.0,30.9,Yes,Low,No,0,0,Referral,No
+A01050,Female,57.0,24.8,No,Low,No,0,6,Social media,No
+A01051,Female,66.0,15.7,No,High,No,0,3,School fair,No
+A01052,Female,55.0,12.7,No,Low,Yes,0,2,Website,Yes
+A01053,Female,71.0,74.4,No,Medium,No,1,3,Social media,No
+A01054,Male,68.0,4.3,No,Low,Yes,0,1,School fair,Yes
+A01055,Male,71.0,1.5,Yes,Medium,No,0,0,Website,Yes
+A01056,Male,54.0,2.9,No,Medium,No,0,2,School fair,No
+A01057,Male,64.0,23.1,No,Medium,Yes,0,2,Agent,No
+A01058,Male,49.0,31.1,No,High,Yes,0,2,School fair,No
+A01059,Female,76.0,28.8,Yes,Medium,No,0,5,Website,Yes
+A01060,Female,63.0,55.2,No,High,Yes,0,0,School fair,Yes
+A01061,Male,61.0,55.6,No,Medium,Yes,1,5,Social media,No
+A01062,Female,72.0,52.9,No,High,No,2,3,Social media,No
+A01063,Male,76.0,8.5,Yes,High,No,0,2,Website,No
+A01064,Female,62.0,11.8,No,High,Yes,0,6,Website,Yes
+A01065,Female,69.0,7.3,No,Medium,Yes,0,3,Referral,Yes
+A01066,Female,72.0,26.1,No,High,No,1,5,School fair,Yes
+A01067,Female,65.0,2.3,No,Medium,No,0,1,School fair,No
+A01068,Male,58.0,31.5,No,Low,Yes,0,0,Website,Yes
+A01069,Female,60.0,20.2,No,Low,Yes,0,0,Website,No
+A01070,Female,77.0,28.7,No,High,No,0,5,Website,No
+A01071,Female,71.0,5.8,Yes,High,No,0,3,School fair,Yes
+A01072,Female,55.0,17.0,No,Medium,Yes,0,5,Agent,No
+A01073,Male,62.0,5.8,No,Medium,No,0,2,Social media,No
+A01074,Female,76.0,33.3,No,High,No,0,5,Website,No
+A01075,Female,68.0,26.2,No,Medium,Yes,0,2,Website,Yes
+A01076,Male,59.0,19.2,No,Low,No,0,1,Referral,Yes
+A01077,Female,54.0,7.1,No,Medium,No,1,5,Social media,No
+A01078,Male,70.0,12.7,No,High,Yes,0,2,Website,No
+A01079,Male,87.0,4.2,Yes,Medium,No,0,1,School fair,No
+A01080,Female,66.0,2.6,Yes,Low,No,0,0,Website,No
+A01081,Female,58.0,15.4,No,Medium,No,0,0,Website,No
+A01082,Female,58.0,17.7,No,High,Yes,1,3,Social media,Yes
+A01083,Female,79.0,5.1,Yes,High,No,0,1,School fair,No
+A01084,Female,45.0,16.8,No,Low,No,0,2,Website,No
+A01085,Female,62.0,13.7,No,Medium,No,0,4,Website,No
+A01086,Male,66.0,38.8,No,Medium,No,0,2,Agent,No
+A01087,Female,60.0,15.3,No,Medium,No,0,2,Website,No
+A01088,Female,91.0,17.2,No,Low,Yes,0,3,Agent,No
+A01089,Female,70.0,14.6,No,Medium,Yes,0,5,Website,Yes
+A01090,Female,69.0,44.4,No,Low,No,0,3,School fair,No
+A01091,Female,79.0,2.3,Yes,Medium,No,0,6,Referral,Yes
+A01092,Female,67.0,61.8,No,Medium,Yes,1,6,Agent,No
+A01093,Female,48.0,33.7,No,Low,Yes,1,0,Website,No
+A01094,Female,70.0,14.3,No,High,Yes,0,3,Social media,No
+A01095,Female,62.0,18.6,No,High,No,2,5,Website,No
+A01096,Female,61.0,28.0,No,Medium,No,0,4,Agent,No
+A01097,Male,82.0,34.3,Yes,High,Yes,1,1,School fair,Yes
+A01098,Female,57.0,11.6,No,Medium,Yes,1,5,School fair,Yes
+A01099,Male,68.0,8.3,No,High,No,0,1,Website,No
+A01100,Male,67.0,33.8,No,Low,Yes,0,4,Referral,Yes
+A01101,Male,71.0,26.0,No,Low,No,0,2,Website,No
+A01102,Female,91.0,32.1,Yes,High,No,0,1,Social media,No
+A01103,Male,57.0,33.8,No,Low,No,0,2,Agent,No
+A01104,Male,67.0,34.1,No,Low,No,1,4,School fair,No
+A01105,Female,80.0,28.3,No,Medium,No,0,3,Social media,No
+A01106,Male,68.0,49.6,Yes,Medium,Yes,0,4,Referral,No
+A01107,Female,59.0,10.1,No,Low,No,0,2,Website,No
+A01108,Male,62.0,29.3,No,Low,No,0,2,School fair,Yes
+A01109,Female,81.0,17.3,Yes,High,No,0,3,School fair,Yes
+A01110,Male,53.0,22.5,No,Low,No,0,0,Social media,No
+A01111,Male,87.0,16.4,No,Low,No,0,1,Referral,No
+A01112,Male,88.0,17.2,No,Low,Yes,0,0,School fair,No
+A01113,Male,69.0,25.7,Yes,High,No,1,0,School fair,No
+A01114,Male,72.0,19.8,Yes,Medium,No,0,1,Website,Yes
+A01115,Female,73.0,45.5,Yes,Low,No,0,6,Referral,Yes
+A01116,Male,64.0,12.7,No,High,No,0,2,Agent,No
+A01117,Male,72.0,11.2,No,Low,No,0,5,School fair,Yes
+A01118,Male,44.0,16.2,No,High,No,0,4,Referral,No
+A01119,Female,49.0,24.8,No,Medium,No,0,5,School fair,No
+A01120,Male,57.0,66.4,No,High,Yes,0,6,School fair,No
+A01121,Male,60.0,22.2,No,High,Yes,0,6,Agent,Yes
+A01122,Female,73.0,22.9,No,Medium,No,0,6,School fair,No
+A01123,Female,70.0,48.5,No,Medium,No,0,5,Website,No
+A01124,Female,77.0,10.2,Yes,Medium,No,0,0,Agent,No
+A01125,Female,68.0,41.4,Yes,Medium,Yes,0,4,Agent,Yes
+A01126,Male,68.0,12.1,No,Low,No,0,2,Agent,No
+A01127,Female,73.0,28.7,No,High,Yes,0,0,Social media,No
+A01128,Female,58.0,21.0,No,High,No,0,0,School fair,No
+A01129,Female,57.0,5.3,No,Medium,Yes,0,6,School fair,Yes
+A01130,Female,61.0,4.1,No,Medium,No,0,3,Website,No
+A01131,Male,52.0,22.4,No,Medium,Yes,0,1,Referral,Yes
+A01132,Male,62.0,16.7,No,Low,No,0,2,Social media,No
+A01133,Male,65.0,12.9,No,Medium,No,0,5,Agent,No
+A01134,Male,56.0,9.9,No,Low,No,0,3,School fair,No
+A01135,Male,58.0,26.4,No,High,No,2,1,Website,No
+A01136,Male,61.0,4.0,No,Low,No,0,0,Website,No
+A01137,Male,80.0,19.5,No,Medium,No,0,6,Website,No
+A01138,Male,83.0,12.3,Yes,Medium,Yes,0,5,Website,Yes
+A01139,Male,58.0,13.0,No,Medium,No,0,1,School fair,Yes
+A01140,Female,80.0,30.9,No,Medium,No,1,0,Website,No
+A01141,Female,67.0,24.5,No,Medium,Yes,0,2,Social media,No
+A01142,Male,56.0,28.7,No,Low,No,0,6,Social media,No
+A01143,Male,64.0,7.6,No,High,No,1,2,Social media,No
+A01144,Female,59.0,18.3,No,High,No,0,6,Referral,No
+A01145,Female,59.0,18.0,No,Low,No,0,4,Referral,Yes
+A01146,Female,51.0,42.5,No,Medium,No,0,3,Social media,Yes
+A01147,Male,69.0,18.1,Yes,Medium,No,0,0,Agent,Yes
+A01148,Male,49.0,11.3,No,Low,No,0,0,Website,No
+A01149,Female,59.0,24.0,No,Medium,No,0,2,Website,Yes
+A01150,Male,73.0,20.1,No,Medium,No,1,4,Agent,Yes
+A01151,Female,87.0,28.9,No,High,No,0,2,Social media,No
+A01152,Female,65.0,2.8,No,Low,No,0,1,School fair,Yes
+A01153,Male,68.0,7.2,No,Medium,Yes,0,3,Social media,No
+A01154,Female,75.0,4.1,No,Medium,Yes,0,3,School fair,Yes
+A01155,Female,65.0,9.0,No,High,No,0,1,Agent,No
+A01156,Female,81.0,28.0,No,Low,Yes,0,6,Referral,No
+A01157,Female,41.0,46.7,No,Low,No,0,2,Social media,No
+A01158,Male,70.0,4.2,No,Medium,Yes,0,3,Agent,No
+A01159,Female,57.0,29.0,No,Medium,No,0,6,Agent,No
+A01160,Male,68.0,29.1,No,High,Yes,1,2,School fair,Yes
+A01161,Male,81.0,33.5,No,Low,Yes,0,2,School fair,Yes
+A01162,Female,67.0,30.4,No,Medium,Yes,0,2,Agent,No
+A01163,Male,61.0,42.6,No,Low,No,0,0,School fair,No
+A01164,Female,67.0,21.2,No,High,No,1,4,Social media,No
+A01165,Male,61.0,15.4,No,Medium,Yes,0,4,Agent,No
+A01166,Male,67.0,14.7,No,Medium,No,0,4,Website,No
+A01167,Male,62.0,23.9,No,Low,No,0,3,School fair,No
+A01168,Female,57.0,28.2,No,Medium,No,1,4,Referral,Yes
+A01169,Male,50.0,36.7,No,High,No,2,2,Social media,Yes
+A01170,Male,72.0,34.3,No,Low,No,1,0,Agent,No
+A01171,Male,62.0,20.1,No,High,No,0,0,Referral,No
+A01172,Male,51.0,23.6,No,Medium,Yes,0,1,Agent,No
+A01173,Male,52.0,11.0,No,Low,No,0,3,Website,No
+A01174,Female,66.0,12.4,No,Low,No,1,0,School fair,Yes
+A01175,Male,56.0,26.5,No,High,Yes,1,3,Website,Yes
+A01176,Male,68.0,13.7,No,High,No,0,6,Referral,No
+A01177,Female,78.0,4.0,No,Medium,No,0,5,Social media,No
+A01178,Female,100.0,31.8,Yes,Medium,Yes,1,2,School fair,Yes
+A01179,Male,69.0,31.1,No,High,No,0,3,Referral,No
+A01180,Male,83.0,18.5,No,Low,No,0,4,School fair,No
+A01181,Male,48.0,10.4,No,High,Yes,0,1,Website,No
+A01182,Female,58.0,33.0,No,Low,No,0,0,Social media,No
+A01183,Female,68.0,47.8,No,Medium,Yes,0,0,Social media,No
+A01184,Female,71.0,4.4,No,Medium,No,0,3,Social media,No
+A01185,Female,48.0,21.5,No,Medium,No,0,6,School fair,No
+A01186,Female,77.0,1.4,No,Medium,No,0,6,Website,No
+A01187,Male,72.0,25.2,No,Medium,No,0,4,Social media,Yes
+A01188,Female,70.0,6.6,No,High,No,0,6,Website,No
+A01189,Female,71.0,18.0,No,High,Yes,2,2,School fair,No
+A01190,Female,60.0,47.3,No,Low,No,2,6,Social media,No
+A01191,Male,77.0,15.0,No,Medium,No,0,6,School fair,No
+A01192,Male,68.0,27.0,No,Medium,No,0,3,School fair,No
+A01193,Male,62.0,4.3,No,Medium,Yes,0,4,Referral,Yes
+A01194,Male,72.0,11.3,No,Medium,No,0,4,School fair,No
+A01195,Male,54.0,13.2,No,Medium,Yes,0,5,Website,Yes
+A01196,Male,61.0,32.9,No,High,No,0,0,Social media,No
+A01197,Female,61.0,52.3,No,Low,No,0,2,Website,No
+A01198,Male,68.0,12.9,No,High,No,0,2,Website,No
+A01199,Male,62.0,2.5,No,High,No,0,0,Website,No
+A01200,Male,68.0,6.0,No,Medium,No,0,2,Referral,No
+A01201,Male,51.0,14.8,No,Medium,No,0,2,Social media,No
+A01202,Female,52.0,30.3,No,Low,Yes,0,1,Social media,Yes
+A01203,Male,71.0,25.0,No,Low,No,0,2,Website,No
+A01204,Female,66.0,32.1,No,High,No,0,6,Referral,No
+A01205,Female,58.0,50.2,No,Medium,Yes,1,2,Website,No
+A01206,Male,69.0,38.5,Yes,Low,Yes,0,3,Referral,No
+A01207,Female,70.0,9.1,No,High,No,0,1,Social media,No
+A01208,Female,77.0,8.0,No,High,No,1,6,Social media,No
+A01209,Male,71.0,25.1,No,High,Yes,0,1,Referral,No
+A01210,Female,58.0,14.4,No,Medium,No,0,5,Website,No
+A01211,Female,67.0,19.6,No,Low,Yes,0,6,Website,No
+A01212,Male,78.0,45.0,Yes,Low,No,0,3,School fair,Yes
+A01213,Female,73.0,14.6,No,Low,Yes,0,5,School fair,Yes
+A01214,Female,59.0,1.3,No,High,No,1,5,Website,No
+A01215,Female,80.0,33.4,No,Low,Yes,0,6,School fair,Yes
+A01216,Male,59.0,25.2,No,Medium,No,1,0,Agent,No
+A01217,Female,64.0,18.8,No,Low,Yes,0,5,Website,Yes
+A01218,Male,46.0,50.2,No,Low,No,0,4,Social media,No
+A01219,Male,67.0,8.7,No,Low,Yes,1,4,Website,Yes
+A01220,Female,70.0,37.0,No,Low,No,0,5,School fair,Yes
+A01221,Female,64.0,24.2,No,Medium,No,0,4,Social media,No
+A01222,Male,66.0,25.8,No,Medium,Yes,0,3,Website,Yes
+A01223,Female,58.0,29.5,No,Medium,No,0,2,Social media,No
+A01224,Male,72.0,22.9,Yes,High,No,0,3,Agent,No
+A01225,Female,61.0,16.9,No,Low,No,0,5,Website,No
+A01226,Male,73.0,8.6,No,Medium,Yes,0,5,School fair,Yes
+A01227,Male,71.0,69.3,No,Low,No,0,4,Website,No
+A01228,Female,68.0,15.6,No,Low,Yes,1,4,Agent,Yes
+A01229,Male,70.0,35.9,No,Low,Yes,0,0,Social media,No
+A01230,Female,70.0,36.2,No,High,No,0,6,School fair,No
+A01231,Female,65.0,3.6,No,Medium,No,0,3,Social media,No
+A01232,Female,50.0,32.2,No,Low,Yes,1,2,Website,Yes
+A01233,Female,85.0,3.1,No,Medium,No,0,4,Website,No
+A01234,Female,93.0,4.9,No,Low,Yes,1,2,Social media,Yes
+A01235,Male,70.0,35.2,No,Low,No,0,5,Referral,Yes
+A01236,Male,59.0,50.2,No,Medium,No,0,1,Agent,No
+A01237,Male,70.0,7.7,No,Low,No,0,0,School fair,No
+A01238,Female,53.0,17.2,No,High,No,0,0,Agent,No
+A01239,Female,74.0,11.8,Yes,Medium,Yes,0,4,Social media,Yes
+A01240,Female,86.0,9.6,No,Low,No,0,0,Website,Yes
+A01241,Male,73.0,9.0,No,Low,No,0,5,Website,No
+A01242,Female,74.0,11.5,No,High,Yes,0,1,Agent,No
+A01243,Female,46.0,45.6,No,Low,Yes,1,6,Website,Yes
+A01244,Male,64.0,3.4,No,Medium,No,1,1,Social media,No
+A01245,Male,54.0,29.5,No,High,No,0,4,Referral,Yes
+A01246,Female,87.0,12.2,Yes,High,No,0,4,Website,No
+A01247,Male,67.0,84.3,Yes,High,No,0,4,School fair,No
+A01248,Male,65.0,33.0,No,Medium,No,0,1,School fair,Yes
+A01249,Female,74.0,81.9,Yes,Medium,Yes,0,1,School fair,No
+A01250,Male,80.0,7.7,No,High,No,0,2,School fair,No
+A01251,Male,76.0,11.3,No,Medium,No,2,3,Referral,No
+A01252,Female,60.0,4.3,No,High,No,0,2,Website,No
+A01253,Male,73.0,36.8,Yes,Low,No,0,0,Website,No
+A01254,Female,75.0,43.5,No,Low,No,1,5,School fair,Yes
+A01255,Female,65.0,6.7,No,Medium,No,0,3,Referral,No
+A01256,Female,77.0,4.6,No,Medium,Yes,0,4,Social media,Yes
+A01257,Male,61.0,37.1,No,Medium,Yes,0,4,Referral,No
+A01258,Female,75.0,15.0,No,Low,No,0,4,Website,No
+A01259,Male,82.0,101.2,No,Low,No,2,3,Social media,No
+A01260,Female,74.0,38.3,No,Medium,No,0,4,Website,Yes
+A01261,Female,59.0,12.6,No,Medium,No,0,3,Website,Yes
+A01262,Male,75.0,10.7,No,High,No,0,2,Social media,No
+A01263,Male,79.0,25.9,Yes,Medium,No,0,5,School fair,No
+A01264,Female,77.0,10.8,Yes,Medium,No,0,2,Referral,No
+A01265,Female,59.0,20.8,No,Medium,Yes,1,3,Agent,Yes
+A01266,Female,69.0,9.2,No,Medium,Yes,0,1,Website,Yes
+A01267,Female,70.0,25.4,No,Low,No,0,3,Website,No
+A01268,Male,100.0,8.1,Yes,Medium,No,0,3,Website,Yes
+A01269,Male,78.0,23.1,No,Medium,No,0,6,Website,No
+A01270,Male,67.0,28.6,No,High,No,0,4,Website,No
+A01271,Male,83.0,28.8,No,High,No,0,6,Website,Yes
+A01272,Male,67.0,14.3,No,Medium,No,1,5,Website,Yes
+A01273,Male,70.0,49.8,No,Low,No,1,5,Referral,Yes
+A01274,Female,88.0,38.9,Yes,Medium,Yes,0,1,School fair,Yes
+A01275,Male,85.0,12.9,No,High,No,0,3,School fair,No
+A01276,Female,74.0,13.9,No,Medium,No,0,5,Website,No
+A01277,Female,62.0,28.3,No,High,No,0,5,Agent,No
+A01278,Female,36.0,22.8,No,Medium,No,0,3,Social media,No
+A01279,Female,71.0,18.0,No,Low,Yes,0,1,School fair,Yes
+A01280,Female,59.0,44.2,No,High,Yes,0,4,Agent,No
+A01281,Male,82.0,6.5,No,High,Yes,0,0,Website,Yes
+A01282,Male,83.0,19.3,No,High,Yes,1,1,Website,Yes
+A01283,Male,55.0,30.5,No,Medium,Yes,0,3,School fair,Yes
+A01284,Female,55.0,31.6,No,Low,No,0,5,Social media,No
+A01285,Female,65.0,14.2,No,High,Yes,0,2,Referral,No
+A01286,Female,71.0,37.7,No,Medium,Yes,0,3,Social media,Yes
+A01287,Female,80.0,61.1,No,High,Yes,1,6,Website,No
+A01288,Male,55.0,22.2,No,Medium,Yes,0,0,School fair,Yes
+A01289,Female,45.0,42.6,No,Medium,No,0,5,School fair,No
+A01290,Male,65.0,25.6,No,High,No,0,4,School fair,No
+A01291,Male,63.0,19.7,No,Low,Yes,0,2,Website,No
+A01292,Male,67.0,44.1,No,Medium,No,0,1,Website,No
+A01293,Male,85.0,40.2,Yes,Low,Yes,0,5,Social media,Yes
+A01294,Male,62.0,76.8,No,High,No,0,5,Agent,No
+A01295,Male,80.0,50.3,No,Medium,No,0,5,School fair,Yes
+A01296,Female,66.0,13.4,No,Medium,No,0,6,Website,No
+A01297,Male,74.0,33.7,Yes,Medium,No,1,0,Website,Yes
+A01298,Female,78.0,76.6,No,Medium,No,0,3,Agent,No
+A01299,Male,67.0,17.3,No,Medium,No,1,0,Social media,No
+A01300,Female,50.0,12.2,No,Medium,Yes,1,3,School fair,Yes
+A01301,Male,57.0,23.3,No,Low,Yes,2,6,School fair,Yes
+A01302,Male,66.0,32.9,No,Low,No,0,3,School fair,No
+A01303,Female,50.0,23.5,No,High,No,0,0,Referral,No
+A01304,Male,52.0,29.9,No,Low,No,0,6,School fair,No
+A01305,Male,62.0,12.0,No,Low,Yes,0,4,Agent,Yes
+A01306,Male,56.0,17.4,No,Medium,Yes,0,3,Agent,No
+A01307,Female,76.0,85.2,Yes,High,Yes,0,6,Social media,No
+A01308,Female,76.0,3.8,No,Low,No,0,3,School fair,Yes
+A01309,Male,38.0,11.2,No,Medium,Yes,0,1,Referral,Yes
+A01310,Male,74.0,30.4,Yes,Medium,No,0,4,Social media,No
+A01311,Male,59.0,6.1,No,High,No,0,4,School fair,No
+A01312,Female,65.0,14.7,No,Low,No,0,3,Referral,No
+A01313,Female,84.0,49.2,No,Medium,No,0,4,Website,No
+A01314,Male,69.0,8.2,No,High,No,0,2,Social media,No
+A01315,Female,65.0,14.8,No,Medium,No,0,1,Agent,No
+A01316,Female,58.0,50.5,No,Low,Yes,0,0,Referral,Yes
+A01317,Female,70.0,37.1,No,Medium,No,0,6,Website,No
+A01318,Male,75.0,14.9,No,Medium,No,1,0,Social media,No
+A01319,Female,78.0,32.2,No,Low,No,0,5,Website,No
+A01320,Female,63.0,16.5,No,Low,Yes,0,2,Social media,Yes
+A01321,Female,91.0,40.4,No,Low,No,1,1,Agent,No
+A01322,Male,67.0,15.2,No,High,Yes,0,6,Referral,Yes
+A01323,Female,89.0,30.4,Yes,Medium,Yes,0,4,Website,Yes
+A01324,Female,70.0,35.5,Yes,Low,Yes,0,4,Website,Yes
+A01325,Female,88.0,20.2,No,Low,No,0,0,School fair,No
+A01326,Female,88.0,51.6,No,High,No,0,3,Website,No
+A01327,Male,59.0,21.1,No,Medium,No,1,1,Website,Yes
+A01328,Female,67.0,47.0,No,Medium,No,0,4,School fair,No
+A01329,Male,67.0,15.2,No,Low,Yes,0,3,Website,No
+A01330,Male,77.0,52.0,No,Low,Yes,0,4,School fair,No
+A01331,Male,59.0,90.9,No,High,Yes,1,1,Website,No
+A01332,Female,56.0,6.2,No,Low,No,1,0,School fair,No
+A01333,Male,100.0,36.5,No,Medium,No,1,4,Agent,Yes
+A01334,Female,78.0,33.3,No,Low,No,0,6,Website,No
+A01335,Male,83.0,17.1,No,Medium,No,0,3,School fair,No
+A01336,Male,72.0,27.1,No,High,Yes,0,1,Website,No
+A01337,Male,73.0,48.8,No,High,Yes,1,6,Social media,Yes
+A01338,Male,78.0,17.2,No,High,No,0,3,Agent,No
+A01339,Female,73.0,10.0,No,High,No,0,4,Website,No
+A01340,Female,67.0,9.7,No,High,Yes,0,3,Website,No
+A01341,Male,66.0,43.4,No,Low,Yes,0,5,School fair,No
+A01342,Female,86.0,25.1,No,Medium,Yes,0,1,Website,No
+A01343,Male,61.0,10.3,No,Medium,No,0,5,School fair,No
+A01344,Female,77.0,30.4,Yes,Low,No,1,3,School fair,No
+A01345,Female,71.0,10.5,No,Medium,No,0,5,School fair,No
+A01346,Male,67.0,1.3,No,Medium,No,0,1,Social media,No
+A01347,Female,79.0,41.6,Yes,Medium,No,1,3,Website,No
+A01348,Female,64.0,8.0,Yes,Medium,No,0,1,Website,No
+A01349,Male,44.0,24.2,No,Medium,No,0,1,Website,Yes
+A01350,Female,79.0,10.8,No,Medium,No,0,0,Social media,No
+A01351,Female,71.0,9.0,No,Low,Yes,2,3,Website,Yes
+A01352,Male,74.0,32.3,No,Low,No,2,4,Agent,No
+A01353,Female,82.0,29.0,No,Medium,No,0,2,School fair,No
+A01354,Male,68.0,4.1,Yes,Medium,Yes,1,5,School fair,Yes
+A01355,Female,84.0,16.2,No,High,No,0,5,Social media,No
+A01356,Male,66.0,27.1,No,High,No,0,0,Social media,No
+A01357,Female,95.0,32.4,No,High,No,0,4,Website,No
+A01358,Female,54.0,24.8,No,Medium,No,0,1,Social media,No
+A01359,Female,68.0,14.4,No,Low,No,0,2,Website,No
+A01360,Female,65.0,44.3,No,Medium,No,1,0,Agent,No
+A01361,Female,53.0,46.6,No,Medium,No,1,0,Agent,No
+A01362,Male,56.0,45.5,No,High,No,1,2,Social media,No
+A01363,Male,68.0,28.4,No,High,No,2,2,Website,No
+A01364,Female,47.0,23.4,No,Medium,No,2,1,Website,Yes
+A01365,Female,67.0,7.5,No,Medium,No,0,3,Website,No
+A01366,Female,76.0,8.5,No,Low,Yes,0,2,Website,No
+A01367,Male,54.0,4.1,No,Medium,No,0,2,Social media,Yes
+A01368,Female,57.0,9.6,No,Low,No,0,3,School fair,No
+A01369,Male,50.0,58.3,No,Low,No,0,0,School fair,No
+A01370,Female,61.0,17.7,No,Medium,No,0,5,Website,No
+A01371,Female,64.0,16.1,No,High,No,0,3,School fair,No
+A01372,Female,57.0,26.4,No,Medium,Yes,0,4,Referral,Yes
+A01373,Male,58.0,19.7,No,High,No,0,0,Agent,No
+A01374,Male,68.0,10.0,No,High,No,1,3,Social media,No
+A01375,Male,71.0,15.6,No,Low,Yes,1,6,Website,Yes
+A01376,Male,52.0,16.4,No,Low,Yes,0,2,Social media,Yes
+A01377,Male,60.0,20.5,No,Low,Yes,1,0,Social media,Yes
+A01378,Female,58.0,8.1,No,Low,No,2,4,Website,No
+A01379,Male,47.0,5.6,No,High,No,0,5,Social media,No
+A01380,Female,66.0,13.7,No,Medium,No,0,6,Social media,No
+A01381,Male,72.0,13.4,No,High,No,1,1,Social media,No
+A01382,Female,69.0,41.1,No,Low,No,0,6,Referral,No
+A01383,Female,56.0,35.8,No,Medium,No,0,0,Referral,No
+A01384,Male,80.0,4.0,Yes,High,No,0,0,Social media,No
+A01385,Female,76.0,34.4,No,Medium,No,0,4,Referral,No
+A01386,Female,58.0,14.9,Yes,Medium,No,0,3,Referral,Yes
+A01387,Male,63.0,20.0,No,Low,No,0,4,Website,No
+A01388,Male,77.0,13.7,Yes,Low,No,0,1,Social media,Yes
+A01389,Male,61.0,78.5,No,High,No,0,6,Agent,No
+A01390,Female,80.0,3.1,Yes,Low,Yes,0,6,Agent,Yes
+A01391,Male,85.0,16.1,No,Medium,No,0,6,Referral,No
+A01392,Female,66.0,11.8,No,Low,No,0,5,Website,Yes
+A01393,Male,68.0,8.5,No,Medium,No,0,3,Website,Yes
+A01394,Female,67.0,21.8,Yes,High,No,0,1,Website,No
+A01395,Female,83.0,51.8,No,Medium,Yes,0,0,School fair,No
+A01396,Male,77.0,16.1,No,Medium,Yes,0,4,School fair,No
+A01397,Female,55.0,1.3,No,Medium,Yes,0,2,Website,Yes
+A01398,Male,51.0,20.1,No,Low,Yes,1,3,School fair,Yes
+A01399,Male,60.0,13.6,No,Low,No,0,2,Social media,No
+A01400,Male,63.0,1.6,No,Medium,Yes,0,2,Agent,Yes
+A01401,Male,55.0,28.2,No,High,No,0,0,Website,No
+A01402,Female,77.0,74.9,No,Medium,No,0,0,Agent,No
+A01403,Male,68.0,6.4,No,High,No,1,0,Website,No
+A01404,Female,78.0,38.2,No,High,Yes,0,1,School fair,No
+A01405,Female,79.0,36.6,No,Low,Yes,0,5,Social media,Yes
+A01406,Male,56.0,36.5,No,Low,No,1,0,Referral,No
+A01407,Male,91.0,10.7,No,Medium,No,0,5,Website,No
+A01408,Female,86.0,37.5,No,Low,No,0,6,Website,Yes
+A01409,Male,65.0,1.4,No,Medium,Yes,0,4,School fair,Yes
+A01410,Male,57.0,39.0,No,Medium,No,0,5,Social media,No
+A01411,Male,57.0,46.0,No,Low,Yes,1,6,Social media,Yes
+A01412,Female,73.0,85.3,No,Low,No,0,2,Website,No
+A01413,Male,61.0,22.0,No,Low,No,1,0,Agent,No
+A01414,Male,71.0,15.7,No,Low,Yes,0,6,Referral,No
+A01415,Female,88.0,1.0,No,High,No,0,2,School fair,No
+A01416,Female,66.0,5.6,No,Medium,Yes,2,5,Social media,Yes
+A01417,Male,63.0,34.6,No,Low,Yes,1,3,School fair,Yes
+A01418,Female,72.0,29.0,No,Medium,Yes,0,4,Social media,No
+A01419,Female,71.0,16.5,Yes,Low,No,1,6,School fair,Yes
+A01420,Female,55.0,66.1,No,Medium,No,0,6,School fair,No
+A01421,Female,46.0,12.9,No,Low,No,2,4,Referral,Yes
+A01422,Female,65.0,42.8,No,Medium,No,0,3,Social media,No
+A01423,Male,62.0,63.3,No,Medium,No,0,0,Referral,No
+A01424,Female,61.0,17.7,No,Low,No,0,4,Social media,Yes
+A01425,Male,67.0,9.0,No,Low,Yes,0,0,School fair,Yes
+A01426,Male,72.0,28.1,Yes,High,No,0,4,Website,Yes
+A01427,Male,57.0,41.8,No,Medium,No,0,0,Social media,No
+A01428,Female,76.0,52.1,No,High,Yes,0,5,School fair,No
+A01429,Female,57.0,23.1,No,Medium,No,2,6,Website,No
+A01430,Male,65.0,20.2,No,Medium,No,1,3,School fair,No
+A01431,Male,69.0,12.4,No,Low,No,0,4,School fair,Yes
+A01432,Female,76.0,14.6,No,Medium,No,0,2,Agent,No
+A01433,Female,82.0,31.8,Yes,Low,No,0,0,Agent,No
+A01434,Male,72.0,7.7,No,High,Yes,0,1,School fair,No
+A01435,Female,66.0,14.7,No,Low,Yes,0,4,Website,Yes
+A01436,Female,72.0,20.9,No,High,No,1,0,Referral,No
+A01437,Female,72.0,8.3,Yes,High,No,1,3,Referral,Yes
+A01438,Female,60.0,21.9,No,Medium,No,1,3,Social media,Yes
+A01439,Male,67.0,13.2,No,High,Yes,0,0,Social media,Yes
+A01440,Male,64.0,14.2,No,Medium,Yes,0,6,Referral,Yes
+A01441,Male,71.0,15.6,No,High,Yes,0,1,Website,No
+A01442,Female,47.0,17.8,No,Low,No,0,5,Social media,No
+A01443,Male,50.0,15.7,No,Low,Yes,0,3,Social media,Yes
+A01444,Female,41.0,25.0,No,Low,No,0,1,Social media,No
+A01445,Female,77.0,12.5,Yes,Low,No,0,1,Website,Yes
+A01446,Female,62.0,9.1,No,Low,No,2,0,Referral,No
+A01447,Female,67.0,4.0,No,Medium,No,0,3,Website,Yes
+A01448,Female,44.0,12.2,No,Medium,No,0,5,Website,Yes
+A01449,Female,74.0,5.5,No,Medium,No,0,0,School fair,No
+A01450,Female,70.0,13.3,No,Medium,No,1,1,Website,Yes
+A01451,Male,83.0,65.8,Yes,Medium,No,0,1,Website,No
+A01452,Female,85.0,33.2,No,Low,No,0,6,Website,No
+A01453,Male,72.0,32.5,No,Medium,Yes,0,2,Website,No
+A01454,Male,69.0,28.3,No,Medium,No,0,2,Social media,Yes
+A01455,Male,71.0,2.6,No,Medium,No,0,1,Website,No
+A01456,Female,66.0,8.6,No,Medium,No,1,1,Referral,No
+A01457,Female,64.0,46.9,No,Medium,No,0,2,Referral,No
+A01458,Female,67.0,16.0,No,High,No,1,3,Referral,No
+A01459,Male,70.0,29.8,No,Medium,No,1,4,Website,Yes
+A01460,Male,58.0,10.2,No,Medium,Yes,0,4,Referral,Yes
+A01461,Male,63.0,10.2,No,Low,No,0,2,Social media,No
+A01462,Male,89.0,26.5,Yes,High,Yes,0,2,School fair,Yes
+A01463,Female,61.0,41.1,No,Medium,No,2,2,School fair,Yes
+A01464,Female,62.0,32.3,No,Low,No,2,4,Social media,Yes
+A01465,Female,73.0,59.8,No,Medium,No,0,0,Website,No
+A01466,Male,56.0,21.8,No,Medium,No,0,5,School fair,No
+A01467,Male,63.0,15.6,No,Low,No,0,4,School fair,No
+A01468,Male,50.0,24.2,No,Low,No,2,5,Website,Yes
+A01469,Male,66.0,39.4,No,High,No,0,2,School fair,No
+A01470,Female,56.0,28.8,No,Low,No,1,1,School fair,Yes
+A01471,Male,43.0,21.4,No,High,No,0,1,School fair,No
+A01472,Male,72.0,32.5,No,Medium,No,0,2,School fair,No
+A01473,Female,76.0,21.7,Yes,Medium,No,1,4,School fair,No
+A01474,Female,64.0,14.8,No,Low,No,0,6,Referral,Yes
+A01475,Male,89.0,12.5,Yes,High,No,1,5,Agent,No
+A01476,Female,47.0,5.8,No,Low,No,0,0,Referral,Yes
+A01477,Female,49.0,20.8,No,High,No,1,5,Referral,Yes
+A01478,Male,68.0,42.8,No,High,No,1,1,School fair,No
+A01479,Male,78.0,9.1,No,Low,Yes,0,3,Referral,Yes
+A01480,Female,65.0,29.1,No,Medium,No,0,0,Social media,No
+A01481,Female,62.0,11.1,No,High,Yes,0,5,Agent,Yes
+A01482,Male,54.0,42.2,No,Medium,Yes,0,4,Social media,Yes
+A01483,Female,89.0,24.9,No,Medium,No,0,2,Social media,No
+A01484,Female,60.0,10.2,No,Medium,No,1,4,School fair,Yes
+A01485,Male,75.0,18.3,No,Low,No,0,4,Website,No
+A01486,Female,70.0,47.0,No,Medium,Yes,0,1,Website,No
+A01487,Male,50.0,8.9,No,High,No,0,0,Social media,No
+A01488,Female,77.0,2.7,Yes,High,No,1,6,Website,Yes
+A01489,Male,59.0,42.8,No,Low,No,0,3,School fair,No
+A01490,Female,72.0,7.5,No,Low,No,0,2,Referral,No
+A01491,Male,74.0,7.7,No,Low,Yes,0,1,Referral,No
+A01492,Female,65.0,11.3,No,Medium,No,0,1,Referral,No
+A01493,Female,88.0,10.2,No,Low,Yes,0,1,Website,Yes
+A01494,Male,84.0,51.6,No,Medium,Yes,0,2,School fair,No
+A01495,Male,66.0,28.9,No,Medium,No,1,6,Website,Yes
+A01496,Female,77.0,10.3,No,Medium,No,0,6,Website,No
+A01497,Female,83.0,7.7,No,High,Yes,1,5,Referral,No
+A01498,Female,89.0,3.7,No,Low,No,0,2,Website,No
+A01499,Male,64.0,15.9,No,Low,Yes,0,0,Referral,Yes
+A01500,Male,92.0,26.3,No,High,No,0,0,Referral,Yes
