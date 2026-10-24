@@ -54,10 +54,13 @@ Tip: also add a button "Open the app in full screen" that links to the same addr
 
 ## Using the site
 
-1. **Welcome screen**: visitors type their name (and, optionally, their organisation) and pick what they want to
-   understand: **Employees, Customers, Students, Teachers, Applicants** or **My own data**. ChurnSense then takes them
+1. **Welcome screen**: visitors choose **School** or **Business**, type their name (and, optionally, their
+   organisation, e.g. Mayo College, Ajmer) and pick what they want to understand. School shows **Students, Teachers,
+   Applicants** and **My own data**; Business shows **Employees, Customers, Applicants** and **My own data**. ChurnSense then takes them
    straight to a matching workspace: the right sample is loaded, the greeting and example questions fit their topic,
    and a ready-made question is in the prompt box. **Continue as guest** skips this. **Sign out** (top right) goes back.
+   - Every choice except **My own data** opens with **test data** (a sample spreadsheet). The page says so on the
+     welcome screen and in a banner on the Home page, whose **Use my institution's data** button switches to My own data.
    - This is a *profile*, not a password login: it is saved only in that visitor's browser, so nothing is sent anywhere.
 2. **Dashboard**: after the first analysis, the Home page shows five summary cards (how many people, the leave / join
    rate, the best model and its score, how many are high risk, and the top reason).

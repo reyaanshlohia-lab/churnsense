@@ -658,7 +658,29 @@ const ROLES = {
     examples: ['Who is most likely to leave, and why?', 'Show all graphs', 'Compare the models', 'Show the segments',
                'Is the model fair?', 'help'] },
 };
+const ORG_TYPES = {
+  school: { label: 'School', placeholder: 'e.g. Mayo College, Ajmer', applicants: 'Who is likely to enrol' },
+  business: { label: 'Business', placeholder: 'e.g. Sharma Textiles, Jaipur', applicants: 'Who is likely to accept and join' },
+};
 const PROFILE_KEY = 'churnsense-profile';
+
+function orgTypeOf(profile) {
+  if (ORG_TYPES[profile.orgType]) return profile.orgType;
+  return ['employees', 'customers'].includes(profile.role) ? 'business' : 'school';
+}
+
+// School shows Students, Teachers, Applicants and My own data; Business shows Employees, Customers, Applicants and My own data.
+function applyOrgType(type) {
+  const org = ORG_TYPES[type] || ORG_TYPES.school;
+  $$('.role[data-org]').forEach((tile) => {
+    const shown = tile.dataset.org.split(' ').includes(type);
+    tile.hidden = !shown;
+    const input = $('input', tile);
+    if (!shown && input.checked) input.checked = false;
+  });
+  $('#lg-org').placeholder = org.placeholder;
+  $('#applicant-desc').textContent = org.applicants;
+}
 
 function loadProfile() {
   try { return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); } catch (e) { return null; }
@@ -678,15 +700,24 @@ function enterApp(profile) {
   const role = ROLES[profile.role] || ROLES.own;
   $('#login').hidden = true;
   $('#app').hidden = false;
+  window.scrollTo(0, 0);   // the sign-in page may have been scrolled down to the Continue button
   const name = profile.name || 'Guest';
   $('#user-name').textContent = name;
-  $('#user-org').textContent = profile.org || (profile.guest ? 'Guest session' : '');
+  const orgType = ORG_TYPES[orgTypeOf(profile)];
+  $('#user-org').textContent = profile.guest ? 'Guest session' : profile.org ? `${profile.org} · ${orgType.label}` : orgType.label;
+  $('#org-badge').textContent = (orgType === ORG_TYPES.school ? '🎓 ' : '💼 ') + (profile.org || orgType.label);
+  $('#org-badge').hidden = !!profile.guest;
   $('#avatar').textContent = name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
   $('#role-chip').textContent = role.label;
   $('#role-chip').hidden = false;
   $('#greeting').textContent = `${greeting()}, ${name.split(/\s+/)[0]}`;
-  $('#welcome-eyebrow').textContent = role.title;
+  $('#welcome-eyebrow').textContent = profile.role === 'applicants' && orgType === ORG_TYPES.business ? 'Recruitment workspace' : role.title;
   $('#welcome-sub').textContent = role.sub;
+  $('#sample-banner').hidden = !role.sample;
+  if (role.sample) {
+    $('#sample-banner-text').textContent = `The ${role.label.toLowerCase()} file loaded for you (${role.sample}) is a sample for trying ChurnSense, `
+      + `not real people from ${profile.org || 'your institution'}. To analyse your institution's actual data, switch to My own data and drag in your spreadsheet.`;
+  }
   $('#examples').replaceChildren(...role.examples.map((x) => el('button', {
     type: 'button', class: 'chip ghost', 'data-example': x, text: x === 'help' ? 'What can I ask?' : x })));
   if (!$('#prompt').value && profile.role !== 'own') $('#prompt').value = role.examples[0];
@@ -704,14 +735,36 @@ function wireLogin() {
     $('#lg-error').textContent = error;
     $('#lg-error').hidden = !error;
     if (error) return;
-    const profile = { name, org: $('#lg-org').value.trim(), role };
+    const profile = { name, org: $('#lg-org').value.trim(), orgType: $('input[name=orgtype]:checked').value, role };
     saveProfile(profile);
     enterApp(profile);
   });
   for (const field of ['#lg-name', '#login-form']) {
     $(field).addEventListener(field === '#lg-name' ? 'input' : 'change', () => { $('#lg-error').hidden = true; });
   }
-  $('#lg-guest').addEventListener('click', () => enterApp({ name: 'Guest', org: '', role: ($('input[name=role]:checked') || {}).value || 'own', guest: true }));
+  const sampleNote = () => {
+    const info = ROLES[($('input[name=role]:checked') || {}).value];
+    $('#lg-sample-note').hidden = !info || !info.sample;
+    if (info && info.sample) {
+      $('#lg-sample-note').innerHTML = `<span><b>${info.label}</b> opens with <b>test data</b> (a sample spreadsheet) so you can try ChurnSense straight away. `
+        + 'To use your institution\'s actual data, choose <b>My own data</b>.</span>';
+    }
+  };
+  $$('input[name=role]').forEach((r) => r.addEventListener('change', sampleNote));
+  $$('input[name=orgtype]').forEach((r) => r.addEventListener('change', sampleNote));
+  $('#use-own').addEventListener('click', async () => {
+    const profile = Object.assign({}, S.profile, { role: 'own' });
+    if (!profile.guest) saveProfile(profile);
+    $('#prompt').value = '';
+    enterApp(profile);
+    for (const f of S.files.filter((x) => Object.values(ROLES).some((r) => r.sample === x.name))) await removeFile(f.name);
+    $('#dropzone').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    toast('Switched to My own data: drag in your institution\'s spreadsheet.', 'info');
+  });
+  $$('input[name=orgtype]').forEach((r) => r.addEventListener('change', () => applyOrgType(r.value)));
+  applyOrgType($('input[name=orgtype]:checked').value);
+  $('#lg-guest').addEventListener('click', () => enterApp({ name: 'Guest', org: '', orgType: $('input[name=orgtype]:checked').value,
+    role: ($('input[name=role]:checked') || {}).value || 'own', guest: true }));
   $('#signout').addEventListener('click', () => {
     try { localStorage.removeItem(PROFILE_KEY); } catch (e) { /* nothing stored */ }
     location.hash = '';
