@@ -55,14 +55,19 @@ Tip: also add a button "Open the app in full screen" that links to the same addr
 
 ## Using the site
 
-1. **Welcome screen**: visitors choose **School** or **Business**, type their name (and, optionally, their
-   organisation, e.g. Mayo College, Ajmer) and pick what they want to understand. School shows **Students, Teachers,
+1. **Welcome screen**: visitors choose **School** or **Business**, type their name, organisation (e.g. Mayo College,
+   Ajmer) and email (all three are required) and pick what they want to understand. School shows **Students, Teachers,
    Applicants** and **My own data**; Business shows **Employees, Customers, Applicants** and **My own data**. ChurnSense then takes them
    straight to a matching workspace: the right sample is loaded, the greeting and example questions fit their topic,
-   and a ready-made question is in the prompt box. **Continue as guest** skips this. **Sign out** (top right) goes back.
+   and a ready-made question is in the prompt box.
    - Every choice except **My own data** opens with **test data** (a sample spreadsheet). The page says so on the
      welcome screen and in a banner on the Home page, whose **Use my institution's data** button switches to My own data.
-   - This is a *profile*, not a password login: it is saved only in that visitor's browser, so nothing is sent anywhere.
+   - **Signed in** (all three details filled in): the profile and every uploaded spreadsheet are **saved in that
+     browser** (localStorage and IndexedDB), so the next visit goes straight back to them. **Sign out** (top right)
+     asks first, then deletes the profile and the saved spreadsheets from the browser.
+   - **Continue as guest**: no details needed, but **nothing is saved**; a banner says so, and closing the page
+     clears everything. **Sign in to save** on that banner goes back to the welcome screen.
+   - This is a *profile*, not a password login: everything is kept only in that visitor's browser, never on a server.
 2. **Dashboard**: after the first analysis, the Home page shows five summary cards (how many people, the leave / join
    rate, the best model and its score, how many are high risk, and the top reason).
 3. **Add spreadsheets**: drag `.csv` or `.xlsx` files into the box, click it to choose files, or try a sample. Each
@@ -81,7 +86,7 @@ Tip: also add a button "Open the app in full screen" that links to the same addr
    SHAP, segments, report and chart downloads), Predict & Explain (one person, what-if, ranked lists), Fairness and
    Regression.
 
-**Share results (Word document + CSV by email):** visitors can type an email address at sign-in (optional, no
+**Share results (Word document + CSV by email):** visitors give their email address at sign-in (required, no
 password). After an analysis, **Share results** (top right), **✉ Email / share results** under an answer, or
 **Download the results (Word)** in the Why tab makes:
 
@@ -121,7 +126,8 @@ is sent to improve its products. Without a key, the built-in commands work as us
 - **Explanations:** without the `shap` package in the browser, tree models (Decision Tree, Random Forest) are
   explained with exact tree path contributions, and the other models with permutation SHAP. Both add up exactly to
   each person's predicted probability.
-- **Privacy:** files stay in the visitor's browser and disappear when the tab is closed.
+- **Privacy:** files never leave the visitor's browser. Signed-in visitors' files are kept in that browser until they
+  sign out; guests' files disappear when the page is closed.
 - **Fairness:** sensitive columns (gender, age, ...) are left out of training by default and used in the fairness check.
 - **Predictions show patterns, not certainties.** They must never be the only basis for a decision about a person.
 - **Opening `index.html` directly from your computer does not work** (browsers block it). To try it locally, run

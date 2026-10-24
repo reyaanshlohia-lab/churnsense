@@ -65,11 +65,11 @@
       <fieldset class="about">
         <legend>About you</legend>
         <div class="about-grid">
-          <label>Your name <input id="lg-name" autocomplete="name" placeholder="e.g. Reyaansh" required></label>
-          <label>Organisation <input id="lg-org" autocomplete="organization" placeholder="e.g. Mayo College, Ajmer"></label>
-          <label>Email <span class="input-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><input id="lg-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com"></span></label>
+          <label>Your name <span class="req" aria-hidden="true">*</span><input id="lg-name" autocomplete="name" placeholder="e.g. Reyaansh" required></label>
+          <label>Organisation <span class="req" aria-hidden="true">*</span><input id="lg-org" autocomplete="organization" placeholder="e.g. Mayo College, Ajmer" required></label>
+          <label>Email <span class="req" aria-hidden="true">*</span><span class="input-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><input id="lg-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required></span></label>
         </div>
-        <p class="about-hint">Organisation and email are optional. We only use your email to send you your results. No password needed.</p>
+        <p class="about-hint">All fields are required. We only use your email to send you your results. No password needed.</p>
       </fieldset>
       <fieldset class="roles">
         <legend>What do you want to understand?</legend>
@@ -98,7 +98,11 @@
       <p id="lg-error" class="form-error" role="alert" hidden></p>
       <button type="submit" class="primary big">Continue <span aria-hidden="true">→</span></button>
       <button type="button" id="lg-guest" class="link-btn">Continue as guest</button>
-      <p class="fine"><span aria-hidden="true">🔒</span> No password needed: your profile is saved only in this browser, and your spreadsheets never leave your computer.</p>
+      <div class="save-note">
+        <p><span class="sn-tag in">Signed in</span>Your details and uploaded spreadsheets are <b>saved in this browser</b>, so next time you go straight back to them.</p>
+        <p><span class="sn-tag guest">Guest</span>No details needed, but <b>nothing is saved</b>: everything is cleared when you close the page.</p>
+      </div>
+      <p class="fine"><span aria-hidden="true">🔒</span> No password. Saved data stays only on this computer, never on a server, and <b>Sign out</b> deletes it.</p>
       <div class="lg-engine"><span class="dot"></span><span id="lg-engine-text">Warming up the analysis engine…</span></div>
     </form>
   </section>
@@ -168,6 +172,11 @@
 
         <section id="kpis" class="kpis" hidden aria-label="Key numbers"></section>
 
+        <div id="guest-banner" class="guest-banner" hidden>
+          <span class="sb-icon" aria-hidden="true">👤</span>
+          <p><b>Guest mode: nothing is saved.</b> Your files and results are cleared when you close this page. Sign in to keep them for next time.</p>
+          <button type="button" id="guest-signin" class="secondary">Sign in to save</button>
+        </div>
         <div id="sample-banner" class="sample-banner" hidden>
           <span class="sb-icon" aria-hidden="true">🧪</span>
           <p><b>You are looking at test data.</b> <span id="sample-banner-text"></span></p>

@@ -301,6 +301,7 @@ async function addFiles(list) {
     try {
       const buffer = await file.arrayBuffer();
       entry.info = await pyFile(file.name, buffer);
+      if (entry.info) saveFile(file);
     } catch (error) {
       entry.error = error.message;
     }
@@ -320,6 +321,7 @@ async function addSample(name) {
 
 async function removeFile(name) {
   await py('remove_file', { name });
+  forgetFile(name);
   S.files = S.files.filter((f) => f.name !== name);
   if (S.opts && S.opts.file === name) {
     S.opts = null;
@@ -664,6 +666,53 @@ const ORG_TYPES = {
 };
 const PROFILE_KEY = 'churnsense-profile';
 
+// ---------------- saved spreadsheets: signed-in visitors only, kept in this browser (IndexedDB), never uploaded ----------------
+function fileStore(mode, action) {
+  return new Promise((resolve, reject) => {
+    const open = indexedDB.open('churnsense', 1);
+    open.onupgradeneeded = () => open.result.createObjectStore('files', { keyPath: 'name' });
+    open.onerror = () => reject(open.error);
+    open.onsuccess = () => {
+      const db = open.result;
+      const tx = db.transaction('files', mode);
+      const request = action(tx.objectStore('files'));
+      tx.oncomplete = () => { db.close(); resolve(request.result); };
+      tx.onerror = () => { db.close(); reject(tx.error); };
+    };
+  });
+}
+
+const savingOn = () => !!(S.profile && !S.profile.guest);
+
+async function saveFile(file) {
+  if (!savingOn()) return;
+  try { await fileStore('readwrite', (store) => store.put({ name: file.name, file, saved: Date.now() })); } catch (e) { /* not saved: storage blocked */ }
+}
+
+async function forgetFile(name) {
+  try { await fileStore('readwrite', (store) => store.delete(name)); } catch (e) { /* nothing saved */ }
+}
+
+async function clearSavedFiles() {
+  try { await fileStore('readwrite', (store) => store.clear()); } catch (e) { /* nothing saved */ }
+}
+
+// A returning signed-in visitor gets their saved spreadsheets back; otherwise the topic's sample is loaded.
+async function restoreOrSample(profile, role) {
+  let saved = [];
+  if (!profile.guest) {
+    try { saved = (await fileStore('readonly', (store) => store.getAll())) || []; } catch (e) { saved = []; }
+  }
+  if (S.files.length) return;
+  if (saved.length) {
+    saved.sort((a, b) => a.saved - b.saved);
+    toast(`Welcome back: your ${saved.length === 1 ? 'saved spreadsheet is' : `${saved.length} saved spreadsheets are`} loaded again.`, 'info');
+    await addFiles(saved.map((r) => r.file));
+  } else if (role.sample) {
+    addSample(role.sample);
+  }
+}
+
 function orgTypeOf(profile) {
   if (ORG_TYPES[profile.orgType]) return profile.orgType;
   return ['employees', 'customers'].includes(profile.role) ? 'business' : 'school';
@@ -707,6 +756,8 @@ function enterApp(profile) {
   $('#user-org').textContent = profile.guest ? 'Guest session' : profile.org ? `${profile.org} · ${orgType.label}` : orgType.label;
   $('#org-badge').textContent = (orgType === ORG_TYPES.school ? '🎓 ' : '💼 ') + (profile.org || orgType.label);
   $('#org-badge').hidden = !!profile.guest;
+  $('#guest-banner').hidden = !profile.guest;
+  if (profile.guest) $('#user-org').textContent = 'Guest · nothing saved';
   $('#avatar').textContent = name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
   $('#role-chip').textContent = role.label;
   $('#role-chip').hidden = false;
@@ -723,26 +774,38 @@ function enterApp(profile) {
   if (!$('#prompt').value && profile.role !== 'own') $('#prompt').value = role.examples[0];
   const route = (location.hash.match(/^#\/(\w+)/) || [])[1];
   selectTab(route || 'home', { scroll: false });
-  if (role.sample && !S.files.length) addSample(role.sample);
+  restoreOrSample(profile, role);
 }
 
 function wireLogin() {
   $('#login-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const name = $('#lg-name').value.trim();
-    const role = ($('input[name=role]:checked') || {}).value;
+    const org = $('#lg-org').value.trim();
     const email = $('#lg-email').value.trim();
-    const error = !name ? 'Please enter your name.' : email && !EMAIL_RE.test(email) ? 'Please check your email address (or leave it empty).'
-      : !role ? 'Please choose what you want to understand.' : '';
+    const role = ($('input[name=role]:checked') || {}).value;
+    // every detail is required: the first missing one is named, outlined in red and focused
+    const checks = [['#lg-name', !name, 'Please enter your name.'],
+                    ['#lg-org', !org, 'Please enter your organisation (school or business).'],
+                    ['#lg-email', !email, 'Please enter your email address.'],
+                    ['#lg-email', email && !EMAIL_RE.test(email), 'Please check your email address (for example name@school.edu.in).']];
+    $$('#login-form input.invalid').forEach((i) => i.classList.remove('invalid'));
+    checks.filter(([, bad]) => bad).forEach(([id]) => $(id).classList.add('invalid'));
+    const failed = checks.find(([, bad]) => bad);
+    const error = failed ? failed[2] : !role ? 'Please choose what you want to understand.' : '';
     $('#lg-error').textContent = error;
     $('#lg-error').hidden = !error;
+    if (failed) $(failed[0]).focus();
     if (error) return;
-    const profile = { name, org: $('#lg-org').value.trim(), orgType: $('input[name=orgtype]:checked').value, role, email };
+    const profile = { name, org, orgType: $('input[name=orgtype]:checked').value, role, email };
     saveProfile(profile);
     enterApp(profile);
   });
-  for (const field of ['#lg-name', '#lg-email', '#login-form']) {
-    $(field).addEventListener(field === '#login-form' ? 'change' : 'input', () => { $('#lg-error').hidden = true; });
+  for (const field of ['#lg-name', '#lg-org', '#lg-email', '#login-form']) {
+    $(field).addEventListener(field === '#login-form' ? 'change' : 'input', (e) => {
+      $('#lg-error').hidden = true;
+      if (e.target.classList) e.target.classList.remove('invalid');
+    });
   }
   const sampleNote = () => {
     const info = ROLES[($('input[name=role]:checked') || {}).value];
@@ -767,10 +830,14 @@ function wireLogin() {
   applyOrgType($('input[name=orgtype]:checked').value);
   $('#lg-guest').addEventListener('click', () => enterApp({ name: 'Guest', org: '', orgType: $('input[name=orgtype]:checked').value,
     role: ($('input[name=role]:checked') || {}).value || 'own', guest: true }));
-  $('#signout').addEventListener('click', () => {
+  const leave = () => { location.hash = ''; location.reload(); };
+  $('#guest-signin').addEventListener('click', leave);
+  $('#signout').addEventListener('click', async () => {
+    if (S.profile && !S.profile.guest
+        && !window.confirm('Sign out? Your saved details and spreadsheets will be deleted from this browser.')) return;
     try { localStorage.removeItem(PROFILE_KEY); } catch (e) { /* nothing stored */ }
-    location.hash = '';
-    location.reload();
+    await clearSavedFiles();
+    leave();
   });
   $('#menu-btn').addEventListener('click', () => ($('#sidebar').classList.contains('open') ? closeMenu() : openMenu()));
   $('#scrim').addEventListener('click', closeMenu);
@@ -783,8 +850,15 @@ function wireLogin() {
 
 function startPage() {
   const profile = loadProfile();
-  if (profile && profile.name) enterApp(profile);
-  else { $('#login').hidden = false; $('#lg-name').focus(); }
+  if (profile && profile.name && profile.org && profile.email) { enterApp(profile); return; }
+  // a profile saved before every detail was required: ask again, keeping what we have
+  $('#login').hidden = false;
+  if (profile) {
+    $('#lg-name').value = profile.name || '';
+    $('#lg-org').value = profile.org || '';
+    $('#lg-email').value = profile.email || '';
+  }
+  $('#lg-name').focus();
 }
 
 async function showView(name) {
