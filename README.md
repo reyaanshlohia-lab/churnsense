@@ -14,14 +14,15 @@ There are **no sub-folders**: all files sit side by side, so they upload anywher
 | Files | What they are |
 |---|---|
 | `index.html`, `styles.css`, `app.js` | The page: welcome (sign-in) screen, dashboard, files list, drag-and-drop box, prompt box, answer, and the sidebar pages. |
-| `email-config.js` | Optional settings for sending result emails directly (see **Share results** below). |
+| `email-config.js` | Settings for sending result emails directly (see **Send emails directly** below). |
+| `churnsense-mailer.gs` | The free Google Apps Script that sends those emails with attachments (pasted into script.google.com, not run by the page). |
 | `worker.js` | Runs the Python analysis engine in the background, so the page never freezes. |
 | `engine.py` | The analysis code (the same as `people_prediction_app.ipynb`, adapted for the browser). |
 | `pyodide.*`, `python_stdlib.zip`, `pyodide-lock.json`, the `.whl` files, `plotly.min.js` | Python for the browser and the packages it needs (scikit-learn, pandas, Plotly, ...). |
 | the five `.csv` files | The sample datasets for the "Try a sample" buttons. |
 | `.nojekyll` | Tells GitHub Pages to publish the files as they are (a hidden file; optional). |
 
-The whole folder is about 55 MB in 34 files (none over 15 MB). Visitors download it once (about 30 seconds); after
+The whole folder is about 55 MB in 35 files (none over 15 MB). Visitors download it once (about 30 seconds); after
 that their browser keeps it, so later visits start quickly.
 
 ## Put it online for free (no card)
@@ -102,16 +103,36 @@ The share window shows both attachments (click one to download it), the address 
   address, subject and message filled in; drag the two files into the email and press Send.
 - Nothing is sent until the visitor presses Send. The CSV contains rows from their spreadsheet, so they should send it
   only to people allowed to see that data.
-- **Optional, send from the page with EmailJS** (free, no card): the free plan sends the message **text only**, with no
-  attachments; attachments need a paid EmailJS plan. To turn it on:
-  1. Sign up at <https://www.emailjs.com>.
-  2. **Email Services > Add New Service > Gmail** (or another), connect your account, and copy the **Service ID**.
-  3. **Email Templates > Create New Template**. Set **To Email** to `{{to_email}}`, **Subject** to `{{subject}}`,
-     **From Name** to `{{from_name}}`, **Reply To** to `{{reply_to}}`, and the content to `{{message}}`. Save, and
-     copy the **Template ID**.
-  4. **Account > General**: copy the **Public Key**.
-  5. On GitHub, open `email-config.js`, click the pencil (Edit), paste the three values between the quotes, and click
-     **Commit changes**. A **Send email (text only)** button then appears.
+- **Send emails directly** (recommended, free): see the next section. The window's main button then says **Send
+  email** and sends the message with both files attached, straight from the page.
+- **Alternative: EmailJS** (free plan = message text only, no attachments): fill in `publicKey`, `serviceId` and
+  `templateId` in `email-config.js` (template fields `{{to_email}}`, `{{subject}}`, `{{from_name}}`, `{{reply_to}}`,
+  `{{message}}`). A **Send email (text only)** button then appears.
+
+### Send emails directly (with the Word report and CSV attached)
+
+A website without a server cannot send email by itself, so ChurnSense uses a small free **Google Apps Script**
+(`churnsense-mailer.gs`) that sends through Gmail. Tip: create a separate Gmail account for the project (for example
+`churnsense.team@gmail.com`), because the emails are sent from the account that sets this up.
+
+1. Sign in to that Google account and open <https://script.google.com>. Click **New project**.
+2. Delete the code in the editor, open `churnsense-mailer.gs` from this folder, copy all of it, and paste it in.
+   Click the project name (top left) and call it `ChurnSense mailer`. Click **Save** (the disk icon).
+3. In the toolbar, choose the function **setup** and click **Run**. Click **Review permissions**, pick your account,
+   then **Advanced > Go to ChurnSense mailer (unsafe)** and **Allow**. (Google shows this warning for every personal
+   script; it is your own code.)
+4. Click **Deploy > New deployment**. Click the gear next to "Select type" and choose **Web app**. Set **Execute as:
+   Me** and **Who has access: Anyone**. Click **Deploy**, then copy the **Web app URL** (it ends with `/exec`).
+5. Check it: open that URL in a browser tab. It should show `{"ok":true,"service":"ChurnSense mailer"}`.
+6. On GitHub, open `email-config.js`, click the pencil (Edit), paste the URL between the quotes of
+   `appsScriptUrl: ''`, and click **Commit changes**. After about a minute, the share window's button says
+   **Send email**.
+
+Limits and safety: the script sends at most 60 emails a day and 5 addresses per email (change
+`MAX_EMAILS_PER_DAY` at its top if needed; Gmail itself allows about 100 a day). Anyone who finds the Web app URL could
+use it within those limits, which is another reason to use a separate project Gmail account. If you change the
+script later, use **Deploy > Manage deployments > Edit (pencil) > Version: New version > Deploy** so the URL stays
+the same.
 
 **Optional AI answers:** under **AI answers**, a visitor can paste a free Gemini API key from
 <https://aistudio.google.com/apikey> (Google account needed, no card). Then any question also gets an answer from

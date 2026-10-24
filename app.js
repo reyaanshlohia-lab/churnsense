@@ -1070,6 +1070,49 @@ function emailConfig() {
   return c.publicKey && c.serviceId && c.templateId ? c : null;
 }
 
+// The Google Apps Script mailer (churnsense-mailer.gs): sends the email with both attachments, from the site owner's Gmail.
+function mailerUrl() {
+  const url = String((window.CHURNSENSE_EMAIL || {}).appsScriptUrl || '').trim();
+  return /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(url) ? url : '';
+}
+
+function fileBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).split(',')[1]);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
+async function sendDirect() {
+  const to = shareRecipients();
+  if (!to) return;
+  const button = $('#share-send');
+  button.disabled = true;
+  button.textContent = 'Sending…';
+  try {
+    const { docx, csv } = S.shareCache;
+    const attachments = [];
+    for (const f of [docx, csv]) attachments.push({ name: f.name, type: f.type, data: await fileBase64(f) });
+    const profile = S.profile || {};
+    // a plain-text body keeps this a "simple" request, which Apps Script web apps accept from any site
+    const res = await fetch(mailerUrl(), { method: 'POST', body: JSON.stringify({
+      to: to.join(','), subject: $('#share-subject').value, body: $('#share-text').value,
+      fromName: (!profile.guest && profile.name) || 'ChurnSense', replyTo: profile.email || '', attachments }) });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.ok) throw new Error(data.error || `the mailer answered ${res.status}`);
+    $('#share-dialog').close();
+    toast(`Sent to ${to.join(', ')}, with the Word report and the CSV attached.`, 'info');
+  } catch (error) {
+    $('#share-error').textContent = `Could not send: ${error.message}. Try "Download files & open email" instead.`;
+    $('#share-error').hidden = false;
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Send email';
+  }
+}
+
 function sizeText(bytes) {
   return bytes < 1024 * 1024 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
@@ -1139,10 +1182,14 @@ async function openShare() {
   $('#att-csv-name').textContent = made.csv.name;
   $('#att-csv-size').textContent = `Spreadsheet (CSV) · ${sizeText(made.csv.size)}`;
   const share = canShareFiles([made.docx, made.csv]);
-  $('#share-send').textContent = share ? 'Share with attachments' : 'Download files & open email';
-  $('#share-mail').hidden = !share;
-  $('#share-emailjs').hidden = !emailConfig();
-  $('#share-privacy').textContent = (share
+  const direct = !!mailerUrl();
+  $('#share-send').textContent = direct ? 'Send email' : share ? 'Share with attachments' : 'Download files & open email';
+  $('#share-mail').hidden = !(direct || share);
+  $('#share-emailjs').hidden = direct || !emailConfig();
+  $('#share-privacy').textContent = direct
+    ? '🔒 "Send email" sends this message with both files attached straight away, from the Gmail account that runs ChurnSense. '
+      + 'The CSV includes each listed person\'s row from your spreadsheet with their score, so send it only to people allowed to see that data.'
+    : (share
     ? '🔒 "Share with attachments" opens your device\'s share menu: pick Outlook, Gmail or Mail and both files are attached. '
     : '🔒 Both files are saved to your Downloads folder and your email app opens with the message filled in: drag the two files into the email, then press Send. ')
     + 'Nothing is sent until you press Send. The CSV includes each listed person\'s row from your spreadsheet with their score, '
@@ -1241,7 +1288,11 @@ function wireShare() {
   $('#share-btn').addEventListener('click', openShare);
   $('#docx-btn').addEventListener('click', downloadDocx);
   $('#share-close').addEventListener('click', () => $('#share-dialog').close());
-  $('#share-send').addEventListener('click', () => (canShareFiles([S.shareCache.docx, S.shareCache.csv]) ? shareWithFiles() : downloadAndMail()));
+  $('#share-send').addEventListener('click', () => {
+    if (mailerUrl()) sendDirect();
+    else if (canShareFiles([S.shareCache.docx, S.shareCache.csv])) shareWithFiles();
+    else downloadAndMail();
+  });
   $('#share-mail').addEventListener('click', downloadAndMail);
   $('#share-emailjs').addEventListener('click', sendEmail);
   $('#att-docx').addEventListener('click', () => download(S.shareCache.docx.name, S.shareCache.docx));

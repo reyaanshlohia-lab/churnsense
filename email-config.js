@@ -1,8 +1,12 @@
-// Optional: let ChurnSense send result emails by itself, using EmailJS (free, no card).
-// Leave the three values empty and the "Email results" window opens the visitor's own email app instead.
-// To turn it on (about 5 minutes), see "Email results" in README.md, then paste your three values here.
+// Optional: let ChurnSense send result emails directly from the page.
+// Leave everything empty and the share window downloads the files and opens the visitor's email app instead.
 window.CHURNSENSE_EMAIL = {
+  // Recommended (free, sends the Word report + CSV as attachments from your Gmail):
+  // the Web app URL of churnsense-mailer.gs, ending with /exec. Steps: README.md, "Send emails directly".
+  appsScriptUrl: '',
+
+  // Alternative: EmailJS (the free plan sends the message text only, no attachments).
   publicKey: '',    // EmailJS > Account > Public Key
-  serviceId: '',    // EmailJS > Email Services > Service ID (e.g. service_abc123)
-  templateId: '',   // EmailJS > Email Templates > Template ID (e.g. template_xyz789)
+  serviceId: '',    // EmailJS > Email Services > Service ID
+  templateId: '',   // EmailJS > Email Templates > Template ID
 };
