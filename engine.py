@@ -3301,6 +3301,220 @@ def email_summary(name='', org='', link=''):
     return {'subject': subject, 'text': '\n'.join(full), 'short': '\n'.join(short)}
 
 
+# ---------- results as a Word document (.docx), for sharing ----------
+def share_pack(cutoffs=None):
+    """The charts for the Word document (the page turns them into PNG images) and the ranked list as a CSV file."""
+    trained, ctx = _need()
+    w = ctx['wording']
+    charts = [('Top reasons', *graph_drivers(trained, w)),
+              ('Model comparison', *graph_comparison(trained, 'ROC-AUC', DEFAULTS['threshold'], w))]
+    charts += [(f'Direction of effect {i + 1}', fig, text) for i, (fig, text) in enumerate(graph_directions(trained, w, 2))]
+    charts.append(('Confusion matrix of the best model',
+                   *graph_confusion(trained, trained['best_model'], DEFAULTS['threshold'], w)))
+    ranked = rank(cutoffs, None, limit=20, explain_rows=50)
+    return {'charts': [{'title': t, 'figure': _figure(fig), 'text': text} for t, fig, text in charts],
+            'csv': {'name': ranked['name'], 'text': ranked['csv']}}
+
+
+def _x(text):
+    return str(text).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
+
+def _runs(text, bold=False, color=None, size=None):
+    """Word runs from a line of text with **bold** markers (other Markdown marks are dropped)."""
+    out = []
+    for part in re.split(r'(\*\*[^*]+\*\*)', str(text)):
+        if not part:
+            continue
+        strong = bold or (part.startswith('**') and part.endswith('**'))
+        part = re.sub(r'[*`]', '', part)
+        props = ('<w:b/>' if strong else '') + (f'<w:color w:val="{color}"/>' if color else '') + \
+                (f'<w:sz w:val="{size}"/>' if size else '')
+        out.append(f'<w:r>{"<w:rPr>" + props + "</w:rPr>" if props else ""}<w:t xml:space="preserve">{_x(part)}</w:t></w:r>')
+    return ''.join(out)
+
+
+def _para(text, style=None, **kw):
+    props = f'<w:pPr><w:pStyle w:val="{style}"/></w:pPr>' if style else ''
+    return f'<w:p>{props}{_runs(text, **kw)}</w:p>'
+
+
+def _md_paras(text):
+    """Paragraphs and bullets from the short Markdown analysis texts."""
+    out = []
+    for line in str(text).splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        if line.startswith(('- ', '* ')):
+            out.append(_para('•  ' + line[2:], 'Bullet'))
+        else:
+            out.append(_para(re.sub(r'^#+\s*', '', line)))
+    return ''.join(out)
+
+
+def _docx_table(columns, rows, widths=None):
+    widths = widths or [9638 // max(1, len(columns))] * len(columns)
+    borders = ''.join(f'<w:{side} w:val="single" w:sz="4" w:space="0" w:color="D9DEE8"/>'
+                      for side in ['top', 'left', 'bottom', 'right', 'insideH', 'insideV'])
+
+    def cell(value, width, header=False):
+        shade = '<w:shd w:val="clear" w:color="auto" w:fill="EEF0FF"/>' if header else ''
+        return (f'<w:tc><w:tcPr><w:tcW w:w="{width}" w:type="dxa"/>{shade}</w:tcPr><w:p><w:pPr><w:pStyle w:val="TableText"/></w:pPr>'
+                f'{_runs(value, bold=header, color="1E1B4B" if header else None)}</w:p></w:tc>')
+
+    head = '<w:tr><w:trPr><w:tblHeader/></w:trPr>' + ''.join(cell(c, wd, True) for c, wd in zip(columns, widths)) + '</w:tr>'
+    body = ''.join('<w:tr><w:trPr><w:cantSplit/></w:trPr>' + ''.join(cell(v, wd) for v, wd in zip(r, widths)) + '</w:tr>' for r in rows)
+    return (f'<w:tbl><w:tblPr><w:tblW w:w="5000" w:type="pct"/><w:tblBorders>{borders}</w:tblBorders>'
+            '<w:tblCellMar><w:top w:w="40" w:type="dxa"/><w:left w:w="90" w:type="dxa"/><w:bottom w:w="40" w:type="dxa"/>'
+            '<w:right w:w="90" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>'
+            + ''.join(f'<w:gridCol w:w="{wd}"/>' for wd in widths) + f'</w:tblGrid>{head}{body}</w:tbl>' + _para(''))
+
+
+def _docx_image(rid, number, width_px, height_px):
+    cx = 5760720                          # 6.3 inches wide, in EMU
+    cy = int(cx * height_px / max(1, width_px))
+    if cy > 3474720:                      # at most 3.8 inches tall, so a chart and its heading share a page
+        cx, cy = int(cx * 3474720 / cy), 3474720
+    return (f'<w:p><w:pPr><w:jc w:val="center"/><w:keepNext/></w:pPr><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0">'
+            f'<wp:extent cx="{cx}" cy="{cy}"/><wp:docPr id="{number}" name="Chart {number}"/>'
+            '<wp:cNvGraphicFramePr><a:graphicFrameLocks noChangeAspect="1"/></wp:cNvGraphicFramePr>'
+            '<a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic>'
+            f'<pic:nvPicPr><pic:cNvPr id="{number}" name="Chart {number}"/><pic:cNvPicPr/></pic:nvPicPr>'
+            f'<pic:blipFill><a:blip r:embed="{rid}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill>'
+            f'<pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="{cx}" cy="{cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr>'
+            '</pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>')
+
+
+DOCX_STYLES = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+<w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="Calibri" w:cs="Calibri"/><w:sz w:val="22"/><w:szCs w:val="22"/><w:color w:val="1E293B"/><w:lang w:val="en-GB"/></w:rPr></w:rPrDefault>
+<w:pPrDefault><w:pPr><w:spacing w:after="120" w:line="276" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults>
+<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style>
+<w:style w:type="paragraph" w:styleId="Title"><w:name w:val="Title"/><w:basedOn w:val="Normal"/><w:qFormat/><w:pPr><w:spacing w:after="60"/></w:pPr><w:rPr><w:b/><w:color w:val="312E81"/><w:sz w:val="52"/></w:rPr></w:style>
+<w:style w:type="paragraph" w:styleId="Subtitle"><w:name w:val="Subtitle"/><w:basedOn w:val="Normal"/><w:qFormat/><w:pPr><w:spacing w:after="40"/></w:pPr><w:rPr><w:color w:val="64748B"/><w:sz w:val="24"/></w:rPr></w:style>
+<w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:qFormat/><w:pPr><w:keepNext/><w:spacing w:before="360" w:after="120"/><w:pBdr><w:bottom w:val="single" w:sz="8" w:space="4" w:color="C7D2FE"/></w:pBdr><w:outlineLvl w:val="0"/></w:pPr><w:rPr><w:b/><w:color w:val="4F46E5"/><w:sz w:val="32"/></w:rPr></w:style>
+<w:style w:type="paragraph" w:styleId="Heading2"><w:name w:val="heading 2"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:qFormat/><w:pPr><w:keepNext/><w:spacing w:before="240" w:after="80"/><w:outlineLvl w:val="1"/></w:pPr><w:rPr><w:b/><w:color w:val="0F172A"/><w:sz w:val="26"/></w:rPr></w:style>
+<w:style w:type="paragraph" w:styleId="Bullet"><w:name w:val="Bullet"/><w:basedOn w:val="Normal"/><w:pPr><w:spacing w:after="60"/><w:ind w:left="360" w:hanging="240"/></w:pPr></w:style>
+<w:style w:type="paragraph" w:styleId="TableText"><w:name w:val="Table Text"/><w:basedOn w:val="Normal"/><w:pPr><w:spacing w:after="0" w:line="240" w:lineRule="auto"/></w:pPr><w:rPr><w:sz w:val="19"/></w:rPr></w:style>
+<w:style w:type="paragraph" w:styleId="Note"><w:name w:val="Note"/><w:basedOn w:val="Normal"/><w:pPr><w:pBdr><w:left w:val="single" w:sz="24" w:space="8" w:color="F5B301"/></w:pBdr><w:shd w:val="clear" w:color="auto" w:fill="FFF8E6"/><w:ind w:left="200"/><w:spacing w:before="120" w:after="120"/></w:pPr><w:rPr><w:color w:val="78350F"/></w:rPr></w:style>
+<w:style w:type="paragraph" w:styleId="Small"><w:name w:val="Small"/><w:basedOn w:val="Normal"/><w:rPr><w:color w:val="64748B"/><w:sz w:val="18"/></w:rPr></w:style>
+</w:styles>'''
+
+
+def results_docx(images=None, name='', org='', link='', cutoffs=None):
+    """The results as a Word document: key numbers, top reasons, charts (PNG images made by the page) with their
+    analysis, the people most at risk, suggested actions, model comparison and the fairness check."""
+    import datetime
+    import io
+    import zipfile
+    trained, ctx = _need()
+    w = ctx['wording']
+    p = words(w)
+    k = (STATE.get('train_info') or {}).get('kpis') or {}
+    tops = top_drivers(trained, 5)
+    sc = SCENARIOS[ctx['scenario']]
+    today = datetime.date.today().strftime('%d %B %Y')
+    body = [_para('ChurnSense results', 'Title'),
+            _para(f"{w['people'].capitalize()} who {w['outcome_past']} · {ctx['name']} · {today}", 'Subtitle')]
+    if name or org:
+        body.append(_para('Prepared by ' + ', '.join(x for x in [name, org] if x), 'Subtitle'))
+    if ctx['synthetic']:
+        body.append(_para('**Test data.** This analysis uses a synthetic sample spreadsheet, not real people. '
+                          "Use your institution's own data (My own data) for real results.", 'Note'))
+    body.append(_para('Key numbers', 'Heading1'))
+    rows = [[f"{w['people'].capitalize()} analysed", f"{k.get('rows', len(trained['prepared']['y'])):,}"],
+            [f"Share who {w['outcome_past']}", k.get('rate', '')],
+            ['Best model', f"{trained['best_model']} (ROC-AUC {k.get('auc', '')})"],
+            [f"{'High risk' if p['leave'] else 'Highly likely'} in the test set", f"{k.get('high', '')} of {k.get('test', '')}"],
+            ['Top reason', f"{k.get('top_reason', '')}: {k.get('top_phrase', '')}"]]
+    body.append(_docx_table(['Measure', 'Value'], rows, [3600, 6038]))
+    body.append(_para(p['why'], 'Heading1'))
+    body += [_para(f'{i}.  **{c}**: {direction_phrase(trained, c, w)}', 'Bullet') for i, c in enumerate(tops, 1)]
+    ranked = rank(cutoffs, None, limit=20, explain_rows=50)
+    table = ranked['table']
+    body.append(_para(f"{p['list'].capitalize()}: the top 20", 'Heading1'))
+    cols = table['columns'][:5]
+
+    def show(v):
+        return f'{v:.0%}' if isinstance(v, float) and 0 <= v <= 1 else str(v)
+    body.append(_docx_table(cols, [[show(v) for v in r[:5]] for r in table['rows'][:20]], [800, 1700, 1900, 1100, 4138]))
+    body.append(_para(f"The full list of {ranked['total']:,} {w['people']} ({ranked['source']}) is in the CSV file "
+                      f"**{ranked['name']}**.", 'Small'))
+    actions = suggestions_for(tops, None, sc['rules'], w)
+    if actions:
+        body.append(_para(f"Suggested {p['actions']} actions to discuss", 'Heading1'))
+        body += [_para('•  ' + a, 'Bullet') for a in actions[:8]]
+    rels = []
+    for i, img in enumerate(images or [], 1):
+        rid = f'rIdImg{i}'
+        rels.append((rid, f'media/chart{i}.png', _base64.b64decode(img['png'])))
+        if i == 1:
+            body.append(_para('Charts', 'Heading1'))
+        body.append(_para(img.get('title', f'Chart {i}'), 'Heading2'))
+        body.append(_docx_image(rid, i, img.get('width', 1000), img.get('height', 500)))
+        body.append(_md_paras(img.get('text', '')))
+    comp = comparison_table(trained, DEFAULTS['threshold']).round(3)
+    body.append(_para('Model comparison', 'Heading1'))
+    body.append(_docx_table(list(comp.columns), [[str(v) for v in r] for r in comp.values.tolist()]))
+    try:
+        _, _, fair = fairness_check(trained, DEFAULTS['threshold'], w)
+        body.append(_para('Fairness check', 'Heading1'))
+        body.append(_md_paras(fair))
+    except Exception:
+        pass
+    body.append(_para('About these results', 'Heading1'))
+    body.append(_para('These are patterns in past data, not certainties. Use them to start a conversation, never as the '
+                      'only basis for a decision about a person.'))
+    body.append(_para(re.sub(r'\*\*', '', METHOD_NOTE), 'Small'))
+    body.append(_para('Made with ChurnSense' + (f': {link}' if link else '') + '. The analysis ran in the browser; '
+                      'the spreadsheet was not uploaded anywhere.', 'Small'))
+    ns = ('xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
+          'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" '
+          'xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" '
+          'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" '
+          'xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"')
+    document = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+                f'<w:document {ns}><w:body>{"".join(body)}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/>'
+                '<w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="567" w:footer="567" w:gutter="0"/>'
+                '</w:sectPr></w:body></w:document>')
+    rel_xml = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+               '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+               '<Relationship Id="rIdStyles" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'
+               + ''.join(f'<Relationship Id="{rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" '
+                         f'Target="{target}"/>' for rid, target, _ in rels) + '</Relationships>')
+    title = f"ChurnSense results: {w['people']} who {w['outcome_past']}"
+    core = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+            '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" '
+            'xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" '
+            'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
+            f'<dc:title>{_x(title)}</dc:title><dc:creator>{_x(name or "ChurnSense")}</dc:creator></cp:coreProperties>')
+    types = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+             '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+             '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+             '<Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/>'
+             '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'
+             '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>'
+             '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/></Types>')
+    root_rels = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+                 '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+                 '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>'
+                 '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>'
+                 '</Relationships>')
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as z:
+        z.writestr('[Content_Types].xml', types)
+        z.writestr('_rels/.rels', root_rels)
+        z.writestr('docProps/core.xml', core)
+        z.writestr('word/document.xml', document)
+        z.writestr('word/styles.xml', DOCX_STYLES)
+        z.writestr('word/_rels/document.xml.rels', rel_xml)
+        for _, target, data in rels:
+            z.writestr(f'word/{target}', data)
+    file_name = safe_name(f"ChurnSense_results_{ctx['scenario']}_{w['people']}") + '.docx'
+    return {'name': file_name, 'b64': _base64.b64encode(buffer.getvalue()).decode('ascii')}
+
+
 # ---------- the prompt box ----------
 SCENARIO_WORDS = [
     ('Employees', r'\b(employees?|staff|workers?|attrition|workforce)\b'),
@@ -3669,7 +3883,7 @@ API = {f.__name__: f for f in [add_file, remove_file, select_data, target_change
                                model_view, compare_view, why_view, segments_view, cluster_axes, fairness_view,
                                explore, outcome_rate, explain, whatif, load_person, rank, results_csv, report,
                                chart_list, make_zip, regression, ai_context, run_prompt, defaults, md_html,
-                               setup_info, trained_info, all_graphs, email_summary]}
+                               setup_info, trained_info, all_graphs, email_summary, share_pack, results_docx]}
 
 
 def api_call(name, args_json='{}'):

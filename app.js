@@ -929,7 +929,8 @@ function showAnswer(r) {
   })));
   if (r.options) {
     dl.append(el('button', { type: 'button', class: 'primary', text: '★ Show all graphs', onclick: () => selectTab('all') }),
-              el('button', { type: 'button', class: 'secondary', text: '✉ Email these results', onclick: openShare }));
+              el('button', { type: 'button', class: 'secondary', text: '✉ Email / share results', onclick: openShare }),
+              el('button', { type: 'button', class: 'secondary', text: '📄 Word document', onclick: downloadDocx }));
   }
   $('#answer').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -986,69 +987,153 @@ function saveAIKey() {
   } catch (e) { /* storage unavailable */ }
 }
 
-// ---------------- share by email (no password: the address is only used to send) ----------------
+// ---------------- share: Word document + CSV, by email (no password: the address is only used to send) ----------------
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const DOCX_TYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 
 function emailConfig() {
   const c = window.CHURNSENSE_EMAIL || {};
   return c.publicKey && c.serviceId && c.templateId ? c : null;
 }
 
-async function openShare() {
-  if (!S.trained) { toast('Run an analysis first (press Run), then you can email the results.', 'info'); return; }
+function sizeText(bytes) {
+  return bytes < 1024 * 1024 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+}
+
+// Draws a Plotly figure off screen and returns it as a PNG (base64) for the Word document.
+async function figurePng(holder, figure, width = 1000) {
+  const div = el('div');
+  holder.append(div);
+  const height = (figure.layout && figure.layout.height) || 500;
+  try {
+    await window.Plotly.newPlot(div, figure.data, Object.assign({}, figure.layout, { width, height }), { staticPlot: true });
+    const url = await window.Plotly.toImage(div, { format: 'png', width, height, scale: 2 });
+    return { png: url.split(',')[1], width, height };
+  } finally {
+    window.Plotly.purge(div);
+    div.remove();
+  }
+}
+
+// The summary text, the Word document and the CSV file, made once per trained model and settings.
+async function shareFiles() {
   const profile = S.profile || {};
-  const r = await busy('Preparing the email', () => py('email_summary', {
-    name: profile.guest ? '' : profile.name || '', org: profile.org || '', link: location.href.split('#')[0] }));
-  if (!r) return;
-  S.share = r;
+  const args = { name: profile.guest ? '' : profile.name || '', org: profile.org || '', link: location.href.split('#')[0] };
+  const key = `${S.version}|${S.opts.threshold}|${JSON.stringify(S.opts.cutoffs)}|${args.name}|${args.org}`;
+  if (S.shareCache && S.shareCache.key === key) return S.shareCache;
+  const made = await busy('Preparing your results document', async () => {
+    const summary = await py('email_summary', args);
+    const pack = await py('share_pack', { cutoffs: S.opts.cutoffs });
+    const holder = el('div', { style: 'position:fixed;left:-10000px;top:0;width:1000px' });
+    document.body.append(holder);
+    const images = [];
+    try {
+      for (const [i, c] of pack.charts.entries()) {
+        busyProgress(i / (pack.charts.length + 1), `Drawing chart ${i + 1} of ${pack.charts.length}`);
+        images.push(Object.assign({ title: c.title, text: c.text }, await figurePng(holder, c.figure)));
+      }
+    } finally {
+      holder.remove();
+    }
+    busyProgress(pack.charts.length / (pack.charts.length + 1), 'Writing the Word document');
+    const doc = await py('results_docx', Object.assign({ images, cutoffs: S.opts.cutoffs }, args));
+    const bytes = Uint8Array.from(atob(doc.b64), (ch) => ch.charCodeAt(0));
+    return {
+      key, summary,
+      docx: new File([bytes], doc.name, { type: DOCX_TYPE }),
+      csv: new File([pack.csv.text], pack.csv.name, { type: 'text/csv' }),
+    };
+  });
+  if (made) S.shareCache = made;
+  return made;
+}
+
+function canShareFiles(files) {
+  try { return !!(navigator.canShare && navigator.canShare({ files })); } catch (e) { return false; }
+}
+
+async function openShare() {
+  if (!S.trained) { toast('Run an analysis first (press Run), then you can share the results.', 'info'); return; }
+  const made = await shareFiles();
+  if (!made) return;
+  const profile = S.profile || {};
   if (!$('#share-to').value) $('#share-to').value = profile.email || '';
-  $('#share-subject').value = r.subject;
-  $('#share-text').value = r.text;
-  const direct = !!emailConfig();
-  $('#share-send').textContent = direct ? 'Send email' : 'Open in my email app';
-  $('#share-mailto').hidden = !direct;
-  $('#share-privacy').textContent = direct
-    ? '🔒 Only this message is sent (through the EmailJS email service), never your spreadsheet. It includes the IDs and scores of the top 10 people.'
-    : '🔒 This opens your own email app with the message filled in; nothing is sent until you press Send there. Only this summary is shared, never your spreadsheet. Tip: download the full report and attach it.';
+  $('#share-subject').value = made.summary.subject;
+  $('#share-text').value = made.summary.text;
+  $('#att-docx-name').textContent = made.docx.name;
+  $('#att-docx-size').textContent = `Word document · ${sizeText(made.docx.size)}`;
+  $('#att-csv-name').textContent = made.csv.name;
+  $('#att-csv-size').textContent = `Spreadsheet (CSV) · ${sizeText(made.csv.size)}`;
+  const share = canShareFiles([made.docx, made.csv]);
+  $('#share-send').textContent = share ? 'Share with attachments' : 'Download files & open email';
+  $('#share-mail').hidden = !share;
+  $('#share-emailjs').hidden = !emailConfig();
+  $('#share-privacy').textContent = (share
+    ? '🔒 "Share with attachments" opens your device\'s share menu: pick Outlook, Gmail or Mail and both files are attached. '
+    : '🔒 Both files are saved to your Downloads folder and your email app opens with the message filled in: drag the two files into the email, then press Send. ')
+    + 'Nothing is sent until you press Send. The CSV includes each listed person\'s row from your spreadsheet with their score, '
+    + 'so send it only to people allowed to see that data.';
   $('#share-error').hidden = true;
   $('#share-dialog').showModal();
   $('#share-to').focus();
 }
 
-function shareRecipients() {
+function shareRecipients(required = true) {
   const list = $('#share-to').value.split(/[\s,;]+/).filter(Boolean);
   const bad = list.filter((a) => !EMAIL_RE.test(a));
-  const error = !list.length ? 'Type the email address to send the results to.' : bad.length ? `Please check: ${bad.join(', ')}` : '';
+  const error = !list.length && required ? 'Type the email address to send the results to.' : bad.length ? `Please check: ${bad.join(', ')}` : '';
   $('#share-error').textContent = error;
   $('#share-error').hidden = !error;
   if (error) { $('#share-to').focus(); return null; }
   const profile = S.profile;
-  if (profile && !profile.guest && !profile.email) { profile.email = list[0]; saveProfile(profile); }
+  if (list.length && profile && !profile.guest && !profile.email) { profile.email = list[0]; saveProfile(profile); }
   return list;
 }
 
-function openMailto() {
-  const to = shareRecipients();
-  if (!to) return;
+function openMailto(to, note) {
   let body = $('#share-text').value;
   // email apps cut very long links, so the unedited message falls back to the short version
-  if (body === S.share.text && encodeURIComponent(body).length > 1800) {
-    body = S.share.short + '\n\n(Shortened to fit your email app: download the full report from ChurnSense for every detail.)';
+  if (body === S.shareCache.summary.text && encodeURIComponent(body + note).length > 1800) {
+    body = S.shareCache.summary.short;
   }
-  const a = el('a', { href: `mailto:${to.join(',')}?subject=${encodeURIComponent($('#share-subject').value)}&body=${encodeURIComponent(body)}` });
+  const a = el('a', { href: `mailto:${to.join(',')}?subject=${encodeURIComponent($('#share-subject').value)}&body=${encodeURIComponent(body + note)}` });
   document.body.append(a);
   a.click();
   a.remove();
+}
+
+function downloadAndMail() {
+  const to = shareRecipients();
+  if (!to) return;
+  const { docx, csv } = S.shareCache;
+  download(docx.name, docx);
+  download(csv.name, csv);
+  const note = `\n\nAttached: ${docx.name} (the full results as a Word document) and ${csv.name} (the ranked list).`;
+  setTimeout(() => openMailto(to, note), 700);
   $('#share-dialog').close();
-  toast('Your email app should open with the results filled in. Press Send there.', 'info');
+  toast(`The two files are in your Downloads folder. Drag them into the email that opens, then press Send.`, 'info');
+}
+
+async function shareWithFiles() {
+  const to = shareRecipients(false);
+  if (!to) return;
+  const { docx, csv } = S.shareCache;
+  try {
+    await navigator.share({ files: [docx, csv], title: $('#share-subject').value,
+                            text: $('#share-text').value + (to.length ? `\n\nTo: ${to.join(', ')}` : '') });
+    $('#share-dialog').close();
+    toast(to.length ? `Shared. Send it to ${to.join(', ')} in your email app.` : 'Shared.', 'info');
+  } catch (error) {
+    if (error && error.name === 'AbortError') return;           // the visitor closed the share menu
+    downloadAndMail();
+  }
 }
 
 async function sendEmail() {
   const cfg = emailConfig();
-  if (!cfg) { openMailto(); return; }
   const to = shareRecipients();
-  if (!to) return;
-  const button = $('#share-send');
+  if (!cfg || !to) return;
+  const button = $('#share-emailjs');
   button.disabled = true;
   button.textContent = 'Sending…';
   try {
@@ -1064,26 +1149,35 @@ async function sendEmail() {
     $('#share-dialog').close();
     toast(`Sent to ${to.join(', ')}.`, 'info');
   } catch (error) {
-    $('#share-error').textContent = `Could not send (${error.message}). Try "Open in my email app" instead.`;
+    $('#share-error').textContent = `Could not send (${error.message}). Try "Download files & open email" instead.`;
     $('#share-error').hidden = false;
   } finally {
     button.disabled = false;
-    button.textContent = 'Send email';
+    button.textContent = 'Send email (text only)';
   }
+}
+
+async function downloadDocx() {
+  if (!S.trained) { toast('Run an analysis first (press Run).', 'info'); return; }
+  const made = await shareFiles();
+  if (made) download(made.docx.name, made.docx);
 }
 
 function wireShare() {
   $('#share-btn').addEventListener('click', openShare);
+  $('#docx-btn').addEventListener('click', downloadDocx);
   $('#share-close').addEventListener('click', () => $('#share-dialog').close());
-  $('#share-send').addEventListener('click', sendEmail);
-  $('#share-mailto').addEventListener('click', openMailto);
+  $('#share-send').addEventListener('click', () => (canShareFiles([S.shareCache.docx, S.shareCache.csv]) ? shareWithFiles() : downloadAndMail()));
+  $('#share-mail').addEventListener('click', downloadAndMail);
+  $('#share-emailjs').addEventListener('click', sendEmail);
+  $('#att-docx').addEventListener('click', () => download(S.shareCache.docx.name, S.shareCache.docx));
+  $('#att-csv').addEventListener('click', () => download(S.shareCache.csv.name, S.shareCache.csv));
   $('#share-to').addEventListener('input', () => { $('#share-error').hidden = true; });
   $('#share-copy').addEventListener('click', async () => {
     const text = `${$('#share-subject').value}\n\n${$('#share-text').value}`;
     try { await navigator.clipboard.writeText(text); } catch (e) { $('#share-text').select(); document.execCommand('copy'); }
     toast('Copied: paste it into any email or message.', 'info');
   });
-  $('#share-report').addEventListener('click', () => { $('#share-dialog').close(); $('#report-btn').click(); });
   $('#share-dialog').addEventListener('click', (e) => { if (e.target === $('#share-dialog')) $('#share-dialog').close(); });
 }
 
