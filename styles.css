@@ -150,6 +150,9 @@ legend { font-weight: 600; font-size: .92rem; padding: 0 4px; }
 .blocks.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .block { border: 1px solid var(--border); border-radius: 10px; padding: 12px; min-width: 0; background: var(--surface); }
 .block h4 { color: var(--text); font-size: .95rem; margin-bottom: 8px; }
+.tag { display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 999px; font-size: .74rem; font-weight: 600;
+       background: var(--note); color: var(--star); border: 1px solid var(--note-border); vertical-align: middle; }
+.group-title { margin-top: 26px; padding-bottom: 6px; border-bottom: 2px solid var(--accent-soft); }
 .chart { background: #fff; border-radius: 8px; min-height: 120px; }
 .analysis { font-size: .92rem; margin-top: 8px; }
 .analysis p { margin: 6px 0; }

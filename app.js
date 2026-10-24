@@ -154,6 +154,18 @@ function plot(div, figure) {
   if (!window.Plotly || !figure) return;
   const layout = Object.assign({}, figure.layout, { autosize: true });
   delete layout.width;
+  // long axis titles run into the chart title in half-width charts: wrap them onto two lines
+  for (const key of Object.keys(layout).filter((k) => /^yaxis\d*$/.test(k))) {
+    const title = layout[key] && layout[key].title;
+    const text = title && (typeof title === 'string' ? title : title.text);
+    if (text && text.length > 28 && !text.includes('<br>')) {
+      const words = text.split(' ');
+      let first = '';
+      while (words.length && (first + ' ' + words[0]).length <= text.length / 2 + 4) first = (first + ' ' + words.shift()).trim();
+      layout[key] = Object.assign({}, layout[key], { title: Object.assign({}, typeof title === 'string' ? {} : title,
+        { text: first + '<br>' + words.join(' ') }) });
+    }
+  }
   window.Plotly.newPlot(div, figure.data || [], layout,
     { responsive: true, displaylogo: false, modeBarButtonsToRemove: ['lasso2d', 'select2d'] });
 }
@@ -198,7 +210,7 @@ function renderBlocks(container, blocks, append = false) {
   for (const b of blocks || []) {
     if (!b) continue;
     const box = el('div', { class: 'block' });
-    if (b.title) box.append(el('h4', { text: b.title }));
+    if (b.title) box.append(el('h4', { text: b.title }, b.tag ? el('span', { class: 'tag', text: b.tag }) : null));
     if (b.figure) {
       const chart = el('div', { class: 'chart' });
       box.append(chart);
@@ -579,6 +591,16 @@ async function showView(name) {
     setHTML('#why-note', v.why.note_html);
     renderBlocks($('#why-blocks'), v.why.blocks);
     showSegments(v.seg);
+  } else if (name === 'all') {
+    const v = await busy('Drawing all the graphs', () => py('all_graphs', reportArgs()));
+    if (!v) return;
+    const holder = $('#all-groups');
+    holder.replaceChildren(el('p', { class: 'hint', text: `${v.count} graphs, ${v.original} of them from the original notebook.` }));
+    for (const g of v.groups) {
+      const blocks = el('div', { class: 'blocks two' });
+      holder.append(el('h3', { class: 'group-title', text: g.name }), blocks);
+      renderBlocks(blocks, g.blocks);
+    }
   } else if (name === 'fairness') {
     const v = await busy('Checking fairness', () => py('fairness_view', { threshold: o.threshold }));
     if (!v) return;
@@ -667,6 +689,10 @@ async function runPrompt() {
   }
   if (result.retrained) afterTrained(await py('trained_info'));
   else { S.views = {}; showView(currentTab()); }
+  if (result.open_tab) {
+    selectTab(result.open_tab);
+    $('.tabs-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
   const key = $('#ai-key').value.trim();
   if (key && !/^\s*(help|\?)\s*$/i.test(text)) askAI(text, key);
 }
@@ -681,6 +707,12 @@ function showAnswer(r) {
     type: 'button', class: 'secondary', text: d.label || `Download ${d.name}`,
     onclick: () => download(d.name, d.text, d.type || 'text/csv'),
   })));
+  if (r.options) {
+    dl.append(el('button', { type: 'button', class: 'secondary', text: '★ Show all graphs', onclick: () => {
+      selectTab('all');
+      $('.tabs-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } }));
+  }
   $('#answer').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 

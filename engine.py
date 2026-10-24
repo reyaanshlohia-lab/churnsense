@@ -1312,9 +1312,43 @@ def mark_note(fig, text, colour=BEST_COLOUR):
     return fig
 
 
+def _number_like(value):
+    try:
+        float(value)
+        return True
+    except (TypeError, ValueError):
+        return False
+
+
+def _category_positions(fig, letter):
+    """Category name -> position on the x or y axis, if that axis shows categories (else None)."""
+    axis = fig.layout[f'{letter}axis']
+    values = []
+    for trace in fig.data:
+        data = getattr(trace, letter, None) if hasattr(trace, letter) else None
+        if data is not None:
+            values.extend(list(data))
+    if axis.type == 'category' and axis.categoryarray is not None:
+        order = [str(c) for c in axis.categoryarray]
+    elif axis.type == 'category' or (axis.type is None and any(isinstance(v, str) and not _number_like(v) for v in values)):
+        order = list(dict.fromkeys(str(v) for v in values))
+    else:
+        return None
+    return {c: i for i, c in enumerate(order)}
+
+
 def finish(fig, title, xaxis, yaxis, height=420):
     fig.update_layout(title=title, xaxis_title=xaxis, yaxis_title=yaxis, height=height, showlegend=True,
                       legend=dict(orientation='h', y=-0.25))
+    # On a category axis Plotly reads a label's position "100" as category number 100, not the category named
+    # "100", which stretches the axis; so labels on category axes are placed by the category's position instead.
+    for letter in ('x', 'y'):
+        positions = _category_positions(fig, letter)
+        if not positions:
+            continue
+        for a in fig.layout.annotations:
+            if a[f'{letter}ref'] in (None, letter) and isinstance(a[letter], str) and a[letter] in positions:
+                a[letter] = positions[a[letter]]
     return fig
 
 
@@ -3121,6 +3155,37 @@ def chart_list(threshold=0.5, metric='ROC-AUC', rules=None, columns=None, k=3, r
                        for i, s in enumerate(sections)]}
 
 
+ORIGINAL_GRAPHS = [r'^Logistic Regression: effect of C', r'^Decision Tree: effect of (max depth|min samples leaf)',
+                   r'^Decision tree rules', r'^K-Nearest Neighbors: effect of (K|weight)',
+                   r'^Random Forest: effect of (number of trees|max depth|min samples leaf)', r'^Model comparison',
+                   r'^Segments', r'^Regression']
+
+
+def all_graphs(threshold=0.5, metric='ROC-AUC', rules=None, columns=None, k=3, reg_target=None, reg_features=None):
+    """Every graph, grouped (each model, all models, why, segments, fairness, regression). The graphs that were in
+    the original notebook are tagged."""
+    trained, ctx = _need()
+    sections, _ = _analysis(threshold, metric, rules, columns, k, reg_target, reg_features)
+    why = words(ctx['wording'])['why']
+    groups = {}
+    for s in sections:
+        title = s['title']
+        group = next((m for m in MODEL_NAMES if title.startswith(m)), None)
+        if group is None:
+            group = ('Decision Tree' if title.startswith('Decision tree') else
+                     'All models' if title in ('Model comparison', 'ROC curves') else
+                     'Segments' if title in ('Elbow plot', 'Segments') else
+                     'Fairness' if title.startswith('Fairness') else
+                     'Regression' if title.startswith('Regression') else why)
+        block = _block(title, s['figure'], s['text'])
+        if any(re.search(pattern, title) for pattern in ORIGINAL_GRAPHS):
+            block['tag'] = 'Graph from the original notebook'
+        groups.setdefault(group, []).append(block)
+    blocks = [b for g in groups.values() for b in g]
+    return {'groups': [{'name': g, 'blocks': b} for g, b in groups.items()], 'count': len(blocks),
+            'original': sum('tag' in b for b in blocks)}
+
+
 def make_zip(names, data):
     """Zip files sent by the page (base64 contents). Returns the zip as base64."""
     buffer = io.BytesIO()
@@ -3193,6 +3258,7 @@ MODEL_WORDS = {'Logistic Regression': r'\b(logistic( regression)?|lr)\b', 'Decis
                'K-Nearest Neighbors': r'\b(knn|k-?nn|nearest neighbou?rs?|k-nearest)\b',
                'Random Forest': r'\b(random forests?|forests?|rf)\b', 'Neural Network': r'\b(neural (net|network)s?|mlp|nn)\b'}
 INTENTS = [
+    ('all', r'\b(all|every)\b.*\b(graphs?|charts?|plots?|visuali[sz]ations?)\b'),
     ('help', r'^\s*(help|\?|what can (you|i) (do|ask))\b'),
     ('person', r'\b(explain|show|why (is|did|does|will)|predict for|look up|lookup)\b.*\b(person|employee|customer|student|teacher|applicant|member|id|row)\b\s*#?\s*[\w-]+'),
     ('whatif', r'\bwhat[ -]if\b|\bif (we|i|they)\b.*\b(change|set|were|was|had)\b'),
@@ -3460,6 +3526,13 @@ def run_prompt(prompt, options=None, ai=False):
             result = regression(numeric[0], features, o.get('test_size', 0.2), o.get('seed', 42))
             blocks.append({**result['block'], 'table': result['coefficients']})
             answer.append(f'**Linear Regression of {numeric[0]}** is below.')
+    open_tab = None
+    if 'all' in intents:
+        handled = True
+        view = all_graphs(threshold, o.get('metric', 'ROC-AUC'), o.get('rules'))
+        open_tab = 'all'
+        answer.append(f"**All {view['count']} graphs** are in the **★ All graphs** tab below, grouped by model "
+                      f"({view['original']} of them are the graphs from the original notebook).")
     if 'report' in intents:
         handled = True
         rep = report(threshold, o.get('metric', 'ROC-AUC'), o.get('rules'))
@@ -3487,7 +3560,7 @@ def run_prompt(prompt, options=None, ai=False):
         html += '<div class="did"><b>What I did:</b>' + md('\n'.join(f'- {d}' for d in did)) + '</div>'
     html += md('\n\n'.join(answer))
     return {'html': html, 'blocks': blocks, 'downloads': downloads, 'options': o, 'retrained': retrained,
-            'understood': handled}
+            'understood': handled, 'open_tab': open_tab}
 
 
 HELP_TEXT = '''### What you can ask
@@ -3498,6 +3571,7 @@ HELP_TEXT = '''### What you can ask
 - **One person:** "explain employee 1043", "explain row 12", "what if OverTime = No for employee 1043"
 - **Groups and fairness:** "show the segments", "is the model fair across gender?"
 - **Charts:** "histogram of MonthlyIncome", "scatter tenure vs MonthlyCharges", "churn rate by Contract", "correlation heatmap"
+- **Every graph:** "show all graphs" (also the **★ All graphs** tab)
 - **Other:** "threshold 0.4", "25% test", "regression of MonthlyIncome", "download the report"
 
 With a free Gemini key (in **AI answers**), any other question is answered by AI from a summary of the results.'''
@@ -3538,7 +3612,7 @@ API = {f.__name__: f for f in [add_file, remove_file, select_data, target_change
                                model_view, compare_view, why_view, segments_view, cluster_axes, fairness_view,
                                explore, outcome_rate, explain, whatif, load_person, rank, results_csv, report,
                                chart_list, make_zip, regression, ai_context, run_prompt, defaults, md_html,
-                               setup_info, trained_info]}
+                               setup_info, trained_info, all_graphs]}
 
 
 def api_call(name, args_json='{}'):

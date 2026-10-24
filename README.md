@@ -94,7 +94,9 @@ Tip: also add a button "Open the app in full screen" that links to the same addr
    - "Histogram of MonthlyIncome", "Churn rate by Contract", "Download the report"
    - Type **help** for the full list.
    The answer says what was done (file, target column, models trained) and shows the matching charts and tables.
-3. **Tabs** below the answer have every detail: Setup (target column, columns, sensitive columns, action rules),
+3. **★ All graphs** (the first tab, or ask "show all graphs") shows every graph at once, grouped by model, with
+   the graphs from the original notebook tagged.
+4. **Tabs** below the answer have every detail: Setup (target column, columns, sensitive columns, action rules),
    Explore, Train (all settings, per-model results, decision threshold), Compare, Why They Leave / Join (reasons,
    SHAP, segments, report and chart downloads), Predict & Explain (one person, what-if, ranked lists), Fairness and
    Regression.

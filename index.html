@@ -91,6 +91,7 @@
   <!-- ============ Tabs ============ -->
   <section class="card tabs-card" aria-label="Details">
     <div class="tabs" role="tablist">
+      <button role="tab" data-tab="all">★ All graphs</button>
       <button role="tab" data-tab="setup" aria-selected="true">1. Setup</button>
       <button role="tab" data-tab="explore">2. Explore</button>
       <button role="tab" data-tab="train">3. Train</button>
@@ -99,6 +100,16 @@
       <button role="tab" data-tab="predict">6. Predict &amp; Explain</button>
       <button role="tab" data-tab="fairness">7. Fairness</button>
       <button role="tab" data-tab="regression">8. Regression</button>
+    </div>
+
+    <!-- All graphs -->
+    <div class="panel" data-panel="all" role="tabpanel" hidden>
+      <p class="hint needs-model">Train the models first: ask a question above, or click "Apply and train" in the Setup tab.</p>
+      <div class="model-only" hidden>
+        <p class="hint">Every graph with its analysis, grouped by model. Graphs from the original notebook are tagged
+          <span class="tag">Graph from the original notebook</span>.</p>
+        <div id="all-groups"></div>
+      </div>
     </div>
 
     <!-- 1. Setup -->
