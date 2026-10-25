@@ -14,7 +14,13 @@
 <script>
   // If ChurnSense cannot start (for example, files from two different versions were uploaded), say so instead of
   // leaving a white page.
-  window.addEventListener('error', function (e) { window.csStartError = (e && e.message) || 'unknown error'; });
+  // runtime errors, and (in the capture phase) files that failed to load, such as a missing app.js
+  window.addEventListener('error', function (e) {
+    var t = e && e.target;
+    if (t && t !== window && (t.src || t.href)) window.csStartError = 'could not load ' + (t.src || t.href);
+    else window.csStartError = (e && e.message) || 'unknown error';
+  }, true);
+  window.addEventListener('unhandledrejection', function (e) { window.csStartError = String((e && e.reason && e.reason.message) || (e && e.reason) || 'unknown error'); });
   window.addEventListener('load', function () {
     setTimeout(function () {
       var login = document.getElementById('login'), app = document.getElementById('app');
@@ -25,6 +31,7 @@
       box.innerHTML = '<b style="font-size:18px">ChurnSense could not start.</b><br>Some of the website files are probably out of date or missing. '
         + 'Upload <b>index.html</b>, <b>app.js</b>, <b>help.js</b>, <b>styles.css</b> and <b>email-config.js</b> to GitHub again (all from the same download), '
         + 'check there are no copies named like "app (1).js", then press Ctrl + F5.';
+      if (!window.csStartError && typeof wire !== 'function') window.csStartError = 'app.js did not run (it was not loaded, or an old saved copy was used)';
       if (window.csStartError) {
         var detail = document.createElement('p');
         detail.style.cssText = 'margin:12px 0 0;font-size:13px;color:#991b1b';
