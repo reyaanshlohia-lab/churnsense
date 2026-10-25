@@ -1,5 +1,7 @@
 'use strict';
 // ChurnSense: the page. The Python engine runs in worker.js (Pyodide); this file handles the page.
+// the ?v= number index.html loads this file with; passed on so the worker and engine.py are fresh after an update too
+const APP_VERSION = (document.currentScript && new URL(document.currentScript.src).searchParams.get('v')) || '1';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -10,7 +12,7 @@ const S = {
 const KEEP = ['preset', 'test_size', 'seed', 'scoring', 'models', 'balanced', 'logistic_max_iter', 'mlp_max_iter',
               'search', 'threshold', 'metric', 'cutoffs', 'k', 'kmax', 'missing', 'exclude'];
 const SAMPLE_WORDS = [
-  ['employees.csv', /\b(employees?|staff|attrition)\b/i], ['customers.csv', /\b(customers?|clients?|churn)/i],
+  ['employees_SYNTHETIC.csv', /\b(employees?|staff|attrition)\b/i], ['customers_SYNTHETIC.csv', /\b(customers?|clients?|churn)/i],
   ['students_SYNTHETIC.csv', /\b(students?|pupils?|drop ?outs?)\b/i], ['teachers_SYNTHETIC.csv', /\bteachers?\b/i],
   ['custom_join_SYNTHETIC.csv', /\b(applicants?|enrol)/i],
 ];
@@ -34,7 +36,7 @@ function startEngine() {
       '(see README) or run "python -m http.server" in the folder and open http://localhost:8000.');
     return;
   }
-  worker = new Worker('worker.js', { type: 'module' });
+  worker = new Worker(`worker.js?v=${APP_VERSION}`, { type: 'module' });
   worker.onerror = (e) => engineFailed(e.message || 'The analysis engine could not start.');
   worker.onmessage = (event) => {
     const m = event.data;
@@ -315,7 +317,7 @@ async function addFiles(list) {
 }
 
 async function addSample(name) {
-  const res = await fetch(name);
+  const res = await fetch(`${name}?v=${APP_VERSION}`);   // a fresh copy after an update
   if (!res.ok) { toast(`Could not load the sample ${name}.`); return; }
   const blob = await res.blob();
   S.sampleNames.add(name);
@@ -638,17 +640,17 @@ function renderKpis(k) {
 
 // ---------------- sign-in (a local profile: no password, kept only in this browser) ----------------
 const ROLES = {
-  employees: { label: 'Employees', sample: 'employees.csv', title: 'Employee retention workspace',
+  employees: { label: 'Employees', sample: 'employees_SYNTHETIC.csv', title: 'Employee retention workspace',
     sub: 'Find which employees might leave, why, and what could help them stay.',
     examples: ['Which employees are most likely to leave, and why?', 'Show all graphs', 'Attrition rate by OverTime',
                'Explain employee 1043', 'What if OverTime = No for employee 1043', 'Is the model fair across gender?'] },
-  customers: { label: 'Customers', sample: 'customers.csv', title: 'Customer retention workspace',
+  customers: { label: 'Customers', sample: 'customers_SYNTHETIC.csv', title: 'Customer retention workspace',
     sub: 'Find which customers might churn, why, and what could keep them.',
     examples: ['Which customers are most likely to churn, and why?', 'Show all graphs', 'Churn rate by Contract',
                'Explain customer 7590-VHVEG', 'Compare the models', 'Show the segments'] },
   students: { label: 'Students', sample: 'students_SYNTHETIC.csv', title: 'Student success workspace',
     sub: 'Find which students might drop out, why, and how to support them early.',
-    examples: ['Which students are most likely to drop out, and why?', 'Show all graphs', 'Dropout rate by GradeTrend',
+    examples: ['Which students are most likely to drop out, and why?', 'Show all graphs', 'Dropout rate by SchoolOffersCareerPath',
                'Top 20 students most likely to drop out', 'Show the segments', 'Is the model fair?'] },
   teachers: { label: 'Teachers', sample: 'teachers_SYNTHETIC.csv', title: 'Teacher retention workspace',
     sub: 'Find which teachers might leave, why, and what could help them stay.',

@@ -103,6 +103,9 @@ SEARCH_PRESETS = {
 }
 
 DEFAULT_PRESET = 'Thorough'   # the search preset the app starts with ('Quick' is about 5x faster)
+# Quick chooses each model's settings on a stratified sample of at most this many training rows (big files train in
+# about a third of the time); the best settings are then trained on all the training rows. Thorough uses every row.
+PRESET_SEARCH_ROWS = {'Quick': 4000, 'Thorough': None}
 
 DEFAULTS = {
     'missing_strategy': 'median',          # median / mean / mode / drop rows
@@ -145,7 +148,7 @@ SCENARIOS = {
         'name': 'Employees leaving a business (employee attrition)',
         'mode': 'leave', 'person': 'employee', 'people': 'employees', 'org': 'company',
         'outcome_past': 'left', 'outcome_ing': 'leaving', 'stay_past': 'stayed',
-        'sample': 'employees.csv',
+        'sample': 'employees_SYNTHETIC.csv',
         'targets': ['Attrition', 'Left', 'Turnover', 'Quit'],
         'id_columns': ['EmployeeNumber', 'EmployeeID', 'EmployeeId', 'ID'],
         'sensitive': ['Age', 'Gender', 'MaritalStatus'],
@@ -161,16 +164,20 @@ SCENARIOS = {
             ['BusinessTravel', '==', 'Travel_Frequently', 'Look at reducing business travel.'],
             ['DistanceFromHome', '>=', '15', 'Consider hybrid work to cut commuting.'],
             ['YearsAtCompany', '<', '2', 'Strengthen onboarding and assign a mentor.'],
+            ['EngagementScore', '<=', '4', 'Hold an engagement check-in with the manager.'],
+            ['RecruiterContactsLastYear', '>=', '4', 'Hold a stay interview: they are being approached by recruiters.'],
+            ['SalaryVsMarketPct', '<', '95', 'Bring pay closer to the market rate.'],
+            ['CareerPathDiscussed', '==', 'No', 'Agree a career path and next steps.'],
         ]),
     },
     'Customers': {
         'name': 'Clients/customers leaving a business (customer churn)',
         'mode': 'leave', 'person': 'customer', 'people': 'customers', 'org': 'company',
         'outcome_past': 'churned', 'outcome_ing': 'churning', 'stay_past': 'stayed',
-        'sample': 'customers.csv',
+        'sample': 'customers_SYNTHETIC.csv',
         'targets': ['Churn', 'Churned', 'Exited', 'Left'],
         'id_columns': ['customerID', 'CustomerID', 'CustomerId', 'ID'],
-        'sensitive': ['gender', 'SeniorCitizen'],
+        'sensitive': ['gender', 'SeniorCitizen', 'Age'],
         'regression': ('MonthlyCharges', ['SeniorCitizen', 'tenure', 'TotalCharges']),   # as in the original notebook
         'rules': rules_table([
             ['Contract', '==', 'Month-to-month', 'Offer a discount for moving to a 1- or 2-year contract.'],
@@ -181,6 +188,10 @@ SCENARIOS = {
             ['MonthlyCharges', '>', '80', 'Review the plan; suggest a cheaper bundle.'],
             ['InternetService', '==', 'Fiber optic', 'Check fiber service quality and price for this customer.'],
             ['PaperlessBilling', '==', 'Yes', 'Make sure bills are clear and easy to understand.'],
+            ['SatisfactionScore', '<=', '4', 'Call the customer to understand and fix their problems.'],
+            ['CompetitorOfferReceived', '==', 'Yes', 'Offer a matching retention deal.'],
+            ['NetworkOutagesLastQuarter', '>=', '2', 'Check the network in their area and offer a service credit.'],
+            ['SupportTicketsLastYear', '>=', '3', 'Assign a dedicated support agent.'],
         ]),
     },
     'Students': {
@@ -202,6 +213,12 @@ SCENARIOS = {
             ['ParentalInvolvement', '==', 'Low', 'Invite the parents to a meeting.'],
             ['CounsellingSessions', '==', '0', 'Offer a counselling session.'],
             ['Scholarship', '==', 'No', 'Check eligibility for financial support.'],
+            ['SchoolOffersCareerPath', '==', 'No', 'Talk about their career goal: explain stream options, partnerships or coaching the school can offer.'],
+            ['OfferFromAnotherSchool', '==', 'Yes', 'Meet the family about the other offer; consider a merit scholarship or an advanced programme.'],
+            ['SchoolSatisfaction', '<=', '2', 'Ask the student what would improve their experience at school.'],
+            ['BullyingReported', '==', 'Yes', 'Follow the anti-bullying plan and check in every week.'],
+            ['HealthIssues', '==', 'Yes', 'Work with the school nurse and plan catch-up support.'],
+            ['CareerCounsellingAtSchool', '==', 'No', 'Book a career counselling session.'],
         ]),
     },
     'Teachers': {
@@ -223,6 +240,10 @@ SCENARIOS = {
             ['StudentBehaviourRating', '<=', '2', 'Provide behaviour management support.'],
             ['JobSatisfaction', '<=', '2', 'Hold a stay interview.'],
             ['YearsExperience', '<', '3', 'Pair new teachers with a mentor.'],
+            ['OfferFromAnotherSchool', '==', 'Yes', 'Hold a stay conversation and review pay and role.'],
+            ['BurnoutScore', '>=', '7', 'Reduce workload and offer wellbeing support.'],
+            ['OvertimeHoursPerWeek', '>', '8', 'Review extra duties and overtime.'],
+            ['CareerGrowthRating', '<=', '2', 'Discuss a growth path: leadership roles or training.'],
         ]),
     },
     'Custom': {
@@ -241,6 +262,11 @@ SCENARIOS = {
             ['DistanceKm', '>', '30', 'Explain transport or boarding options.'],
             ['FeeLevel', '==', 'High', 'Explain payment plans and financial aid.'],
             ['SiblingsEnrolled', '==', '0', 'Invite the family to meet current students and parents.'],
+            ['OfferFromOtherSchool', '==', 'Yes', 'Explain what makes the school different; consider matching a scholarship.'],
+            ['SchoolOffersPreferredStream', '==', 'No', 'Explain the subject options or partnerships for their preferred stream.'],
+            ['HostelNeeded', '==', 'Yes', 'Confirm hostel or transport options early.'],
+            ['DocumentsComplete', '==', 'No', 'Help the family complete the documents.'],
+            ['ApplicationFeePaid', '==', 'No', 'Send a reminder about the application fee and deadline.'],
         ]),
     },
 }
@@ -291,97 +317,409 @@ def _outcome(rng, logit, flip=0.03):
     return _yes_no(np.where(flip_mask, ~y, y))
 
 
-def make_students(n=1500, seed=42):
+def _sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+
+def _pick(rng, options, n, p=None):
+    return rng.choice(options, n, p=p)
+
+
+def _scale(rng, centre, n, low=1, high=5, spread=0.9):
+    """A 1-5 (or low-high) rating around a centre, with noise."""
+    return np.clip(np.round(centre + rng.normal(0, spread, n)), low, high).astype(int)
+
+
+def make_students(n=12000, seed=42):
+    """Students who stayed or dropped out. Two kinds of leaving are built in: students who struggle (attendance,
+    failed subjects, fees, little support) and HIGH ACHIEVERS who move to a school that fits their career goal
+    better (no stream or coaching for their goal here, an offer from another school, low satisfaction)."""
     rng = np.random.default_rng(seed)
     grade = rng.integers(9, 13, n)
     age = grade + 5 + rng.integers(0, 2, n)
-    attendance = np.clip(rng.beta(9, 1.4, n), 0.4, 1.0).round(3)
-    average = np.clip(rng.normal(62 + 25 * (attendance - 0.85), 11, n), 20, 100).round(1)
-    trend = rng.choice(['Improving', 'Stable', 'Declining'], n, p=[0.25, 0.5, 0.25])
-    failed = rng.poisson(np.clip((65 - average) / 12, 0.05, None))
-    incidents = rng.poisson(0.6, n)
+    stream = np.where(grade >= 11, _pick(rng, ['Science', 'Commerce', 'Humanities'], n, [0.45, 0.33, 0.22]), 'General')
+    income = _pick(rng, ['Low', 'Middle', 'High'], n, [0.3, 0.48, 0.22])
+    parent_ed = np.where(income == 'High', _pick(rng, ['School', 'Graduate', 'Postgraduate'], n, [0.1, 0.45, 0.45]),
+                         np.where(income == 'Middle', _pick(rng, ['School', 'Graduate', 'Postgraduate'], n, [0.3, 0.5, 0.2]),
+                                  _pick(rng, ['School', 'Graduate', 'Postgraduate'], n, [0.65, 0.3, 0.05])))
+    first_gen = (parent_ed == 'School') & (rng.random(n) < 0.8)
+    parents = np.where(income == 'Low', _pick(rng, ['Low', 'Medium', 'High'], n, [0.4, 0.42, 0.18]),
+                       _pick(rng, ['Low', 'Medium', 'High'], n, [0.18, 0.45, 0.37]))
+    boarder = rng.random(n) < 0.12
+    distance = np.where(boarder, 0.5, np.round(rng.gamma(2, 3.2, n), 1))
+    transport = np.where(boarder, 'Boarding', np.where(distance < 2, _pick(rng, ['Walk', 'Cycle'], n),
+                         _pick(rng, ['School bus', 'Private', 'Public transport'], n, [0.5, 0.3, 0.2])))
+    health = rng.random(n) < 0.09
+    sick_days = rng.poisson(2 + 5 * health)
+    attendance = np.clip(rng.beta(9, 1.3, n) - 0.04 * health - 0.002 * distance, 0.35, 1.0).round(3)
+    late = rng.poisson(np.clip(1 + 0.25 * distance - 6 * (attendance - 0.9), 0.2, None))
+    study = np.clip(np.round(rng.gamma(3, 3.2, n) + 2 * (parents == 'High')), 0, 40).astype(int)
+    homework = np.clip(rng.beta(6, 1.6, n) + 0.04 * (parents == 'High') - 0.05 * (parents == 'Low'), 0.1, 1).round(2)
+    ability = rng.normal(0, 1, n)                        # hidden talent
+    average = np.clip(64 + 9 * ability + 30 * (attendance - 0.88) + 0.35 * (study - 9) + 14 * (homework - 0.8)
+                      + rng.normal(0, 4, n), 18, 99).round(1)
+    def subject(spread):
+        return np.clip(np.round(average + rng.normal(0, spread, n)), 5, 100).astype(int)
+    maths, science, english, social, language = subject(9), subject(8), subject(6), subject(6), subject(7)
+    percentile = np.round(pd.Series(average).groupby(grade).rank(pct=True).to_numpy() * 100).astype(int)
+    trend = _pick(rng, ['Improving', 'Stable', 'Declining'], n, [0.25, 0.5, 0.25])
+    failed = ((maths < 35).astype(int) + (science < 35) + (english < 35) + (social < 35) + (language < 35))
+    library = rng.poisson(np.clip(1.5 + 0.08 * (average - 60), 0.2, None))
+    online = np.round(rng.gamma(2, 1.6, n), 1)
+    incidents = rng.poisson(np.clip(0.5 - 0.01 * (average - 64), 0.05, None))
     extra = rng.random(n) < 0.45
-    distance = np.round(rng.gamma(2, 3, n), 1)
-    scholarship = rng.random(n) < 0.18
-    fee = rng.choice(['Paid', 'Late', 'Unpaid'], n, p=[0.72, 0.18, 0.10])
-    parents = rng.choice(['Low', 'Medium', 'High'], n, p=[0.25, 0.45, 0.30])
-    counselling = rng.poisson(1.2, n)
-    logit = (-2.4 - 9 * (attendance - 0.85) - 0.035 * (average - 62) + 0.45 * failed + 0.3 * incidents
-             + 0.5 * (trend == 'Declining') - 0.3 * (trend == 'Improving') - 0.45 * extra + 0.03 * distance
-             - 0.7 * scholarship + 0.8 * (fee == 'Late') + 1.6 * (fee == 'Unpaid')
-             + 0.55 * (parents == 'Low') - 0.35 * (parents == 'High') - 0.12 * counselling
-             + rng.normal(0, 0.8, n))
+    sports = rng.random(n) < 0.3
+    olympiads = rng.poisson(np.clip(0.1 + 0.05 * (average - 70), 0.02, None))
+    scholarship = rng.random(n) < np.clip(0.08 + 0.006 * (average - 64) + 0.12 * (income == 'Low'), 0.02, 0.6)
+    fee = np.where(income == 'Low', _pick(rng, ['Paid', 'Late', 'Unpaid'], n, [0.55, 0.27, 0.18]),
+                   _pick(rng, ['Paid', 'Late', 'Unpaid'], n, [0.85, 0.11, 0.04]))
+    ptm = np.clip(rng.poisson(1.2 + 1.2 * (parents == 'High') - 0.6 * (parents == 'Low')), 0, 4)
+    counselling = rng.poisson(1.0, n)
+    peers = _scale(rng, 3.4, n)
+    bullying = rng.random(n) < np.clip(0.06 + 0.06 * (peers <= 2), 0, 1)
+    teacher_rating = _scale(rng, 3.6, n)
+    goal = _pick(rng, ['Engineering', 'Medicine', 'Computer Science', 'Business', 'Law', 'Arts & Design',
+                       'Civil Services', 'Undecided'], n, [0.18, 0.14, 0.12, 0.14, 0.07, 0.08, 0.07, 0.20])
+    offers_path_p = np.select([np.isin(goal, ['Engineering', 'Medicine', 'Computer Science']), goal == 'Arts & Design',
+                               goal == 'Law', goal == 'Undecided'], [0.6, 0.45, 0.7, 1.0], 0.85)
+    offers_path = rng.random(n) < offers_path_p
+    coaching = rng.random(n) < np.clip(0.08 + 0.35 * np.isin(goal, ['Engineering', 'Medicine'])
+                                       + 0.012 * (average - 64), 0.02, 0.85)
+    career_counselling = rng.random(n) < 0.55
+    high = average >= 78
+    offer = rng.random(n) < np.clip(0.03 + 0.4 * _sigmoid((average - 84) / 3) + 0.05 * olympiads, 0, 0.8)
+    visited = rng.poisson(0.3 + 1.2 * offer + 0.6 * (~offers_path & high))
+    satisfaction = _scale(rng, 3.5 - 0.7 * (~offers_path & high) - 0.4 * bullying + 0.25 * (teacher_rating - 3.6), n)
+    moving = rng.random(n) < 0.04
+    phone = np.round(rng.gamma(2.2, 1.4, n), 1)
+    struggle = (-3.15 - 8.5 * (attendance - 0.88) - 0.035 * (average - 64) + 0.45 * failed + 0.25 * incidents
+                + 0.45 * (trend == 'Declining') - 0.25 * (trend == 'Improving') - 0.35 * extra - 0.2 * sports
+                + 0.02 * distance - 0.5 * scholarship + 0.65 * (fee == 'Late') + 1.4 * (fee == 'Unpaid')
+                + 0.45 * (parents == 'Low') - 0.3 * (parents == 'High') - 0.08 * counselling + 0.4 * health
+                + 0.6 * bullying - 0.2 * (peers - 3) - 0.15 * (teacher_rating - 3) + 0.3 * (income == 'Low')
+                + 0.25 * first_gen - 0.5 * boarder + 0.05 * (phone - 3) - 0.6 * (homework - 0.8)
+                + rng.normal(0, 0.35, n))
+    transfer = (-4.0 + 0.16 * np.maximum(average - 74, 0) - 2.0 * (average < 70)
+                + 1.7 * (~offers_path) * (average >= 74) + 1.6 * offer + 0.5 * (coaching & ~offers_path)
+                - 0.4 * (satisfaction - 3) + 0.35 * (income == 'High') + 0.35 * np.minimum(visited, 3)
+                - 0.3 * career_counselling + 1.2 * moving + rng.normal(0, 0.5, n))
+    p = 1 - (1 - _sigmoid(struggle)) * (1 - _sigmoid(transfer))
+    left = rng.random(n) < p
+    left = np.where(rng.random(n) < 0.03, ~left, left)
     return pd.DataFrame({
         'StudentID': [f'S{i:05d}' for i in range(1, n + 1)],
-        'Gender': rng.choice(['Female', 'Male'], n),       # no built-in effect (for the fairness check)
-        'Age': age, 'Grade': grade, 'AttendanceRate': attendance, 'AverageGrade': average, 'GradeTrend': trend,
-        'FailedSubjects': failed, 'DisciplinaryIncidents': incidents, 'Extracurricular': _yes_no(extra),
-        'DistanceFromSchoolKm': distance, 'Scholarship': _yes_no(scholarship), 'FeePaymentStatus': fee,
-        'ParentalInvolvement': parents, 'CounsellingSessions': counselling,
-        'DroppedOut': _outcome(rng, logit),
+        'Gender': _pick(rng, ['Female', 'Male'], n),       # no built-in effect (for the fairness check)
+        'Age': age, 'Grade': grade, 'Stream': stream, 'Board': _pick(rng, ['CBSE', 'ICSE', 'State'], n, [0.55, 0.2, 0.25]),
+        'Section': _pick(rng, list('ABCDE'), n), 'HouseholdIncomeBand': income, 'ParentEducation': parent_ed,
+        'FirstGeneration': _yes_no(first_gen), 'Siblings': rng.choice([0, 1, 2, 3, 4], n, p=[0.2, 0.42, 0.25, 0.1, 0.03]),
+        'Boarder': _yes_no(boarder), 'DistanceFromSchoolKm': distance, 'TransportMode': transport,
+        'AttendanceRate': attendance, 'LateArrivalsPerTerm': late, 'AverageGrade': average, 'MathsScore': maths,
+        'ScienceScore': science, 'EnglishScore': english, 'SocialStudiesScore': social, 'SecondLanguageScore': language,
+        'ClassPercentile': percentile, 'GradeTrend': trend, 'FailedSubjects': failed,
+        'HomeworkCompletionRate': homework, 'StudyHoursPerWeek': study, 'LibraryVisitsPerMonth': library,
+        'OnlineLearningHoursPerWeek': online, 'DisciplinaryIncidents': incidents, 'Extracurricular': _yes_no(extra),
+        'SportsTeam': _yes_no(sports), 'CompetitionsEntered': olympiads, 'Scholarship': _yes_no(scholarship),
+        'FeePaymentStatus': fee, 'ParentalInvolvement': parents, 'ParentTeacherMeetingsAttended': ptm,
+        'CounsellingSessions': counselling, 'HealthIssues': _yes_no(health), 'SickDaysLastTerm': sick_days,
+        'PeerRelationships': peers, 'BullyingReported': _yes_no(bullying), 'TeacherSupportRating': teacher_rating,
+        'SchoolSatisfaction': satisfaction, 'CareerGoal': goal, 'SchoolOffersCareerPath': _yes_no(offers_path),
+        'CompetitiveExamCoaching': _yes_no(coaching), 'CareerCounsellingAtSchool': _yes_no(career_counselling),
+        'OfferFromAnotherSchool': _yes_no(offer), 'OtherSchoolsVisited': visited,
+        'FamilyRelocating': _yes_no(moving), 'PhoneHoursPerDay': phone,
+        'DroppedOut': _yes_no(left),
     })
 
 
-def make_teachers(n=1200, seed=43):
+def make_teachers(n=10500, seed=43):
     rng = np.random.default_rng(seed)
-    age = rng.integers(23, 65, n)
+    age = rng.integers(23, 63, n)
     experience = np.clip(age - 23 - rng.integers(0, 8, n), 0, None)
-    subject = rng.choice(['Maths', 'Science', 'English', 'History', 'Languages', 'Arts', 'PE', 'Computing'], n)
-    workload = np.round(rng.normal(48, 6, n), 1)
-    class_size = rng.integers(16, 38, n)
-    salary_band = np.clip(1 + experience // 8 + rng.integers(0, 2, n), 1, 5)
+    at_school = np.clip(np.round(experience * rng.beta(2, 2.5, n)), 0, None).astype(int)
+    qualification = _pick(rng, ['Bachelor', 'Master', 'PhD'], n, [0.45, 0.48, 0.07])
+    level = _pick(rng, ['Primary', 'Middle', 'Secondary'], n, [0.32, 0.3, 0.38])
+    subject = _pick(rng, ['Maths', 'Science', 'English', 'History', 'Languages', 'Arts', 'PE', 'Computing'], n)
+    contract = _pick(rng, ['Permanent', 'Temporary'], n, [0.75, 0.25])
+    salary_band = np.clip(1 + experience // 8 + rng.integers(0, 2, n) + (qualification == 'PhD'), 1, 5)
+    salary = np.round(28000 + 9000 * salary_band + rng.normal(0, 3500, n), -2)
     since_raise = rng.integers(0, 7, n)
+    promotions = rng.poisson(np.clip(0.3 + 0.03 * at_school, 0, None))
+    hod = (rng.random(n) < np.clip(0.02 + 0.01 * experience, 0, 0.3))
+    periods = np.clip(np.round(rng.normal(28, 4, n) - 6 * hod), 12, 40).astype(int)
+    workload = np.round(rng.normal(47, 6, n) + 0.4 * (periods - 28), 1)
+    extra_duties = rng.random(n) < 0.4
+    overtime = np.clip(np.round(rng.gamma(2, 2.2, n) + 3 * extra_duties), 0, 30).astype(int)
+    class_size = rng.integers(16, 42, n)
     admin = rng.integers(1, 6, n)
-    pd_hours = rng.integers(0, 61, n)
-    commute = np.round(rng.gamma(2, 7, n), 1)
-    contract = rng.choice(['Permanent', 'Temporary'], n, p=[0.75, 0.25])
+    principal = _scale(rng, 3.4 + 0.3 * (admin - 3), n)
+    colleagues = _scale(rng, 3.7, n)
     behaviour = rng.integers(1, 6, n)
-    satisfaction = np.clip(np.round(3 + 0.35 * (admin - 3) - 0.06 * (workload - 48) + 0.25 * (behaviour - 3)
-                                    + rng.normal(0, 0.9, n)), 1, 5).astype(int)
-    logit = (-2.3 + 0.1 * (workload - 48) + 0.06 * (class_size - 27) + 0.3 * since_raise - 0.45 * (admin - 3)
-             - 0.03 * pd_hours + 0.02 * commute + 1.2 * (contract == 'Temporary') - 0.55 * (satisfaction - 3)
-             - 0.3 * (behaviour - 3) - 0.3 * (salary_band - 3) + 0.9 * (experience < 3) + 0.8 * (experience > 33)
+    complaints = rng.poisson(np.clip(0.8 - 0.15 * (behaviour - 3), 0.1, None))
+    pd_hours = rng.integers(0, 61, n)
+    mentor = rng.random(n) < np.where(experience < 3, 0.6, 0.15)
+    performance = _scale(rng, 3.5 + 0.2 * (pd_hours > 30), n)
+    results_trend = _pick(rng, ['Improving', 'Stable', 'Declining'], n, [0.3, 0.5, 0.2])
+    awards = rng.poisson(0.2 + 0.1 * (performance >= 4))
+    commute = np.round(rng.gamma(2, 7, n), 1)
+    housing = rng.random(n) < 0.15
+    hometown = np.round(rng.gamma(1.4, 120, n))
+    leave_days = rng.poisson(9, n)
+    burnout = np.clip(np.round(4 + 0.15 * (workload - 47) + 0.12 * overtime + 0.06 * (class_size - 28)
+                               - 0.4 * (admin - 3) + rng.normal(0, 1.4, n)), 1, 10).astype(int)
+    sick_days = rng.poisson(np.clip(3 + 0.5 * (burnout - 4), 0.5, None))
+    balance = _scale(rng, 3.3 - 0.3 * (burnout - 4), n)
+    satisfaction = np.clip(np.round(3 + 0.35 * (admin - 3) - 0.06 * (workload - 47) + 0.25 * (behaviour - 3)
+                                    - 0.2 * (burnout - 4) + rng.normal(0, 0.8, n)), 1, 5).astype(int)
+    resources = _scale(rng, 3.3, n)
+    tech = _scale(rng, 3.4, n)
+    growth = _scale(rng, 3.2 + 0.4 * (promotions > 0) + 0.2 * (pd_hours > 30), n)
+    offer = rng.random(n) < np.clip(0.05 + 0.04 * (performance - 3) + 0.03 * (qualification != 'Bachelor'), 0.01, 0.4)
+    searching = rng.random(n) < np.clip(0.06 + 0.05 * (burnout - 4) + 0.08 * (satisfaction <= 2), 0.01, 0.7)
+    budget = np.clip(np.round(rng.beta(2, 2, n) * 100), 0, 100).astype(int)
+    own_children = rng.random(n) < 0.25
+    spouse = rng.random(n) < 0.05
+    observation = _scale(rng, 3.4 + 0.3 * (performance - 3), n, 1, 10, 1.5)
+    meetings = rng.poisson(3, n)
+    clubs = rng.poisson(0.8, n)
+    exam_duties = rng.poisson(6, n)
+    logit = (-2.75 + 0.08 * (workload - 47) + 0.05 * (class_size - 28) + 0.25 * since_raise - 0.35 * (admin - 3)
+             - 0.025 * pd_hours + 0.02 * commute + 1.1 * (contract == 'Temporary') - 0.45 * (satisfaction - 3)
+             - 0.25 * (behaviour - 3) - 0.25 * (salary_band - 3) + 0.8 * (experience < 3) + 0.7 * (experience > 33)
+             + 0.18 * (burnout - 4) + 0.04 * overtime - 0.25 * (principal - 3) - 0.2 * (colleagues - 3)
+             - 0.35 * mentor * (experience < 3) + 1.3 * offer + 1.1 * searching + 1.4 * spouse - 0.5 * housing
+             - 0.4 * own_children - 0.25 * (growth - 3) + 0.0015 * hometown - 0.25 * promotions
+             + rng.normal(0, 0.5, n))
+    left = _outcome(rng, logit)
+    return pd.DataFrame({
+        'TeacherID': [f'T{i:05d}' for i in range(1, n + 1)],
+        'Gender': _pick(rng, ['Female', 'Male'], n, [0.6, 0.4]),   # no built-in effect
+        'Age': age, 'MaritalStatus': _pick(rng, ['Single', 'Married', 'Divorced'], n, [0.3, 0.6, 0.1]),
+        'YearsExperience': experience, 'YearsAtThisSchool': at_school, 'Qualification': qualification,
+        'CertifiedTeacher': _yes_no(rng.random(n) < 0.85), 'Subject': subject, 'GradeLevelTaught': level,
+        'HeadOfDepartment': _yes_no(hod), 'ContractType': contract, 'SalaryBand': [f'Band {b}' for b in salary_band],
+        'AnnualSalary': salary, 'YearsSinceLastRaise': since_raise, 'PromotionsLast5Years': promotions,
+        'TeachingPeriodsPerWeek': periods, 'WorkloadHoursPerWeek': workload, 'ExtraDuties': _yes_no(extra_duties),
+        'OvertimeHoursPerWeek': overtime, 'ClassSize': class_size, 'AdminSupportRating': admin,
+        'PrincipalRelationship': principal, 'ColleagueSupport': colleagues, 'StudentBehaviourRating': behaviour,
+        'ParentComplaintsLastYear': complaints, 'ProfessionalDevelopmentHours': pd_hours, 'MentorAssigned': _yes_no(mentor),
+        'PerformanceRating': performance, 'ClassObservationScore': observation, 'StudentResultsTrend': results_trend,
+        'TeachingAwards': awards, 'CommuteKm': commute, 'HousingProvided': _yes_no(housing),
+        'HometownDistanceKm': hometown, 'LeaveDaysTaken': leave_days, 'SickDaysLastYear': sick_days,
+        'BurnoutScore': burnout, 'WorkLifeBalance': balance, 'JobSatisfaction': satisfaction,
+        'ResourcesAdequacy': resources, 'TechnologySupport': tech, 'CareerGrowthRating': growth,
+        'OfferFromAnotherSchool': _yes_no(offer), 'ActivelyJobSearching': _yes_no(searching),
+        'TrainingBudgetUsedPct': budget, 'OwnChildrenAtSchool': _yes_no(own_children),
+        'SpouseRelocating': _yes_no(spouse), 'MeetingsPerWeek': meetings, 'AfterSchoolClubsRun': clubs,
+        'ExamDutiesPerYear': exam_duties, 'StudentBehaviourIncidents': rng.poisson(np.clip(4 - 0.7 * (behaviour - 3), 0.5, None)),
+        'Left': left,
+    })
+
+
+def make_applicants(n=11000, seed=44):
+    rng = np.random.default_rng(seed)
+    grade = rng.integers(6, 12, n)
+    age = grade + 5 + rng.integers(0, 2, n)
+    income = _pick(rng, ['Low', 'Middle', 'High'], n, [0.25, 0.5, 0.25])
+    previous = _pick(rng, ['Government', 'Private', 'International'], n, [0.35, 0.55, 0.10])
+    prev_result = np.clip(np.round(rng.normal(72, 12, n)), 30, 100)
+    score = np.clip(np.round(prev_result * 0.6 + rng.normal(28, 9, n)), 20, 100)
+    interview = np.clip(np.round(rng.normal(6.5, 1.6, n) + 0.03 * (score - 70), 1), 1, 10)
+    maths = np.clip(np.round(score + rng.normal(0, 8, n)), 10, 100)
+    english = np.clip(np.round(score + rng.normal(0, 7, n)), 10, 100)
+    stream = np.where(grade >= 10, _pick(rng, ['Science', 'Commerce', 'Humanities'], n, [0.5, 0.3, 0.2]), 'General')
+    goal = _pick(rng, ['Engineering', 'Medicine', 'Computer Science', 'Business', 'Law', 'Arts & Design', 'Undecided'], n)
+    offers_stream = rng.random(n) < np.where(stream == 'Science', 0.75, 0.9)
+    distance = np.round(rng.gamma(2, 12, n), 1)
+    hostel_needed = distance > 45
+    hostel_offered = hostel_needed & (rng.random(n) < 0.6)
+    transport = (distance <= 45) & (rng.random(n) < 0.75)
+    scholarship = rng.random(n) < np.clip(0.08 + 0.012 * (score - 68), 0.02, 0.6)
+    scholarship_pct = np.where(scholarship, rng.choice([10, 25, 50, 75, 100], n, p=[0.3, 0.3, 0.25, 0.1, 0.05]), 0)
+    fee = _pick(rng, ['Low', 'Medium', 'High'], n, [0.3, 0.45, 0.25])
+    plan = rng.random(n) < 0.35
+    visit = rng.random(n) < 0.35
+    open_day = rng.random(n) < 0.25
+    tour = rng.random(n) < 0.3
+    siblings = rng.choice([0, 1, 2], n, p=[0.75, 0.2, 0.05])
+    alumni = rng.random(n) < 0.1
+    followups = rng.integers(0, 7, n)
+    emails = rng.poisson(3 + 0.5 * followups)
+    web = rng.poisson(4, n)
+    brochure = rng.random(n) < 0.4
+    source = _pick(rng, ['Website', 'School fair', 'Referral', 'Agent', 'Social media'], n, [0.35, 0.2, 0.15, 0.1, 0.2])
+    month = _pick(rng, ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'], n)
+    days = rng.integers(1, 180, n)
+    other_apps = rng.poisson(1.8 + 0.02 * (score - 68))
+    other_offer = rng.random(n) < np.clip(0.1 + 0.1 * other_apps + 0.01 * (score - 68), 0.02, 0.9)
+    rival_rank = np.where(other_offer, rng.integers(1, 6, n), 0)
+    reviews = rng.poisson(2, n)
+    counsellor = rng.random(n) < 0.45
+    docs = rng.random(n) < 0.85
+    fee_paid = rng.random(n) < 0.7
+    early = rng.random(n) < 0.2
+    waitlisted = rng.random(n) < 0.12
+    logit = (-1.85 + 1.2 * scholarship + 0.012 * scholarship_pct + 1.4 * visit + 0.5 * open_day + 0.3 * tour
+             - 0.03 * distance + 0.8 * (siblings > 0) + 0.7 * alumni + 0.28 * np.minimum(followups, 4)
+             - 0.75 * (fee == 'High') + 0.35 * (fee == 'Low') + 0.4 * plan + 0.55 * (source == 'Referral')
+             + 0.25 * (source == 'School fair') - 0.3 * (source == 'Social media') - 0.02 * (score - 68)
+             - 1.2 * other_offer + 0.2 * other_offer * (rival_rank <= 2) - 0.9 * (~offers_stream)
+             + 0.6 * hostel_offered - 0.8 * (hostel_needed & ~hostel_offered) + 0.3 * transport
+             + 0.5 * counsellor + 0.35 * early - 0.4 * waitlisted + 0.9 * docs + 0.7 * fee_paid - 0.004 * days + 0.05 * np.minimum(emails, 8)
              + rng.normal(0, 0.5, n))
     return pd.DataFrame({
-        'TeacherID': [f'T{i:04d}' for i in range(1, n + 1)],
-        'Gender': rng.choice(['Female', 'Male'], n, p=[0.6, 0.4]),   # no built-in effect
-        'Age': age, 'YearsExperience': experience, 'Subject': subject, 'WorkloadHoursPerWeek': workload,
-        'ClassSize': class_size, 'SalaryBand': [f'Band {b}' for b in salary_band], 'YearsSinceLastRaise': since_raise,
-        'AdminSupportRating': admin, 'ProfessionalDevelopmentHours': pd_hours, 'CommuteKm': commute,
-        'ContractType': contract, 'JobSatisfaction': satisfaction, 'StudentBehaviourRating': behaviour,
-        'Left': _outcome(rng, logit),
-    })
-
-
-def make_applicants(n=1500, seed=44):
-    rng = np.random.default_rng(seed)
-    score = np.clip(np.round(rng.normal(68, 12, n)), 30, 100)
-    distance = np.round(rng.gamma(2, 12, n), 1)
-    scholarship = rng.random(n) < np.clip(0.1 + 0.012 * (score - 68), 0.03, 0.6)
-    fee = rng.choice(['Low', 'Medium', 'High'], n, p=[0.3, 0.45, 0.25])
-    visit = rng.random(n) < 0.35
-    siblings = rng.choice([0, 1, 2], n, p=[0.75, 0.2, 0.05])
-    followups = rng.integers(0, 7, n)
-    source = rng.choice(['Website', 'School fair', 'Referral', 'Agent', 'Social media'], n,
-                        p=[0.35, 0.2, 0.15, 0.1, 0.2])
-    logit = (-1.75 + 1.3 * scholarship + 1.6 * visit - 0.035 * distance + 0.9 * (siblings > 0)
-             + 0.3 * np.minimum(followups, 4) - 0.8 * (fee == 'High') + 0.4 * (fee == 'Low')
-             + 0.6 * (source == 'Referral') + 0.25 * (source == 'School fair') - 0.35 * (source == 'Social media')
-             - 0.025 * (score - 68) + rng.normal(0, 0.5, n))
-    return pd.DataFrame({
         'ApplicantID': [f'A{i:05d}' for i in range(1, n + 1)],
-        'Gender': rng.choice(['Female', 'Male'], n),       # no built-in effect
-        'EntranceScore': score, 'DistanceKm': distance, 'ScholarshipOffered': _yes_no(scholarship),
-        'FeeLevel': fee, 'CampusVisit': _yes_no(visit), 'SiblingsEnrolled': siblings,
-        'FollowUpContacts': followups, 'ApplicationSource': source,
+        'Gender': _pick(rng, ['Female', 'Male'], n),       # no built-in effect
+        'Age': age, 'ApplyingForGrade': grade, 'PreferredStream': stream, 'CareerGoal': goal,
+        'SchoolOffersPreferredStream': _yes_no(offers_stream), 'PreviousSchoolType': previous,
+        'PreviousBoard': _pick(rng, ['CBSE', 'ICSE', 'State', 'IB'], n, [0.5, 0.2, 0.25, 0.05]),
+        'PreviousResultPct': prev_result, 'EntranceScore': score, 'InterviewScore': interview,
+        'MathsTestScore': maths, 'EnglishTestScore': english, 'HouseholdIncomeBand': income,
+        'ParentOccupation': _pick(rng, ['Salaried', 'Business', 'Government', 'Self-employed', 'Farming'], n),
+        'AlumniParent': _yes_no(alumni), 'SiblingsEnrolled': siblings, 'DistanceKm': distance,
+        'TransportAvailable': _yes_no(transport), 'HostelNeeded': _yes_no(hostel_needed),
+        'HostelOffered': _yes_no(hostel_offered), 'FeeLevel': fee, 'ScholarshipOffered': _yes_no(scholarship),
+        'ScholarshipPercent': scholarship_pct, 'PaymentPlanOffered': _yes_no(plan), 'CampusVisit': _yes_no(visit),
+        'OpenDayAttended': _yes_no(open_day), 'VirtualTourViewed': _yes_no(tour), 'FollowUpContacts': followups,
+        'EmailsOpened': emails, 'WebsiteVisits': web, 'BrochureDownloaded': _yes_no(brochure),
+        'ApplicationSource': source, 'ApplicationMonth': month, 'DaysSinceApplication': days,
+        'OtherSchoolsAppliedTo': other_apps, 'OfferFromOtherSchool': _yes_no(other_offer),
+        'RivalSchoolRanking': rival_rank, 'ParentReviewsRead': reviews, 'CounsellorCallDone': _yes_no(counsellor),
+        'DocumentsComplete': _yes_no(docs), 'ApplicationFeePaid': _yes_no(fee_paid),
+        'SportsQuota': _yes_no(rng.random(n) < 0.06), 'AdmissionTestAttempt': rng.choice([1, 2], n, p=[0.85, 0.15]),
+        'SiblingApplyingToo': _yes_no(rng.random(n) < 0.05), 'PreferredLanguage': _pick(rng, ['English', 'Hindi', 'Other'], n, [0.7, 0.2, 0.1]),
+        'NewsletterSubscribed': _yes_no(rng.random(n) < 0.3), 'EarlyBirdDiscount': _yes_no(early),
+        'InterviewInPerson': _yes_no(rng.random(n) < 0.6), 'WaitlistedFirst': _yes_no(waitlisted),
         'Enrolled': _outcome(rng, logit),
     })
+
+
+def _enlarge(df, target, id_column, n_total, rng, make_id):
+    """Keep every real row, then add made-up rows. Each made-up row starts from a random real row with small changes
+    to its numbers; its outcome is NOT copied but drawn from the chance a simple model (trained on the real rows) gives
+    it. Copied outcomes would let a model memorise near-duplicate rows and score unrealistically well."""
+    extra = df.sample(n_total - len(df), replace=True, random_state=int(rng.integers(1e9))).reset_index(drop=True)
+    for col in extra.columns:
+        if col in (target, id_column) or not pd.api.types.is_numeric_dtype(extra[col]):
+            continue
+        values = extra[col].astype(float)
+        low, high = df[col].min(), df[col].max()
+        if df[col].nunique() <= 10:          # ratings and levels: sometimes move one step
+            step = rng.choice([-1, 0, 0, 0, 1], len(extra))
+            extra[col] = np.clip(values + step, low, high).astype(df[col].dtype)
+        else:                                 # amounts: up to about 10% up or down
+            jittered = np.clip(values * rng.normal(1, 0.1, len(extra)), low, high)
+            extra[col] = jittered.round(0 if pd.api.types.is_integer_dtype(df[col]) else 2).astype(df[col].dtype)
+    features = [c for c in df.columns if c not in (target, id_column)]
+    both = pd.get_dummies(pd.concat([df[features], extra[features]], ignore_index=True).apply(
+        lambda c: pd.to_numeric(c, errors='coerce').fillna(0) if c.name in df.select_dtypes('number').columns
+        or pd.to_numeric(c, errors='coerce').notna().mean() > 0.95 else c), dtype=float)
+    both = (both - both.mean()) / both.std().replace(0, 1)
+    model = LogisticRegression(max_iter=2000, C=0.5).fit(both.iloc[:len(df)], df[target] == 'Yes')
+    p = model.predict_proba(both.iloc[len(df):])[:, 1]
+    rate = float((df[target] == 'Yes').mean())
+    p = rate + 0.6 * (p - rate)              # softer than the model, like real data (no perfect predictions)
+    extra[target] = _yes_no(rng.random(len(extra)) < p)
+    extra[id_column] = [make_id(i) for i in range(len(extra))]
+    return pd.concat([df, extra], ignore_index=True)
+
+
+def make_employees_large(n=10500, seed=45):
+    """The IBM HR attrition data (every real row) plus made-up columns and made-up extra rows."""
+    rng = np.random.default_rng(seed)
+    base = tidy_employees(pd.read_csv(find_sample('employees.csv')))
+    start = int(base['EmployeeNumber'].max()) + 1
+    df = _enlarge(base, 'Attrition', 'EmployeeNumber', n, rng, lambda i: start + i)
+    m = len(df)
+    left = (df['Attrition'] == 'Yes').to_numpy()
+    overtime = (df['OverTime'] == 'Yes').to_numpy()
+    sat = df['JobSatisfaction'].to_numpy()
+    env = df['EnvironmentSatisfaction'].to_numpy()
+    wlb = df['WorkLifeBalance'].to_numpy()
+    income = df['MonthlyIncome'].to_numpy()
+    years = df['YearsAtCompany'].to_numpy()
+    df['RemoteDaysPerWeek'] = np.clip(rng.poisson(1.6 - 0.5 * left), 0, 5)
+    df['CommuteMinutes'] = np.clip(np.round(df['DistanceFromHome'] * 2.4 + rng.normal(8, 6, m)), 5, 150).astype(int)
+    df['EngagementScore'] = np.clip(np.round(6.5 + 0.4 * (sat - 2.5) + 0.3 * (env - 2.5) - 0.6 * left + rng.normal(0, 1.4, m)), 1, 10).astype(int)
+    df['ManagerRating'] = _scale(rng, 3.5 + 0.25 * (df['RelationshipSatisfaction'].to_numpy() - 2.5) - 0.2 * left, m)
+    df['PeerFeedbackScore'] = _scale(rng, 3.7 - 0.1 * left, m)
+    df['TrainingHoursLastYear'] = np.clip(np.round(df['TrainingTimesLastYear'] * 6 + rng.normal(4, 5, m)), 0, 120).astype(int)
+    df['ProjectsLastYear'] = rng.poisson(3 + 0.5 * (df['JobLevel'].to_numpy() > 2))
+    df['OvertimeHoursPerMonth'] = np.clip(np.round(rng.gamma(2, 3, m) + 18 * overtime + 2 * left), 0, 90).astype(int)
+    df['SickDaysLastYear'] = rng.poisson(4 + 0.8 * left + 1.2 * (wlb <= 2))
+    df['LeaveDaysTaken'] = np.clip(rng.poisson(14 - 3 * overtime), 0, 30)
+    df['RecruiterContactsLastYear'] = rng.poisson(1 + 0.00012 * income + 0.9 * left)
+    df['InternalJobApplications'] = rng.poisson(0.4 + 0.15 * df['YearsSinceLastPromotion'].to_numpy() * 0.3 + 0.15 * left)
+    df['BonusLastYearPct'] = np.clip(np.round(rng.normal(8, 4, m) + 1.5 * (df['PerformanceRating'].to_numpy() - 3) - 1 * left, 1), 0, 30)
+    df['SalaryVsMarketPct'] = np.clip(np.round(rng.normal(100, 9, m) + 0.0006 * (income - 6500) - 3 * left), 60, 140).astype(int)
+    df['MentorAssigned'] = _yes_no(rng.random(m) < np.where(years < 2, 0.5, 0.15) - 0.05 * left)
+    df['CareerPathDiscussed'] = _yes_no(rng.random(m) < 0.55 - 0.12 * left)
+    df['TeamSize'] = np.clip(rng.poisson(9, m), 2, 40)
+    df['ManagerChangesLast2Years'] = rng.poisson(0.7 + 0.3 * left)
+    df['FlexibleHours'] = _yes_no(rng.random(m) < 0.45 - 0.08 * left)
+    df['CertificationsEarned'] = rng.poisson(1.0 + 0.2 * df['Education'].to_numpy() * 0.5)
+    df['HealthBenefitsUsed'] = _yes_no(rng.random(m) < 0.6)
+    target = df.pop('Attrition')
+    df['Attrition'] = target
+    return df
+
+
+def make_customers_large(n=10500, seed=46):
+    """The IBM Telco churn data (every real row) plus made-up columns and made-up extra rows."""
+    rng = np.random.default_rng(seed)
+    base = pd.read_csv(find_sample('customers.csv'))
+    letters = np.array(list('ABCDEFGHIJKLMNOPQRSTUVWXYZ'))
+    def new_id(i):
+        return f"{rng.integers(1000, 9999)}-{''.join(rng.choice(letters, 5))}"
+    df = _enlarge(base, 'Churn', 'customerID', n, rng, new_id)
+    m = len(df)
+    churn = (df['Churn'] == 'Yes').to_numpy()
+    tenure = df['tenure'].to_numpy()
+    monthly = df['MonthlyCharges'].to_numpy()
+    month_to_month = (df['Contract'] == 'Month-to-month').to_numpy()
+    fiber = (df['InternetService'] == 'Fiber optic').to_numpy()
+    no_internet = (df['InternetService'] == 'No').to_numpy()
+    senior = df['SeniorCitizen'].to_numpy() == 1
+    df['Age'] = np.where(senior, rng.integers(65, 86, m), rng.integers(19, 65, m))
+    df['Region'] = _pick(rng, ['North', 'South', 'East', 'West'], m)
+    df['CityTier'] = _pick(rng, ['Tier 1', 'Tier 2', 'Tier 3'], m, [0.45, 0.35, 0.2])
+    df['HouseholdSize'] = np.clip(rng.poisson(2.6, m), 1, 8)
+    df['AvgMonthlyDataGB'] = np.where(no_internet, 0, np.round(rng.gamma(2.2, 18, m) + 25 * fiber, 1))
+    df['AvgCallMinutes'] = np.round(rng.gamma(2, 120, m))
+    df['InternationalCalls'] = _yes_no(rng.random(m) < 0.15)
+    df['NetworkOutagesLastQuarter'] = rng.poisson(0.8 + 0.5 * churn + 0.6 * fiber)
+    df['AvgDownloadSpeedMbps'] = np.where(no_internet, 0, np.round(np.clip(rng.normal(60 + 120 * fiber, 25, m) - 6 * churn, 5, None)))
+    df['SupportTicketsLastYear'] = rng.poisson(1 + 0.6 * churn + 0.4 * fiber)
+    df['AvgResolutionDays'] = np.round(rng.gamma(2, 1.2, m) + 0.5 * churn, 1)
+    df['ComplaintsLastYear'] = rng.poisson(0.3 + 0.4 * churn)
+    df['SatisfactionScore'] = np.clip(np.round(7.2 - 0.9 * churn + 0.02 * tenure / 6 + rng.normal(0, 1.6, m)), 1, 10).astype(int)
+    df['NPSScore'] = np.clip(np.round(df['SatisfactionScore'] + rng.normal(0, 1.2, m)), 0, 10).astype(int)
+    df['LatePaymentsLastYear'] = rng.poisson(0.5 + 0.4 * churn)
+    df['DiscountReceived'] = _yes_no(rng.random(m) < np.where(month_to_month, 0.15, 0.4))
+    df['LoyaltyPoints'] = np.round(tenure * rng.uniform(20, 40, m) * (1 - 0.05 * churn)).astype(int)
+    df['AppLoginsPerMonth'] = rng.poisson(np.clip(6 - 1.2 * churn + 0.03 * tenure, 0.3, None))
+    df['MonthsSinceLastPlanChange'] = np.clip(np.round(rng.gamma(2, 6, m)), 0, tenure.clip(0, None) + 1).astype(int)
+    df['PriceIncreaseLastYear'] = _yes_no(rng.random(m) < 0.3 + 0.12 * churn)
+    df['CompetitorOfferReceived'] = _yes_no(rng.random(m) < 0.15 + 0.18 * churn * month_to_month + 0.05 * churn)
+    df['ReferralsMade'] = rng.poisson(0.5 + 0.2 * (~churn))
+    df['DevicesConnected'] = np.where(no_internet, 0, np.clip(rng.poisson(4, m), 1, 15))
+    df['StreamingHoursPerWeek'] = np.where(df['StreamingTV'] == 'Yes', np.round(rng.gamma(2, 5, m), 1), np.round(rng.gamma(1, 1.5, m), 1))
+    df['PromotionsUsed'] = rng.poisson(1.2 - 0.2 * churn + 0.4 * (~month_to_month)).clip(0)
+    df['BillShockEvents'] = rng.poisson(0.2 + 0.3 * churn + 0.004 * (monthly - 65).clip(0))
+    df['HasMobileBundle'] = _yes_no(rng.random(m) < 0.35 - 0.07 * churn)
+    df['ContractRenewalDue'] = _yes_no(rng.random(m) < np.where(month_to_month, 0.0, 0.12))
+    df['DaysSinceLastContact'] = rng.integers(0, 365, m)
+    df['EmailOptIn'] = _yes_no(rng.random(m) < 0.55)
+    df['CustomerServiceCallsLastMonth'] = rng.poisson(0.3 + 0.3 * churn)
+    target = df.pop('Churn')
+    df['Churn'] = target
+    return df
 
 
 SYNTHETIC_MAKERS = {
     'students_SYNTHETIC.csv': make_students,
     'teachers_SYNTHETIC.csv': make_teachers,
     'custom_join_SYNTHETIC.csv': make_applicants,
+    'employees_SYNTHETIC.csv': make_employees_large,
+    'customers_SYNTHETIC.csv': make_customers_large,
 }
 
 
@@ -1112,8 +1450,16 @@ def train_models(prepared, settings, progress=None):
     if not names:
         raise ValueError('Select at least one model to run.')
     X_train, X_test, y_train, y_test = split_data(prepared, settings['test_size'], seed)
-    smallest_class = int(min(y_train.sum(), len(y_train) - y_train.sum()))
     results, notes = {}, []
+    search_rows = PRESET_SEARCH_ROWS.get(settings.get('preset'))
+    if search_rows and len(X_train) > search_rows:
+        X_search, _, y_search, _ = train_test_split(X_train, y_train, train_size=search_rows, random_state=seed,
+                                                    stratify=y_train)
+        notes.append(f'Quick search: the settings were chosen on {search_rows:,} of the {len(X_train):,} training '
+                     'rows; each best model was then trained on all of them.')
+    else:
+        X_search, y_search = X_train, y_train
+    smallest_class = int(min(y_search.sum(), len(y_search) - y_search.sum()))
 
     for i, name in enumerate(names):
         if progress:
@@ -1126,7 +1472,7 @@ def train_models(prepared, settings, progress=None):
             raise ValueError(f'{name}: {cv} CV folds is too many. The smaller class has only {smallest_class} '
                              f'training rows. Use at most {smallest_class} folds.')
         if name == 'K-Nearest Neighbors':
-            fold_rows = len(X_train) * (cv - 1) // cv
+            fold_rows = len(X_search) * (cv - 1) // cv
             too_big = [k for k in grid['n_neighbors'] if k > fold_rows]
             if len(too_big) == len(grid['n_neighbors']):
                 raise ValueError(f'K-Nearest Neighbors: every K is larger than {fold_rows} '
@@ -1158,19 +1504,22 @@ def train_models(prepared, settings, progress=None):
             )
         with warnings.catch_warnings(record=True) as caught:
             warnings.simplefilter('always')
-            search.fit(X_train, y_train)
-            y_prob = search.best_estimator_.predict_proba(X_test)[:, 1]
+            search.fit(X_search, y_search)
+            model = search.best_estimator_
+            if X_search is not X_train:             # Quick on a big file: train the best settings on every row
+                model = clone(model).fit(X_train, y_train)
+            y_prob = model.predict_proba(X_test)[:, 1]
         notes += warning_notes(caught, name)
         if monitored:
             limit, param = MONITORED[name]
             converged = np.asarray(search.cv_results_['mean_test_converged'])
             values = [value_label(v) for v, c in zip(search.cv_results_[f'param_model__{param}'], converged) if c < 1]
-            if values or not search.best_estimator_.named_steps['model'].converged_:
+            if values or not model.named_steps['model'].converged_:
                 notes.append(f"{name}: ConvergenceWarning: some fits stopped at max_iter = {settings[limit]} "
                              f"before converging ({param} {values or ['of the final model']}). "
                              f'Increase {name} max_iter in the Train tab.')
         results[name] = {
-            'model': search.best_estimator_,
+            'model': model,
             'best_params': {k.replace('model__', ''): v for k, v in search.best_params_.items()},
             'cv_score': float(search.best_score_),
             'cv_results': pd.DataFrame(search.cv_results_),
@@ -2133,7 +2482,9 @@ def drivers(trained):
         scoring = SCORING[trained['settings']['scoring']]
         with warnings.catch_warnings(record=True) as caught:
             warnings.simplefilter('always')
-            perm = permutation_importance(fitted, trained['X_test'], trained['y_test'], scoring=scoring,
+            # big test sets: shuffle-and-score a random sample of up to 1,000 rows (seconds instead of a minute)
+            rows = trained['X_test'].sample(min(1000, len(trained['X_test'])), random_state=42)
+            perm = permutation_importance(fitted, rows, trained['y_test'].loc[rows.index], scoring=scoring,
                                           n_repeats=5, random_state=42)
             sample = trained['X_test'].sample(min(_affordable_shap_rows(trained), len(trained['X_test'])), random_state=42)
             shap_values, base = shap_explain(trained, sample)
@@ -3835,7 +4186,7 @@ def run_prompt(prompt, options=None, ai=False):
 
 
 HELP_TEXT = '''### What you can ask
-- **Analyse a file:** "Which employees are most likely to leave? Target is Attrition" or "analyse customers.csv"
+- **Analyse a file:** "Which employees are most likely to leave? Target is Attrition" or "analyse customers_SYNTHETIC.csv"
 - **Who:** "top 20 students most likely to drop out", "rank the people in new_hires.xlsx"
 - **Why:** "why do customers churn?", "what are the main reasons?"
 - **Models:** "compare the models", "which model is best?", "use only random forest", "use thorough"

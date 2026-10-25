@@ -10,7 +10,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="styles.css">
+<!-- The ?v= number makes browsers fetch fresh copies after an update instead of old saved ones.
+     After changing any file, raise it here (in all four places), e.g. v=13 to v=14. -->
+<link rel="stylesheet" href="styles.css?v=14">
 <script>
   // If ChurnSense cannot start (for example, files from two different versions were uploaded), say so instead of
   // leaving a white page.
@@ -43,9 +45,9 @@
   });
 </script>
 <script src="plotly.min.js" defer></script>
-<script src="email-config.js" defer></script>
-<script src="app.js" defer></script>
-<script src="help.js" defer></script>
+<script src="email-config.js?v=14" defer></script>
+<script src="app.js?v=14" defer></script>
+<script src="help.js?v=14" defer></script>
 </head>
 <body>
 
@@ -228,8 +230,8 @@
             </div>
             <div class="samples">
               <span>Try a sample:</span>
-              <button type="button" class="chip" data-sample="employees.csv">Employees</button>
-              <button type="button" class="chip" data-sample="customers.csv">Customers</button>
+              <button type="button" class="chip" data-sample="employees_SYNTHETIC.csv">Employees</button>
+              <button type="button" class="chip" data-sample="customers_SYNTHETIC.csv">Customers</button>
               <button type="button" class="chip" data-sample="students_SYNTHETIC.csv">Students</button>
               <button type="button" class="chip" data-sample="teachers_SYNTHETIC.csv">Teachers</button>
               <button type="button" class="chip" data-sample="custom_join_SYNTHETIC.csv">Applicants</button>
