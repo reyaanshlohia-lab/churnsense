@@ -16,13 +16,14 @@ There are **no sub-folders**: all files sit side by side, so they upload anywher
 | `index.html`, `styles.css`, `app.js` | The page: welcome (sign-in) screen, dashboard, files list, drag-and-drop box, prompt box, answer, and the sidebar pages. |
 | `email-config.js` | Settings for sending result emails directly (see **Send emails directly** below). |
 | `churnsense-mailer.gs` | The free Google Apps Script that sends those emails with attachments (pasted into script.google.com, not run by the page). |
+| `help.js` | The Help chat: explains every chart (each line, colour and star), the words used, and how to use the app. |
 | `worker.js` | Runs the Python analysis engine in the background, so the page never freezes. |
 | `engine.py` | The analysis code (the same as `people_prediction_app.ipynb`, adapted for the browser). |
 | `pyodide.*`, `python_stdlib.zip`, `pyodide-lock.json`, the `.whl` files, `plotly.min.js` | Python for the browser and the packages it needs (scikit-learn, pandas, Plotly, ...). |
-| the five `.csv` files | The sample datasets for the "Try a sample" buttons. |
+| the five `.csv` files | The sample datasets for the "Try a sample" buttons: 10,000+ rows and 50+ columns each, all marked `_SYNTHETIC` (employees and customers keep every row of the real IBM datasets, plus made-up rows and columns). In the students file, high achievers also leave, for schools that fit their career goal better. |
 | `.nojekyll` | Tells GitHub Pages to publish the files as they are (a hidden file; optional). |
 
-The whole folder is about 55 MB in 35 files (none over 15 MB). Visitors download it once (about 30 seconds); after
+The whole folder is about 55 MB in 36 files (none over 15 MB). Visitors download it once (about 30 seconds); after
 that their browser keeps it, so later visits start quickly.
 
 ## Put it online for free (no card)
@@ -134,6 +135,13 @@ use it within those limits, which is another reason to use a separate project Gm
 script later, use **Deploy > Manage deployments > Edit (pencil) > Version: New version > Deploy** so the URL stays
 the same.
 
+**Help chat:** the **? Help** button (bottom right) opens a chat that explains what is on the page, for example
+"What does the black line in the first chart mean?" (the error bars of the top-reasons chart), "What is ROC-AUC?",
+or a pasted sentence such as "recall 68%, precision 41%". Every chart also has a **? Explain** button that describes
+each of its parts. It works in the browser with no AI service (it reads the charts on the page and a built-in
+knowledge base), so it is free, instant and private. If the visitor has entered a Gemini key, questions it cannot
+match are passed to Gemini.
+
 **Optional AI answers:** under **AI answers**, a visitor can paste a free Gemini API key from
 <https://aistudio.google.com/apikey> (Google account needed, no card). Then any question also gets an answer from
 Gemini, based on a *summary of the results* (scores, top reasons, segment and fairness summaries, and the IDs and
@@ -154,3 +162,6 @@ is sent to improve its products. Without a key, the built-in commands work as us
 - **Opening `index.html` directly from your computer does not work** (browsers block it). To try it locally, run
   `python -m http.server` in this folder and open <http://localhost:8000>.
 - **Updating:** upload the changed files again (GitHub: **Add file > Upload files > Commit changes**). Wix shows the new version by itself.
+  Then raise the version number in `index.html` (the four `?v=14` in the lines near the top, e.g. to `?v=15`) and upload it
+  too: browsers then download the new files instead of reusing old saved copies, which can otherwise mix old and new
+  files and stop the page from starting. Wait until the **Actions** tab shows a green tick before testing.
