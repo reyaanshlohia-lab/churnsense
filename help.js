@@ -31,7 +31,10 @@
   const PALETTE = [['black', 0, 0, 0], ['black', 68, 68, 68], ['grey', 127, 127, 127], ['grey', 187, 187, 187], ['grey', 128, 128, 128],
     ['blue', 76, 120, 168], ['blue', 99, 110, 250], ['blue', 31, 119, 180], ['blue', 8, 48, 107], ['orange', 255, 176, 0],
     ['orange', 255, 127, 14], ['red', 214, 39, 40], ['red', 239, 85, 59], ['red', 225, 71, 37], ['green', 44, 160, 44],
-    ['purple', 148, 103, 189]];
+    ['purple', 148, 103, 189],
+    // the modern shades the app's chart theme uses (app.js THEME_COLOURS)
+    ['blue', 99, 102, 241], ['blue', 59, 130, 246], ['blue', 49, 46, 129], ['orange', 245, 158, 11], ['orange', 251, 146, 60],
+    ['red', 239, 68, 68], ['red', 244, 63, 94], ['green', 16, 185, 129], ['purple', 168, 85, 247], ['grey', 148, 163, 184]];
   function colourName(c) {
     if (typeof c !== 'string') return null;
     const named = { grey: 'grey', gray: 'grey', black: 'black', red: 'red', blue: 'blue', green: 'green', orange: 'orange' };

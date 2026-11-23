@@ -160,9 +160,77 @@ function sizeText(bytes) {
   return bytes > 1e6 ? (bytes / 1e6).toFixed(1) + ' MB' : Math.max(1, Math.round(bytes / 1e3)) + ' KB';
 }
 
+// ---------------- chart theme ----------------
+// Swaps the engine's classic chart colours for modern shades of the SAME colour (blue stays blue, orange stays
+// orange...), so the help chat's descriptions ("the orange bar", "the red dots") still match what people see.
+const THEME_COLOURS = {
+  '#4c78a8': '#6366f1', '#636efa': '#6366f1', '#1f77b4': '#3b82f6', '#08306b': '#312e81',
+  '#ffb000': '#f59e0b', '#ff9f1c': '#fb923c', '#ff7f0e': '#fb923c', '#ffa15a': '#fb923c',
+  '#d62728': '#ef4444', '#ef553b': '#f43f5e', '#e14725': '#ef4444',
+  '#2ca02c': '#10b981', '#00cc96': '#10b981', '#9467bd': '#a855f7', '#ab63fa': '#a855f7',
+  '#9e9e9e': '#94a3b8', '#7f7f7f': '#94a3b8',
+  steelblue: '#6366f1', red: '#ef4444', green: '#10b981', orange: '#f59e0b', gold: '#f59e0b',
+};
+const THEME_RGB = {};
+for (const [k, v] of Object.entries(THEME_COLOURS)) {
+  if (k[0] === '#') THEME_RGB[[1, 3, 5].map((i) => parseInt(k.slice(i, i + 2), 16)).join(',')] = v;
+}
+function themeColour(c) {
+  if (typeof c !== 'string') return c;
+  const key = c.trim().toLowerCase();
+  if (THEME_COLOURS[key]) return THEME_COLOURS[key];
+  const m = key.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)$/);
+  if (m && THEME_RGB[m.slice(1, 4).join(',')]) {
+    const hex = THEME_RGB[m.slice(1, 4).join(',')];
+    if (m[4] === undefined) return hex;
+    const rgb = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+    return `rgba(${rgb.join(',')},${m[4]})`;
+  }
+  return c;
+}
+const COLOUR_KEYS = /^(color|colors|fillcolor|bordercolor|bgcolor|linecolor|outliercolor)$/;
+function recolour(obj) {
+  if (Array.isArray(obj)) return obj.map(recolour);
+  if (!obj || typeof obj !== 'object') return obj;
+  const out = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (COLOUR_KEYS.test(k)) out[k] = Array.isArray(v) ? v.map(themeColour) : themeColour(v);
+    else if (k === 'colorscale' && Array.isArray(v)) out[k] = v.map((s) => (Array.isArray(s) ? [s[0], themeColour(s[1])] : s));
+    else out[k] = (v && typeof v === 'object') ? recolour(v) : v;
+  }
+  return out;
+}
+const INK = '#334155';
+const GRID = '#eef1f7';
+function themeFigure(figure, { transparent = true } = {}) {
+  const data = recolour(figure.data || []).map((t) => {
+    if (t.type === 'bar' && t.marker && !t.marker.line) t.marker = Object.assign({}, t.marker, { line: { width: 0 } });
+    return t;
+  });
+  const layout = recolour(figure.layout || {});
+  layout.font = Object.assign({ family: 'Inter, system-ui, sans-serif', color: INK, size: 12 }, layout.font,
+                              { family: 'Inter, system-ui, sans-serif' });
+  if (layout.title) {
+    const t = typeof layout.title === 'string' ? { text: layout.title } : layout.title;
+    layout.title = Object.assign({}, t, { font: Object.assign({ size: 15, color: '#0f172a' }, t.font,
+                                                               { family: 'Inter, system-ui, sans-serif' }) });
+  }
+  if (transparent) { layout.paper_bgcolor = 'rgba(0,0,0,0)'; layout.plot_bgcolor = 'rgba(0,0,0,0)'; }
+  for (const key of Object.keys(layout).filter((k) => /^[xy]axis\d*$/.test(k)).concat(['xaxis', 'yaxis'])) {
+    layout[key] = Object.assign({ gridcolor: GRID, zerolinecolor: '#dfe4ee', linecolor: '#dfe4ee' }, layout[key]);
+  }
+  layout.barcornerradius = layout.barcornerradius ?? 5;
+  layout.hoverlabel = Object.assign({ bgcolor: '#0f172a', bordercolor: '#0f172a',
+                                      font: { family: 'Inter, system-ui, sans-serif', color: '#fff', size: 12 } }, layout.hoverlabel);
+  if (layout.legend) layout.legend = Object.assign({ bgcolor: 'rgba(0,0,0,0)' }, layout.legend);
+  layout.colorway = ['#6366f1', '#f43f5e', '#10b981', '#a855f7', '#fb923c', '#06b6d4', '#ec4899', '#84cc16'];
+  return { data, layout };
+}
+
 // ---------------- rendering: charts, tables, blocks ----------------
-function plot(div, figure) {
-  if (!window.Plotly || !figure) return;
+function plot(div, rawFigure) {
+  if (!window.Plotly || !rawFigure) return;
+  const figure = themeFigure(rawFigure);
   const layout = Object.assign({}, figure.layout, { autosize: true });
   delete layout.width;
   // long axis titles run into the chart title in half-width charts: wrap them onto two lines
@@ -208,8 +276,25 @@ function renderTable(container, table, opts = {}) {
   let sortCol = -1;
   let asc = true;
   const body = el('tbody');
+  // probability columns ("Risk of leaving", "Likelihood of joining", ...) get a bar; Level columns get a badge
+  const isProb = table.columns.map((c, i) => /^(risk|likelihood|chance|probability|predicted)/i.test(String(c)) &&
+    table.rows.length > 0 && table.rows.every((r) => r[i] === null || (typeof r[i] === 'number' && r[i] >= 0 && r[i] <= 1)));
+  const isLevel = table.columns.map((c) => /^(level|risk level)$/i.test(String(c)));
+  const joinMode = table.columns.some((c) => /^likelihood/i.test(String(c)));
+  const cell = (v, i) => {
+    if (isProb[i] && typeof v === 'number') {
+      const tone = v >= 0.6 ? 'hi' : v >= 0.3 ? 'mid' : 'lo';
+      return el('td', { class: 'num prob', title: fmt(v) }, el('span', { class: 'pw' },
+        el('span', { class: `pbar ${joinMode ? 'join-' : ''}${tone}` }, el('i', { style: `width:${Math.round(v * 100)}%` })),
+        el('b', { text: `${Math.round(v * 100)}%` })));
+    }
+    if (isLevel[i] && typeof v === 'string' && /^(high|medium|low)$/i.test(v)) {
+      return el('td', {}, el('span', { class: `lvl ${joinMode ? 'join-' : ''}${v.toLowerCase()}`, text: v }));
+    }
+    return el('td', { class: typeof v === 'number' ? 'num' : '', text: fmt(v) });
+  };
   const draw = () => {
-    body.replaceChildren(...rows.map((r) => el('tr', {}, ...r.map((v) => el('td', { class: typeof v === 'number' ? 'num' : '', text: fmt(v) })))));
+    body.replaceChildren(...rows.map((r) => el('tr', {}, ...r.map(cell))));
   };
   table.columns.forEach((c, i) => {
     head.append(el('th', {
@@ -283,7 +368,7 @@ function renderFileList() {
     const radio = el('input', { type: 'radio', name: 'datafile', value: f.name, checked: selected, disabled: !f.info,
                                 'aria-label': `Analyse ${f.name}`, onchange: () => selectFile(f.name) });
     list.append(el('li', { class: 'file' + (selected ? ' selected' : '') },
-      el('span', { class: 'icon', 'aria-hidden': 'true', text: f.name.toLowerCase().endsWith('.xlsx') ? '📗' : '📄' }),
+      el('span', { class: 'icon ftype' + (f.name.toLowerCase().endsWith('.xlsx') ? ' xlsx' : ''), 'aria-hidden': 'true', text: f.name.toLowerCase().endsWith('.xlsx') ? 'XLSX' : 'CSV' }),
       el('div', { class: 'meta' }, el('div', { class: 'name', text: f.name }),
         el('div', { class: 'detail' + (f.error ? ' error' : ''), text: detail })),
       el('label', { class: 'use' }, radio, document.createTextNode('Analyse')),
@@ -1129,7 +1214,7 @@ async function figurePng(holder, figure, width = 1000) {
   holder.append(div);
   const height = (figure.layout && figure.layout.height) || 500;
   try {
-    await window.Plotly.newPlot(div, figure.data, Object.assign({}, figure.layout, { width, height }), { staticPlot: true });
+    { const th = themeFigure(figure, { transparent: false }); await window.Plotly.newPlot(div, th.data, Object.assign({}, th.layout, { width, height }), { staticPlot: true }); }
     const url = await window.Plotly.toImage(div, { format: 'png', width, height, scale: 2 });
     return { png: url.split(',')[1], width, height };
   } finally {
@@ -1332,7 +1417,7 @@ async function downloadCharts() {
         const div = el('div');
         holder.append(div);
         const height = (c.figure.layout && c.figure.layout.height) || 500;
-        await window.Plotly.newPlot(div, c.figure.data, Object.assign({}, c.figure.layout, { width: 1100, height }), { staticPlot: true });
+        { const th = themeFigure(c.figure, { transparent: false }); await window.Plotly.newPlot(div, th.data, Object.assign({}, th.layout, { width: 1100, height }), { staticPlot: true }); }
         const url = await window.Plotly.toImage(div, { format: 'png', width: 1100, height });
         names.push(c.name + '.png');
         data.push(url.split(',')[1]);
