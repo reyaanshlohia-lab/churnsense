@@ -200,24 +200,35 @@ function recolour(obj) {
   }
   return out;
 }
-const INK = '#334155';
-const GRID = '#eef1f7';
-function themeFigure(figure, { transparent = true } = {}) {
+const isDark = () => document.documentElement.dataset.theme === 'dark';
+const inkColour = () => (isDark() ? '#cbd5e1' : '#334155');
+const gridColour = () => (isDark() ? 'rgba(148,163,184,.16)' : '#eef1f7');
+function themeFigure(figure, { transparent = true, light = false } = {}) {
+  const wasDark = document.documentElement.dataset.theme;
+  if (light) delete document.documentElement.dataset.theme;
+  try { return themeFigureInner(figure, { transparent }); } finally { if (light && wasDark) document.documentElement.dataset.theme = wasDark; }
+}
+function themeFigureInner(figure, { transparent = true } = {}) {
   const data = recolour(figure.data || []).map((t) => {
     if (t.type === 'bar' && t.marker && !t.marker.line) t.marker = Object.assign({}, t.marker, { line: { width: 0 } });
     return t;
   });
   const layout = recolour(figure.layout || {});
-  layout.font = Object.assign({ family: 'Inter, system-ui, sans-serif', color: INK, size: 12 }, layout.font,
+  layout.font = Object.assign({ family: 'Inter, system-ui, sans-serif', color: inkColour(), size: 12 }, layout.font,
                               { family: 'Inter, system-ui, sans-serif' });
   if (layout.title) {
     const t = typeof layout.title === 'string' ? { text: layout.title } : layout.title;
-    layout.title = Object.assign({}, t, { font: Object.assign({ size: 15, color: '#0f172a' }, t.font,
+    layout.title = Object.assign({}, t, { font: Object.assign({ size: 15, color: isDark() ? '#f1f5f9' : '#0f172a' }, t.font,
                                                                { family: 'Inter, system-ui, sans-serif' }) });
   }
   if (transparent) { layout.paper_bgcolor = 'rgba(0,0,0,0)'; layout.plot_bgcolor = 'rgba(0,0,0,0)'; }
   for (const key of Object.keys(layout).filter((k) => /^[xy]axis\d*$/.test(k)).concat(['xaxis', 'yaxis'])) {
-    layout[key] = Object.assign({ gridcolor: GRID, zerolinecolor: '#dfe4ee', linecolor: '#dfe4ee' }, layout[key]);
+    layout[key] = Object.assign({ gridcolor: gridColour(), zerolinecolor: isDark() ? 'rgba(148,163,184,.3)' : '#dfe4ee', linecolor: isDark() ? 'rgba(148,163,184,.3)' : '#dfe4ee' }, layout[key]);
+  }
+  // label boxes have a pale background: keep their text dark in both themes
+  if (Array.isArray(layout.annotations)) {
+    layout.annotations = layout.annotations.map((an) => (an && /255,\s*255,\s*255|#fff/i.test(String(an.bgcolor || ''))
+      ? Object.assign({}, an, { font: Object.assign({}, an.font, { color: '#0f172a' }) }) : an));
   }
   layout.barcornerradius = layout.barcornerradius ?? 5;
   layout.hoverlabel = Object.assign({ bgcolor: '#0f172a', bordercolor: '#0f172a',
@@ -1214,7 +1225,7 @@ async function figurePng(holder, figure, width = 1000) {
   holder.append(div);
   const height = (figure.layout && figure.layout.height) || 500;
   try {
-    { const th = themeFigure(figure, { transparent: false }); await window.Plotly.newPlot(div, th.data, Object.assign({}, th.layout, { width, height }), { staticPlot: true }); }
+    { const th = themeFigure(figure, { transparent: false, light: true }); await window.Plotly.newPlot(div, th.data, Object.assign({}, th.layout, { width, height }), { staticPlot: true }); }
     const url = await window.Plotly.toImage(div, { format: 'png', width, height, scale: 2 });
     return { png: url.split(',')[1], width, height };
   } finally {
@@ -1417,7 +1428,7 @@ async function downloadCharts() {
         const div = el('div');
         holder.append(div);
         const height = (c.figure.layout && c.figure.layout.height) || 500;
-        { const th = themeFigure(c.figure, { transparent: false }); await window.Plotly.newPlot(div, th.data, Object.assign({}, th.layout, { width: 1100, height }), { staticPlot: true }); }
+        { const th = themeFigure(c.figure, { transparent: false, light: true }); await window.Plotly.newPlot(div, th.data, Object.assign({}, th.layout, { width: 1100, height }), { staticPlot: true }); }
         const url = await window.Plotly.toImage(div, { format: 'png', width: 1100, height });
         names.push(c.name + '.png');
         data.push(url.split(',')[1]);
@@ -1519,8 +1530,50 @@ function wire() {
 }
 
 // Each part is wired on its own, so one missing piece (for example a file from an older version) cannot leave a blank page.
-for (const step of [wire, wireLogin, wireShare, loadAIKey]) {
+for (const step of [wire, wireLogin, wireShare, loadAIKey, wireTheme]) {
   try { step(); } catch (error) { console.error(`ChurnSense: ${step.name} failed:`, error); }
 }
 startEngine();     // the engine warms up while the visitor signs in
 startPage();
+
+
+// ---------------- theme toggle (light / dark) ----------------
+function restyleCharts() {
+  if (!window.Plotly) return;
+  const dark = isDark();
+  document.querySelectorAll('.chart .js-plotly-plot').forEach((gd) => {
+    const upd = { 'font.color': inkColour(), 'title.font.color': dark ? '#f1f5f9' : '#0f172a' };
+    for (const k of Object.keys(gd.layout || {}).filter((x) => /^[xy]axis\d*$/.test(x))) {
+      upd[`${k}.gridcolor`] = gridColour();
+      upd[`${k}.zerolinecolor`] = dark ? 'rgba(148,163,184,.3)' : '#dfe4ee';
+      upd[`${k}.linecolor`] = dark ? 'rgba(148,163,184,.3)' : '#dfe4ee';
+    }
+    (gd.layout.annotations || []).forEach((an, i) => { if (/255,\s*255,\s*255|#fff/i.test(String(an.bgcolor || ''))) upd[`annotations[${i}].font.color`] = '#0f172a'; });
+    try { window.Plotly.relayout(gd, upd); } catch (e) { /* chart not ready */ }
+  });
+}
+function wireTheme() {
+  const btn = document.getElementById('theme-btn');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const next = isDark() ? 'light' : 'dark';
+    if (next === 'dark') document.documentElement.dataset.theme = 'dark'; else delete document.documentElement.dataset.theme;
+    try { localStorage.setItem('cs-theme', next); } catch (e) { /* private window */ }
+    restyleCharts();
+  });
+}
+
+// ---------------- progress stepper on Home ----------------
+function updateStepper() {
+  const list = document.getElementById('stepper');
+  if (!list) return;
+  const hasFile = !!(S.files && S.files.length);
+  const hasAnswer = !!(document.getElementById('answer') && !document.getElementById('answer').hidden);
+  const at = hasAnswer ? 3 : hasFile ? 2 : 1;
+  list.querySelectorAll('li').forEach((li) => {
+    const n = +li.dataset.step;
+    li.classList.toggle('done', n < at || (hasAnswer && n === 3));
+    li.classList.toggle('active', n === at && !hasAnswer);
+  });
+}
+new MutationObserver(updateStepper).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] });
